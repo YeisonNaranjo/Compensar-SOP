@@ -1,0 +1,173 @@
+<apex:page standardController="AVX_ENC_PreguntaEncuesta__c" extensions="ENC_CrearEditarPregunta_ctr" title="Crear/Editar Pregunta" id="idPage">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+	<apex:stylesheet value="{!URLFOR($Resource.SLDS0122, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script>
+		var iconoAdvertencia = '<svg aria-hidden="true" class="slds-icon slds-icon-text-warning slds-icon--small slds-m-right--small slds-col slds-no-flex">';
+			iconoAdvertencia += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>';
+			iconoAdvertencia += '</svg>';
+		var iconoAdvertenciaTransparente = '<svg aria-hidden="true" class="slds-icon slds-icon--small slds-m-right--small slds-col slds-no-flex">';
+			iconoAdvertenciaTransparente += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>';
+			iconoAdvertenciaTransparente += '</svg>';
+
+		var iconoCopiar = '<svg aria-hidden="true" class="slds-icon slds-icon-text-default slds-icon--small slds-m-right--small slds-col slds-no-flex">';
+			iconoCopiar += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#copy')}"></use>';
+			iconoCopiar += '</svg>';
+
+		var iconoCerrar = '<svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">';
+			iconoCerrar += '<use xlink:href="{!URLFOR($Resource.SLDS0122, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>';
+			iconoCerrar += '</svg>';
+
+		var iconoAbajoPlantilla = '<svg aria-hidden="true" class="slds-button__icon" id="imgPlantilla">';
+			iconoAbajoPlantilla += '<use xlink:href="{!URLFOR($Resource.SLDS0122, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" id="imgPlantilla"></use>';
+			iconoAbajoPlantilla += '</svg>';
+
+		var iconoAbajoPregunta = '<svg aria-hidden="true" class="slds-button__icon" id="imgPregunta">';
+			iconoAbajoPregunta += '<use xlink:href="{!URLFOR($Resource.SLDS0122, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" id="imgPregunta"></use>';
+			iconoAbajoPregunta += '</svg>';
+		
+		var menuOK = '<svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--small">';
+			menuOK += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#check')}"></use>';
+			menuOK += '</svg>';
+
+		var iconoFlechaArriba = '<svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--small">';
+			iconoFlechaArriba += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#arrowup')}"></use>';
+			iconoFlechaArriba += '</svg>';
+
+		var iconoFlechaAbajo = '<svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--small">';
+			iconoFlechaAbajo += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>';
+			iconoFlechaAbajo += '</svg>';
+
+		var iconoEliminar = '<svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--small">';
+			iconoEliminar += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>';
+			iconoEliminar += '</svg>';
+
+		var iconoFlechaArribaGris = '<svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--small"  style="fill:lightgray;">';
+			iconoFlechaArribaGris += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#arrowup')}"></use>';
+			iconoFlechaArribaGris += '</svg>';
+
+		var iconoFlechaAbajoGris = '<svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--small" style="fill:lightgray;">';
+			iconoFlechaAbajoGris += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>';
+			iconoFlechaAbajoGris += '</svg>';
+
+		var iconoEliminarGris = '<svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--small" style="fill:lightgray;">';
+			iconoEliminarGris += '<use xlink:href="{!URLFOR($Resource.SLDS0122, 'assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>';
+			iconoEliminarGris += '</svg>';
+	</script>
+</head>
+<body>
+	<div class="slds" id="contenedorGeneral">
+		<!-- PRIMARY CONTENT WRAPPER -->
+		<div class="myapp">
+			<!-- TABLA INFORME GENERAL -->
+				<!-- / PRIMARY CONTENT WRAPPER -->
+					<apex:sectionHeader title="{!IF(blnModoEdicion,'Edición de Pregunta','Pregunta')}" subtitle="{!IF(AVX_ENC_PreguntaEncuesta__c.Id=NULL,'Nueva pregunta ' + AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName,AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName)}"/>
+					
+					<apex:outputText value="{!AVX_ENC_PreguntaEncuesta__c.RecordTypeId}" rendered="false"/>
+					<apex:outputText value="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName}" rendered="false"/>
+					<apex:outputText value="{!AVX_ENC_PreguntaEncuesta__c.Plantilla_encuesta__c}" rendered="false"/>
+					<apex:outputText value="{!AVX_ENC_PreguntaEncuesta__c.Opciones_de_respuesta__c}" rendered="false"/>
+					
+					
+
+					<apex:form id="idForm">
+						<apex:pageMessages />
+						<apex:pageBlock title="Modificar Pregunta" mode="edit" rendered="{!blnModoEdicion}">
+							<apex:pageBlockButtons location="top">
+								<apex:commandButton value="Guardar" action="{!save}"/>
+								<apex:commandButton value="Cancelar" action="{!cancel}" immediate="true"/>
+								<apex:actionStatus startText="Cargando..." id="myStatus">
+								</apex:actionStatus>
+							</apex:pageBlockButtons>
+							<apex:pageBlockSection title="Información" columns="1" >
+								<apex:inputField value="{!AVX_ENC_PreguntaEncuesta__c.Pregunta__c}" required="true" style="width:100%;"/>
+							</apex:pageBlockSection>
+							<apex:pageBlockSection columns="2">
+								<apex:repeat value="{!$ObjectType.AVX_ENC_PreguntaEncuesta__c.fieldSets.Abiertas}" var="p" >
+									<apex:inputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" required="{!p.Required}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_001_Pregunta_abierta && p != 'Plantilla_encuesta__c' && p != 'Valor_dependiente__c' && p != 'Pregunta_dependiente__c'}" style="width:100%;"/>
+									<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_001_Pregunta_abierta && p = 'Plantilla_encuesta__c'}"/>
+									<apex:selectList value="{!AVX_ENC_PreguntaEncuesta__c[p]}" multiselect="false" size="1" disabled="{!numPreguntasDependientes <= 1}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_001_Pregunta_abierta && p = 'Pregunta_dependiente__c'}" style="width:100%;">
+										<apex:selectOptions value="{!lstPreguntasDependientes}"/>
+										<apex:actionSupport event="onchange" action="{!actualizarPagina}" rerender="idForm" status="myStatus"/>
+									</apex:selectList>
+									<apex:pageBlockSectionItem rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_001_Pregunta_abierta && p = 'Valor_dependiente__c'}">
+										<apex:outputLabel value="{!p.Label}"/>
+										<c:ENC_MultipickList_cmp leftLabel="Disponibles" rightLabel="Seleccionadas" size="5" width="100" showUpDownButtons="false" leftOptionsList="{!lstValoresDependientesDisponibles}" rightOptionsList="{!lstValoresDependientesSeleccionados}" />
+									</apex:pageBlockSectionItem>
+								</apex:repeat>
+								<apex:repeat value="{!$ObjectType.AVX_ENC_PreguntaEncuesta__c.fieldSets.Cerradas}" var="p" >
+									<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_002_Pregunta_seleccion && p = 'Plantilla_encuesta__c' && p != 'Valor_dependiente__c' && p != 'Pregunta_dependiente__c'}"/>
+									<apex:inputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" required="{!p.Required}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_002_Pregunta_seleccion && p != 'Plantilla_encuesta__c' && p != 'Valor_dependiente__c' && p != 'Pregunta_dependiente__c'}" style="width:100%;"/>
+									<apex:selectList value="{!AVX_ENC_PreguntaEncuesta__c[p]}" multiselect="false" size="1" disabled="{!numPreguntasDependientes <= 1}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_002_Pregunta_seleccion && p = 'Pregunta_dependiente__c'}" style="width:100%;">
+										<apex:selectOptions value="{!lstPreguntasDependientes}"/>
+										<apex:actionSupport event="onchange" action="{!actualizarPagina}" rerender="idForm" status="myStatus"/>
+									</apex:selectList>
+									<apex:pageBlockSectionItem rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_002_Pregunta_seleccion && p = 'Valor_dependiente__c'}">
+										<apex:outputLabel value="{!p.Label}"/>
+										<c:ENC_MultipickList_cmp leftLabel="Disponibles" rightLabel="Seleccionadas" size="5" width="100" showUpDownButtons="false" leftOptionsList="{!lstValoresDependientesDisponibles}" rightOptionsList="{!lstValoresDependientesSeleccionados}" />
+									</apex:pageBlockSectionItem>
+								</apex:repeat>
+								<apex:repeat value="{!$ObjectType.AVX_ENC_PreguntaEncuesta__c.fieldSets.Matriciales}" var="p" >
+									<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial && p = 'Plantilla_encuesta__c' && p != 'Valor_dependiente__c' && p != 'Pregunta_dependiente__c'}"/>
+									<apex:inputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" required="{!p.Required}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial && p != 'Plantilla_encuesta__c' && p != 'Valor_dependiente__c' && p != 'Pregunta_dependiente__c'}" style="width:100%;"/>
+									<apex:selectList value="{!AVX_ENC_PreguntaEncuesta__c[p]}" multiselect="false" size="1" disabled="{!numPreguntasDependientes <= 1}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial && p = 'Pregunta_dependiente__c'}" style="width:100%;">
+										<apex:selectOptions value="{!lstPreguntasDependientes}"/>
+										<apex:actionSupport event="onchange" action="{!actualizarPagina}" rerender="idForm" status="myStatus"/>
+									</apex:selectList>
+									<apex:pageBlockSectionItem rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial && p = 'Valor_dependiente__c'}">
+										<apex:outputLabel value="{!p.Label}"/>
+										<c:ENC_MultipickList_cmp leftLabel="Disponibles" rightLabel="Seleccionadas" size="5" width="100" showUpDownButtons="false" leftOptionsList="{!lstValoresDependientesDisponibles}" rightOptionsList="{!lstValoresDependientesSeleccionados}" />
+									</apex:pageBlockSectionItem>
+								</apex:repeat>
+							</apex:pageBlockSection>
+						</apex:pageBlock>
+						<apex:pageBlock title="Detalle de Pregunta" mode="maindetail" rendered="{!NOT(blnModoEdicion)}">
+							<apex:pageBlockButtons location="top">
+								<apex:commandButton value="Modificar" action="{!edit}"/>
+								<apex:commandButton value="Ver pregunta" onclick="window.open( '/apex/ENC_VisualizarPregunta_pag?id={!AVX_ENC_PreguntaEncuesta__c.Id}','_blank ', 'width=800,height=500,location=no,dependent=no,resizable=yes,toolbar=no,status=no,directories=no,menubar=no,scrollbars=yes,left=0,top=0 ', false); return false;"/>
+							</apex:pageBlockButtons>
+							<apex:pageBlockSection title="Información" columns="1" collapsible="false">
+								<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c.Pregunta__c}" />
+							</apex:pageBlockSection>
+							<apex:pageBlockSection columns="2" collapsible="false">
+								<apex:repeat value="{!$ObjectType.AVX_ENC_PreguntaEncuesta__c.fieldSets.Abiertas}" var="p" >
+									<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_001_Pregunta_abierta}"/>
+								</apex:repeat>
+								<apex:repeat value="{!$ObjectType.AVX_ENC_PreguntaEncuesta__c.fieldSets.Cerradas}" var="p" >
+									<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_002_Pregunta_seleccion}"/>
+								</apex:repeat>
+								<apex:repeat value="{!$ObjectType.AVX_ENC_PreguntaEncuesta__c.fieldSets.Matriciales}" var="p" >
+									<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c[p]}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial}"/>
+								</apex:repeat>
+							</apex:pageBlockSection>
+							<apex:pageBlockSection title="Información del sistema" collapsible="false">
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="Creada por"/>
+									<apex:outputPanel layout="none">
+										<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c.CreatedById}"/>, 
+										<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c.CreatedDate}"/>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="Última modificación por"/>
+									<apex:outputPanel layout="none">
+										<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c.LastModifiedById}"/>, 
+										<apex:outputField value="{!AVX_ENC_PreguntaEncuesta__c.LastModifiedDate}"/>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+							</apex:pageBlockSection>
+						</apex:pageBlock>
+					</apex:form>
+
+					<c:ENC_LDS_OpcionPregunta_cmp editarPreguntas="{!NOT(blnModoEdicion)}" idPregunta="{!AVX_ENC_PreguntaEncuesta__c.Id}" preguntas="{!AVX_ENC_PreguntaEncuesta__c.ListaPreguntas__c}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial}"/>
+
+					<c:ENC_LDS_OpcionRespuesta_cmp editarOpciones="{!NOT(blnModoEdicion)}" idPregunta="{!AVX_ENC_PreguntaEncuesta__c.Id}" opciones="{!AVX_ENC_PreguntaEncuesta__c.Opciones_de_respuesta__c}" rendered="{!AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_002_Pregunta_seleccion || AVX_ENC_PreguntaEncuesta__c.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial}"/>
+				<!-- / TABLA INFORME GENERAL -->
+				<div id="divPopUp"></div>
+		</div>
+	</div>
+</body>
+</html>
+</apex:page>

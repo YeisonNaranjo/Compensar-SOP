@@ -1,0 +1,235 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Cristian David Mejia (CM)
+Proyecto:          Compensar
+Descripción:       Pagina encargada de mostrar y descargar los documentos de un cliente encontrado en OnBase
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------  ---------------------------------------------
+    1.0      31/07/17            Cristian David Mejia (CM)             Creación Clase.
+************************************************************************************************/ -->
+<apex:page standardController="Account" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" extensions="COM_ConsultarDocOnBase_ctr" id="page">
+    <html>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+        <head>
+            <title>Consulta Documentos</title>
+            <apex:slds />
+            <style>
+                select,input{margin-top: 3px!important}
+            </style>
+        </head>
+        
+        <body>
+            <apex:form id="_elFormulario">
+            
+                    <script>
+                        function fnDownloadContent(ID, compID)
+                        {
+                            actDnldContent(ID, compID);         
+                        }  
+                        
+                        function download(filename,text) 
+                        {
+                            var isError = '{!blnError}' == 'true';
+                            //alert(isError + '== {!blnError}');
+                            console.log('filename-->'+filename);
+                            if(!isError){
+                                var element = document.createElement('a');
+                                element.setAttribute('href', 'data:application/octet-stream;charset=utf-16le;base64,' + encodeURIComponent(text));
+                                element.setAttribute('download', filename);
+                                element.style.display = 'none';
+                                element.target = '_blank';
+                                document.body.appendChild(element);
+                                element.click();
+                                document.body.removeChild(element);
+                            }
+                            
+                            return false;
+                        }
+                        
+                        function show(t)
+                        {
+                            if ( $(t).val() == 'Document Type Name'){
+                        
+                                $('[id$="_DocumentTypeName"]').show();
+                                $('[id$="_CustomQueryName"]').hide();
+                            }
+                            else{
+                               $('[id$="_DocumentTypeName"]').hide();
+                               $('[id$="_CustomQueryName"]').show();
+                        
+                            }     
+                        }
+                        $( document ).ready(function() {
+                            if('{!strOptRadioButton}' == 'Agrupacion Familias'){
+                                $('[id$="_DocumentTypeName"]').hide();
+                                $('[id$="_CustomQueryName"]').show();
+                            }
+                        });
+                    </script>
+            
+                <div class="slds-scope" style="font-size: 1.6rem;">
+                <apex:pageBlock rendered="{!blnMensaje}" id="pbMessage">
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" role="alert">
+                  <apex:pagemessages id="TheMessages"/>              
+                  <button class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" title="Close">
+                    <svg class="slds-button__icon" aria-hidden="true">
+                      <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                  </button>
+                </div>
+                </apex:pageBlock>
+                </div>
+                <apex:actionfunction name="actDnldContent" action="{!descargar}" reRender="_elFormulario" oncomplete="return download('{!filename}','{!getData}');">
+                    <apex:param name="Id" value="" assignTo="{!Id}" />
+                    <apex:param name="compId" value="" assignTo="{!CompId}"/>                                                                     
+                </apex:actionfunction>
+            
+                <div style="padding-top: 2%;width: 90%;margin: 0 auto;">
+                    <div class="demo-only slds-grid" style="background: rgb(65, 154, 199);">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 labels" style="color: white; margin: 0 auto; padding: 1%">
+                                    <center>
+                                        <apex:outputLabel >
+                                            Consulta de Documentos OnBase {!strOptRadioButton}
+                                        </apex:outputLabel>
+                                    </center>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="demo-only slds-grid slds-scrollable--x" style="background: rgb(244, 246, 249);padding: 2%">
+                        <div>
+                            <div class="container-fluid">
+                            
+                                <div class="row">
+                                    <apex:selectRadio value="{!strOptRadioButton}" onChange="show(this);">
+                                        <apex:selectOptions value="{!lstOptTadioButton}"/>
+                                    </apex:selectRadio><p/>
+                                </div> 
+                                <div class="row">
+                                    <div class="col-xs-7 col-md-2 labels">
+                                        <apex:outputLabel style="width: 100%">
+                                            Tipo de Identificación
+                                        </apex:outputLabel>
+                                    </div>
+                                    <div class="col-xs-5 col-md-3">
+                                        <apex:inputField value="{!objAcc.COM_TipoIdentificacion__c}" style="width: 100%"/>
+                                    </div>
+                                    <div class="col-xs-7 col-md-2 labels">
+                                        <apex:outputLabel style="width: 100%">
+                                            Número de identificación
+                                        </apex:outputLabel>
+                                    </div>
+                                    <div class="col-xs-5 col-md-3">
+                                        <apex:inputText value="{!objAcc.COM_Numero_de_identificacion__c}" style="width: 100%"/>
+                                    </div>
+                                    
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-7 col-md-2 labels">
+                                        <apex:outputLabel style="width: 100%">
+                                            Número Caso
+                                        </apex:outputLabel>
+                                    </div>
+                                    <div class="col-xs-5 col-md-3">
+                                        <apex:inputText value="{!strNroCaso}" style="width: 100%"/>
+                                    </div>
+                                    <div class="col-xs-7 col-md-2 labels">
+                                        <apex:outputLabel style="width: 100%">
+                                            Número de radicado
+                                        </apex:outputLabel>
+                                    </div>
+                                    <div class="col-xs-5 col-md-3">
+                                        <apex:inputText value="{!strRadicadoOnBase}" style="width: 100%"/>
+                                    </div>
+                                    
+                                </div>
+                                <div class="row">
+	                                <div id="_DocumentTypeName">
+	                                    <div class="col-xs-7 col-md-2 labels">
+	                                        <apex:outputLabel style="width: 100%">
+	                                            Document Type Name
+	                                        </apex:outputLabel>
+	                                    </div>
+	                                    <div class="col-xs-5 col-md-3">
+	                                        <apex:selectList value="{!strOptDocumentTypeName}" multiselect="false" style="width: 100%" size="1">
+	                                            <apex:selectOptions value="{!lstDocumentTypeName}"/>
+	                                        </apex:selectList>
+	                                    </div>
+	                                    
+	                                </div>
+	                                <div id="_CustomQueryName" style="display:none;">
+	                                    <div class="col-xs-7 col-md-2 labels">
+	                                        <apex:outputLabel style="width: 100%">
+	                                            Custom Query Name
+	                                        </apex:outputLabel>
+	                                    </div>
+	                                    <div class="col-xs-5 col-md-3">
+	                                        <apex:selectList value="{!strOptCustomQueryName}" multiselect="false" style="width: 100%" size="1">
+	                                            <apex:selectOptions value="{!lstCustomQueryName}"/>
+	                                        </apex:selectList>
+	                                    </div>
+	                                    
+	                                </div>
+	                                <div class="col-xs-12 col-md-2">
+	                                    <input type="button" name="Consultar" Value="Consultar"  style="width:100px;" onclick="consultarCliente()" class="boton" />
+	                                    <apex:actionFunction name="consultarCliente" action="{!getDocumentos}"/> 
+	                                </div> 
+                                </div>
+                            </div>
+                            <div class="container-fluid" style="padding-top: 2%">
+                                <div class="row">
+                                    <apex:outputPanel id="panelTabla">
+
+                                        <table class="table table-striped" border="2" Style="border-color: #E1E1E1;" id="tablaDocumentos">
+                                        <!-- <table class="table table-bordered"> -->
+                                            <thead>
+                                              <tr>
+                                                <th><center>Nombre</center></th>
+                                                <th><center>Tipo Doc</center></th>
+                                                <th><center>Accion</center></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:variable value="{!1}" var="rowNum"/>
+                                                <apex:repeat value="{!lstDocs}" var="objDoc" id="repeatTablaProductos">                                       
+                                                    <tr>
+                                                        <td>{!objDoc.strNomDoc}</td>
+                                                        <td>{!objDoc.strTipoDoc}</td>
+                                                        <!--<a id='dwnldLnk{!rowNum}' download='{!objDoc.strNombreArch}' style="display:none;" /> 
+                                                         <td><apex:outputLink onclick="downloadPDF('{!rowNum}'); return false;">Abrir</apex:outputLink></td> -->
+                                                        <td>
+                                                            <!--<apex:commandlink onclick="javascript:fnDownloadContent('{!objDoc.strDocumentoId}','{!objDoc.strNomDoc}'); return false;">                         
+                                                               <apex:commandbutton value="Abrir" />
+                                                            </apex:commandlink>-->
+                                                            
+                                                            <apex:commandbutton value="Abrir" onclick="fnDownloadContent('{!objDoc.strDocumentoId}','{!objDoc.strNomDoc}'); return false;"/>
+                                                        </td>
+                                                    </tr>
+                                                    <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                                </apex:repeat>
+
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                </div>
+                                
+                                <center>
+                                    <apex:commandButton action="{!cancel}" value="Cerrar" style="width:100px;"/>
+                                </center>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:form>
+        </body>
+    </html>
+</apex:page>

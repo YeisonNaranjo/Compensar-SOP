@@ -1,0 +1,220 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Rubén Suárez Forero (RUSF)
+Proyecto:          Compensar
+Descripción:       Pagina para generar la carta de paz y salvo
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------          ---------------------------------------------
+    1.0      07/11/17        Rubén Suárez Forero (RUSF)     Creación página.
+************************************************************************************************/ -->
+<apex:page standardController="Account" extensions="COM_GenerarPazYSalvo_ctr" standardStylesheets="false" docType="html-5.0" applyBodyTag="False" showHeader="false" sidebar="false" >
+	<head>
+        <title>Generar Carta de Paz y Salvo</title>
+       <!--<apex:includeScript value="{!URLFOR($Resource.RF2_PDFjs, 'pdf.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.RF2_PDFjs, 'pdf.worker.js')}"/>-->
+        <apex:slds />
+        <style></style>        
+    </head>
+    <body class="slds-scope" style="padding:5px">
+        <div class="slds-page-header">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+	                <span class="slds-icon_container slds-icon-standard-lead">
+	                    <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+	                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#lead" />
+	                    </svg>
+	                </span>
+            	</div>
+            	<div class="slds-media__body">
+                	<h1 class="slds-page-header__title slds-truncate slds-align-middle" title="{!Account.Name}">{!Account.Name}</h1>
+                	<p class="slds-text-body_small slds-line-height_reset">Cuenta</p>
+            	</div>
+            </div>
+        </div>
+        <!--
+        <apex:pageBlock rendered="{!error}">
+	        <apex:outputText escape="false" value="{!mensajeError}"/>
+	    </apex:pageBlock>
+
+        <apex:pageBlock rendered="{!NOT(error)}">
+	    -->
+	        <apex:form >
+	        <div class="slds-form slds-form_stacked">
+		  <!--      <apex:pageBlock rendered="{!NOT(blnTransaccion)}">-->
+		  		<apex:pageBlock >
+					<div class="slds-form-element">
+						<label class="slds-form-element__label" for="select-01">Seleccione el tipo de Paz y Salvo</label>
+						<div class="slds-form-element__control">
+							<div class="slds-select_container">
+								<apex:selectList size="1" styleClass="slds-select" id="tipoDoc" value="{!valorTipoDoc}">
+									<apex:selectOptions value="{!lstValores}"></apex:selectOptions>
+								</apex:selectList>
+							</div>
+						</div>
+					</div>
+					<br class="slds-form-element" />
+					<div class="slds-form-element">
+						<apex:pageBlockButtons location="bottom" styleClass="slds-align_absolute-center">
+							<apex:commandButton styleClass="slds-button_stateful slds-button_brand slds-not-selected" action="{!redireccionar}" value="Generar PDF" />
+						</apex:pageBlockButtons>
+						<!--<div id="verPDF" onclick="verPDF();" class="slds-button_stateful slds-button_brand slds-not-selected">Ver PDF</div>-->
+		    		</div>
+		    		<br class="slds-form-element"/>
+		    	</apex:pageBlock>		
+			<!--	<apex:pageBlock rendered="{!blnTransaccion}">
+					<div class="slds-form-element">
+						<div class="slds-notify_container slds-is-relative">
+							<div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+								<span class="slds-assistive-text">ok</span>
+								<span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+									<svg class="slds-icon slds-icon_small" aria-hidden="true">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#success" />
+									</svg>
+								</span>
+								<div class="slds-notify__content">
+									<h2 class="slds-text-heading_small">{!mensajeTransaccion}</h2>
+								</div>
+							</div>
+						</div>
+					</div>
+				</apex:pageBlock>
+				<apex:pageBlock rendered="{!NOT(blnTransaccion)}">
+					<div id="visualizador" style="display:none;">
+						<apex:pageBlock rendered="{!lightning}">
+							<object id="lightning" type="application/pdf" width="100%" height="300px">
+							   	<p>El navegador no permite mostrar el pdf.</p>
+							</object>
+						</apex:pageBlock>
+						<apex:pageBlock rendered="{!salesforce1}">
+							<div id="salesforce1" style="max-width:100%;height:400px;max-height:700px;overflow:scroll;border-color: grey;">
+								<canvas id="myCanvas" style="background-color: grey;"></canvas>
+							</div>
+							<div style="margin: auto">
+								<div style="width:20%;display: inline-block;" onclick="setScaleIn();" >
+									<span class="slds-icon_container slds-icon_container_circle slds-icon-action-description" title="zoom -">
+										<svg class="slds-icon" aria-hidden="true">
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#zoomout" />
+										</svg>
+										<span class="slds-assistive-text">zoom -</span>
+									</span>
+								</div>
+								<div style="width:20%;display: inline-block;" onclick="setScaleOut();">
+									<span class="slds-icon_container slds-icon_container_circle slds-icon-action-description" title="zoom +">
+										<svg class="slds-icon" aria-hidden="true">
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#zoomin" />
+										</svg>
+										<span class="slds-assistive-text">zoom +</span>
+									</span>
+								</div>				
+								<div style="width:10%;display: inline-block"></div>
+								<div style="width:20%;display: inline-block;" onclick="setPagPrev();"   >
+									<span class="slds-icon_container slds-icon_container_circle slds-icon-action-leave-group" title="página anterior">
+										<svg class="slds-icon" aria-hidden="true">
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#chevronleft" />
+										</svg>
+										<span class="slds-assistive-text">página anterior</span>
+									</span>
+								</div>
+								<div style="width:20%;display: inline-block;" onclick="setPagNext();"   >
+									<span class="slds-icon_container slds-icon_container_circle slds-icon-action-leave-group" title="página siguiente">
+										<svg class="slds-icon" aria-hidden="true">
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#chevronright" />
+										</svg>
+										<span class="slds-assistive-text">página siguiente</span>
+									</span>
+								</div>
+							</div>
+						</apex:pageBlock>
+						<br />
+						<div class="slds-align_absolute-center" style="margin:2px!important">
+							<apex:commandButton styleClass="slds-button slds-button_stateful slds-button_brand slds-not-selected" action="{!fnGuardarEnviar}" value="Guardar y Enviar" />
+						</div>
+					</div>
+				</apex:pageBlock>-->
+			</div>
+			</apex:form>
+		<!--</apex:pageBlock>-->
+        <script>
+	       /* var numpag = 1;
+	        var scale = 0.5;
+	        var render = false;
+	        function pdf(valor, pagina, escala){
+	        	var url = "/apex/COM_PazySalvo_pag?Id={!Account.Id}&tipoDoc="+valor;
+				if(!render){
+					if(pagina > 0){
+			    	PDFJS.getDocument(url).then(function(pdf) {
+					  	if(pagina <= pdf.numPages){
+					  		render = true;
+					  		numpag = pagina;
+					    	return pdf.getPage(numpag);
+					    } else {
+					    	numpag = pdf.numPages;
+					    	return pdf.getPage(numpag);
+					    }
+					  }).then(function(page) {
+					  	if(render){
+						    // Set scale (zoom) level
+						    //var scale = 0.5;
+						    // Get viewport (dimensions)
+						    var viewport = page.getViewport(scale);
+						    // Get canvas#the-canvas
+						    var canvas = document.getElementById('myCanvas');
+						    // Fetch canvas' 2d context
+						    var context = canvas.getContext('2d');
+						    // Set dimensions to Canvas
+						    canvas.height = (1+(scale==0.5?scale:scale*1.1))*266;//viewport.height;
+						    canvas.width = (1+(scale))*document.getElementById("visualizador").clientWidth;//viewport.width;
+						    // Prepare object needed by render method
+						    var renderContext = {
+						      canvasContext: context,
+						      viewport: viewport
+						    };
+						    // Render PDF page
+						    page.render(renderContext);
+						    render = false;
+						}
+					});
+				} else {
+					numpag = 1;
+				}
+			}
+			};
+			function verPDF(){
+		    	document.getElementById("visualizador").removeAttribute("style");
+		    	var f = document.getElementsByClassName("slds-form-element");
+		    	for(i = 0; i < f.length; i++){f[i].setAttribute("style", "display:none");}	    	
+		    	var e = document.getElementsByClassName("slds-select");
+				if({!salesforce1}){
+		    		pdf(e[0].options[e[0].selectedIndex].value, numpag, scale);
+		    	} else {
+		    		document.getElementById("lightning").setAttribute("data", "/apex/COM_PazySalvo_pag?Id={!Account.Id}&tipoDoc="+e[0].options[e[0].selectedIndex].value);	    		
+		    	}
+			};
+			function setPagPrev(){
+				var e = document.getElementsByClassName("slds-select");
+				e[0].options[e[0].selectedIndex].value;
+				pdf(e[0].options[e[0].selectedIndex].value, parseInt(numpag) - 1, scale);
+			};
+			function setPagNext(){
+				var e = document.getElementsByClassName("slds-select");
+				e[0].options[e[0].selectedIndex].value;
+				pdf(e[0].options[e[0].selectedIndex].value, parseInt(numpag) + 1, scale);
+			};
+			function setScaleIn(){
+				var e = document.getElementsByClassName("slds-select");
+				e[0].options[e[0].selectedIndex].value;
+				scale = parseFloat(scale) - 0.05;
+				pdf(e[0].options[e[0].selectedIndex].value, numpag, parseFloat(scale) - 0.1);
+			};
+			function setScaleOut(){
+				var e = document.getElementsByClassName("slds-select");
+				e[0].options[e[0].selectedIndex].value;
+				scale = parseFloat(scale) + 0.05;
+				pdf(e[0].options[e[0].selectedIndex].value, numpag, parseFloat(scale) + 0.1);
+			};	*/	
+		</script>     
+    </body>
+</apex:page>

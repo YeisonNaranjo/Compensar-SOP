@@ -1,0 +1,40 @@
+<apex:component controller="ENC_OpcionRespuesta_ctr" allowDML="true">
+	<apex:attribute name="editarOpciones" assignTo="{!blnModoEdicion}" description="Indica si las opciones se muestran en modo de edición." type="Boolean" required="true"/>
+	<apex:attribute name="opciones" assignTo="{!strOpciones}" description="Cadena con las opciones de la pregunta." type="String" required="true"/>
+	<apex:attribute name="idPregunta" assignTo="{!strIdPregunta}" description="Id de la pregunta a la que pertenecen las opciones de respuesta." type="String" required="true"/>
+	
+	<script src="{!$Resource.AVX_ENC_AdminPreguntas}"></script>
+
+	<apex:pageBlock title="Opciones de respuesta" mode="detail" >
+		<apex:pageBlockButtons location="top">
+			<apex:outputPanel rendered="{!editarOpciones}">
+				<div class="slds-button-group" role="group">
+				  <button class="slds-button slds-button--neutral" onclick="agregarOpcionTemp( {!editarOpciones}, '{!idPregunta}' ); return false;">Nueva opción</button>
+				  <button class="slds-button slds-button--neutral" onclick="cargarOpcionesRespuesta(); return false;" >Cargar opciones</button>
+				  <button class="slds-button slds-button--neutral" id="btnGuardarOpciones" onclick="guardarOpciones( '{!idPregunta}' ); return false;">Guardar</button>
+				</div>
+			</apex:outputPanel>
+		</apex:pageBlockButtons>
+		<div id="divMensajes" style="height:38px;" ><div id="divMensajesDetalle" /></div>
+		<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+			<thead>
+			<tr class="slds-text-heading--label">
+				<th scope="col">
+					<div class="slds-truncate" title="Acción">Acción</div>
+				</th>
+				<th scope="col">
+					<div class="slds-truncate" title="Opción">Opción</div>
+				</th>
+				<th scope="col">
+					<div class="slds-truncate" title="Valor">Valor</div>
+				</th>
+			</tr>
+			</thead>
+			<tbody id="bodyTablaOpciones"></tbody>
+		</table>
+
+		<script>
+			mostrarTablaOpcionesRespuesta( {!editarOpciones}, '{!opciones}', '{!idPregunta}' );
+		</script>
+	</apex:pageBlock>
+</apex:component>

@@ -1,0 +1,11 @@
+<apex:page standardController="COM_Actas__c" extensions="COM_BotonEncuentroConDirectivos_ctr" action="{!redireccionar}">
+    <apex:slds />
+    <div class="slds-scope">
+        <apex:form id="idForm">
+            <apex:pageBlock title="Encuentro con Directivos">
+                <apex:pagemessages id="errorMessage" />
+                <h1>... Cargando el visualizador</h1>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>

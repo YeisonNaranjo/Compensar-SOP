@@ -1,0 +1,106 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Rubén Suárez Forero (RUSF)
+Proyecto:          Compensar
+Descripción:       Pagina para generar la carta de cierre de caso GIE
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ---------------------------          ---------------------------------------------
+    1.0      2017-11-29      Rubén Suárez Forero (RUSF)           Creación página.
+    2.0      2018-04-24      Carlos Villalba    (CAV)              NOLA 3719
+************************************************************************************************/ -->
+<apex:page standardController="Case" extensions="RF2_BotonCierreCasoGIE_ctr" standardStylesheets="false" docType="html-5.0" applyBodyTag="False" showHeader="false" sidebar="false" >
+    <head>
+        <title>Generar Carta de Cierre Caso GIE</title>
+        <apex:slds />
+        <style>
+            
+        </style>
+        
+    </head>
+    <body class="slds-scope" style="padding:5px">
+        <div class="slds-spinner_container" style="display: none" id="spinner">
+            <div role="status" class="slds-spinner slds-spinner_medium">
+                <span class="slds-assistive-text">Cargando</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+        <div class="slds-page-header">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-lead">
+                        <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#lead" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="{!Case.CaseNumber}">{!Case.CaseNumber}</h1>
+                    <p class="slds-text-body_small slds-line-height_reset">Caso</p>
+                </div>
+            </div>
+        </div>
+        <apex:pageBlock rendered="{!blnError}">
+            <br/>
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                <span class="slds-assistive-text">error</span>
+                <span class="slds-icon_container slds-icon-utility-ban slds-m-right_x-small" title="Description of icon when needed">
+                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#ban" />
+                    </svg>
+                </span>
+                <h2><apex:outputText escape="false" value="{!mensajeError}"/></h2>
+            </div>
+            
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!NOT(blnError)}">
+            <apex:form >
+                <apex:pageBlock >
+                    <br/>
+                    <div class="slds-form slds-form_stacked">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="select-01">Seleccione el tipo de Documento</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <apex:selectList size="1" styleClass="slds-select" id="tipoDoc" value="{!valorTipoDoc}">
+                                        <apex:selectOptions value="{!lstValores}"></apex:selectOptions>
+                                    </apex:selectList>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <apex:pageBlockButtons location="bottom" styleClass="slds-align_absolute-center">
+                                <apex:commandButton rendered="{!NOT(blnTransaccion)}" styleClass="slds-button slds-button_stateful slds-button_neutral slds-not-selected" action="{!verPdf}" value="Ver PDF" onclick="document.getElementById('spinner').removeAttribute('style');"/>
+                                <apex:commandButton rendered="{!NOT(blnTransaccion) && NOT(isPca)}" styleClass="slds-button slds-button_stateful slds-button_neutral slds-not-selected" action="{!enviarPDF}" value="Generar PDF" onclick="document.getElementById('spinner').removeAttribute('style');"/>
+                                <!--<apex:commandButton rendered="{!NOT(OR(lightning,salesforce1))}" styleClass="slds-button slds-button_stateful slds-button_brand slds-not-selected" value="Cerrar" onclick="window.open('', '_self', ''); window.close();"/>-->
+                                <apex:commandButton rendered="{!NOT(OR(lightning,salesforce1))}" styleClass="slds-button slds-button_stateful slds-button_brand slds-not-selected" value="Cerrar" action="{!cancel}"/>
+                                <apex:commandButton rendered="{!lightning}" styleClass="slds-button slds-button_stateful slds-button_brand slds-not-selected" value="Regresar al Caso"  action="{!cancel}"
+                                />
+                            </apex:pageBlockButtons>
+                        </div>
+                    </div>
+                </apex:pageBlock>
+            </apex:form>
+        </apex:pageBlock>   
+        <apex:pageBlock rendered="{!AND(blnTransaccion, NOT(blnError))}">
+            <div class="demo-only" style="height: 4rem;">
+                <div class="slds-notify_container slds-is-relative">
+                    <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                        <span class="slds-assistive-text">ok</span>
+                        <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#success" />
+                            </svg>
+                        </span>
+                        <div class="slds-notify__content">
+                            <h2 class="slds-text-heading_small ">{!mensajeTransaccion}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:pageBlock>
+    </body>
+</apex:page>

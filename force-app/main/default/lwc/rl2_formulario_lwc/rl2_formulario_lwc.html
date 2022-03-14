@@ -1,0 +1,756 @@
+<template>
+    
+    <c-modal show={showModalLimpiar} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} showbuttonnegative={showButtonNegative} onnegative={handleCloseLimpiar} onpositive={handleOKLimpiar} positive-label="Aceptar">
+        <h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">ADVERTENCIA</h2>
+        <lightning-card>
+            <div class="slds-text-body_regular">
+                <p class="bold">Esta a punto de limpiar el formulario, Desea continuar?.</p>
+                <p class="bold">Debe tener en cuenta que se reiniciara el formulario y la información ingresada se perdera.</p>
+            </div>
+        </lightning-card>
+    </c-modal>
+
+    <c-modal show={showModalEnviar} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} onpositive={handleCloseEnviar} positive-label="OK">
+        <h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">ADVERTENCIA</h2>
+        <lightning-card>
+            <div class="slds-text-body_regular">
+                <p class="bold">No es posible registrar su novedad sin completar los campos requeridos.</p>
+                <p class="bold">Valide las secciones del formulario donde le indique que faltan campos por completar o corregir.</p>
+            </div>
+        </lightning-card>
+        <template if:true={loading}>
+            <div class="lgc-bg">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+    </c-modal>
+
+    <c-modal show={showSuccess} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} onpositive={handleCloseSuccess} positive-label="OK">
+        <h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">CREACIÓN EXITOSA</h2>
+        <lightning-card>
+            <div class="slds-text-body_regular">
+                <p class="bold">Buenas noticias.</p>
+                <p class="bold">Se ha creado el caso nro: {numeroCaso}.</p>
+            </div>
+        </lightning-card>
+    </c-modal>
+
+    <c-modal show={showError} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} onpositive={handleError} positive-label="OK">
+        <h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">Error</h2>
+        <lightning-card>
+            <div class="slds-text-body_regular">
+                <p class="bold">Ha ocurrido un error</p>
+                <p class="bold">{errorMedio}</p>
+            </div>
+        </lightning-card>
+    </c-modal>
+
+    <div class="container">        
+        <section class="section-main">            
+            <section class="section-header">
+                <lightning-layout class="slds-grid_vertical">
+                    <template if:true={showviabilidad}>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <img src={viabilidadImage} class="full-image">
+                        </lightning-layout-item>
+                    </template>
+                    <template if:true={showradicacion}>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <img src={radicacionImage} class="full-image">
+                        </lightning-layout-item>
+                    </template>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <div class="titulo-main slds-text-align_center">
+                            <h2 class="bold titulo-size">Subsidio de Arrendamiento</h2>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </section>
+            <!-- Client Section -->
+            <section class="section-cliente">
+                <div class="colorregistro slds-box">
+                    <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+                    Datos Cliente
+                    </h2>
+                </div>
+                <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                    <div class="sub-container">
+                        <lightning-layout>
+                            <lightning-layout-item flexibility="auto" padding="around-small">
+                                <lightning-combobox 
+                                    data-id="tipoIdent"
+                                    message-when-value-missing= "Por favor seleccione un tipo de identificación"
+                                    label="Tipo de Identificación"
+                                    value={tipoIdentificacion}
+                                    placeholder="Seleccione una opción"
+                                    options={options}
+                                    onchange={handleChange}
+                                    required
+                                ></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-form-element__control">
+                                <lightning-input 
+                                    label="Número de Identificación"
+                                    message-when-value-missing="Debe ingresar su número de identificación"
+                                    message-when-pattern-mismatch="Los números de identificación solo pueden contener números"
+                                    message-when-type-mismatch="Los números de identificación solo pueden contener números"
+                                    data-id="numIdent"
+                                    type="number"
+                                    max-length="12"
+                                    onchange={handleNumIdent}
+                                    onfocusout={validarNit}
+                                    required>
+                                </lightning-input>
+                            </lightning-layout-item>
+
+                        </lightning-layout>
+                    </div>
+                </div>
+            </section>
+            <!-- End Client Section -->
+
+            <!-- Beneficiario Section -->
+            <section class="section-beneficiario">
+                <div class="colorregistro slds-box">
+                    <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+                    Datos Beneficiario
+                    </h2>
+                </div>
+                <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                    <div class="sub-container">
+                        <lightning-layout>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                <lightning-input 
+                                    data-id="nBeneficiario"
+                                    label="Nombre Beneficiario"
+                                    message-when-value-missing="Debe ingresar el nombre del beneficiario"
+                                    message-when-pattern-mismatch="Los nombres solo pueden contener letras"
+                                    required
+                                    max-length="100"
+                                    onchange={handleNomBeneficiario}
+                                    pattern="([a-zA-Z- ])*">
+                                </lightning-input>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                <lightning-input 
+                                    data-id="emailBeneficiario"
+                                    label="Correo Electrónico Beneficiario"
+                                    message-when-value-missing="Debe ingresar un email"
+                                    message-when-pattern-mismatch="Debe ingresar un formato de email válido"
+                                    onchange={handleEmailBeneficiario}
+                                    required="true"
+                                    pattern="(^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-](?:[a-zA-Z0-9-]*[a-zA-Z0-9-])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9]*[a-zA-Z0-9])?$)"
+                                    type="email">
+                                </lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+
+                        <lightning-layout>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                <lightning-input data-formfield="fijoBenef"
+                                    data-id="fijoBeneficiario"
+                                    label="Teléfono Beneficiario"
+                                    message-when-value-missing="Debe ingresar un número de télefono"
+                                    message-when-pattern-mismatch="Ingrese solo números"
+                                    onchange={handleTelefonBeneficiario}
+                                    required                                    
+                                    max-length="10"
+                                    pattern="^(0|[1-9][0-9]*)$">
+                                </lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+            </section>
+            <!-- End Beneficiario Section -->
+
+            <!-- Viabilidad -->
+
+            <template if:true={showviabilidad}>
+                <!-- Arrendador Section -->
+                <section class="section-arrendador">
+                    <div class="colorregistro slds-box">
+                        <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+                        Datos Arrendador (Propietario del inmueble)
+                        </h2>
+                    </div>
+                    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                        <div class="sub-container">
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="idArrendarCon"
+                                        message-when-value-missing= "Por favor seleccione un tipo de identificación"
+                                        label="El inmueble a arrendar se va hacer con"
+                                        value={vArrendarCon}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsArrendar}
+                                        onchange={handleArrendarCon}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="nArrendador"
+                                        label="Nombre Arrendador"
+                                        message-when-value-missing="Debe ingresar el nombre del beneficiario"
+                                        message-when-pattern-mismatch="Los nombres solo pueden contener letras"
+                                        required
+                                        max-length="100"
+                                        onchange={handleNomArrendador}
+                                        pattern="([a-zA-Z- ])*">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <template if:true={showNumeroPropietario}>
+                                <lightning-layout>
+                                    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                        <lightning-input 
+                                            label="Número de propietarios del inmueble"
+                                            message-when-value-missing="Debe ingresar un número de propietarios"
+                                            message-when-pattern-mismatch="Este campo solo puede contener números"
+                                            message-when-type-mismatch="Este campo solo puede contener números"
+                                            data-id="numPropiet"
+                                            type="number"
+                                            max-length="12"
+                                            onchange={handleNumPropietario}
+                                            required>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </template>
+
+                            <lightning-layout>                                
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="tipoIdentA"
+                                        message-when-value-missing= "Por favor seleccione un tipo de identificación"
+                                        label="Tipo de Identificación"
+                                        value={tipoIdentArrendador}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsTipoIdArrendador}
+                                        onchange={handleChangeArrendador}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        label="Número de Identificación"
+                                        message-when-value-missing="Debe ingresar el número de identificación del arrendador"
+                                        message-when-pattern-mismatch="Los números de identificación solo pueden contener números"
+                                        message-when-type-mismatch="Los números de identificación solo pueden contener números"
+                                        data-id="numIdentArrendador"
+                                        type="number"
+                                        max-length="12"
+                                        onchange={handleNumIdentArrendador}
+                                        required>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="emailArrendadors"
+                                        label="Correo Electrónico"
+                                        message-when-value-missing="Debe ingresar un email"
+                                        message-when-pattern-mismatch="Debe ingresar un formato de email válido"
+                                        onchange={handleEmailArrendador}
+                                        required="true"
+                                        pattern="(^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-](?:[a-zA-Z0-9-]*[a-zA-Z0-9-])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9]*[a-zA-Z0-9])?$)"
+                                        type="email">
+                                    </lightning-input>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input data-formfield="fijoArrend"
+                                        data-id="fijoArrendador"
+                                        label="Teléfono"
+                                        required
+                                        message-when-value-missing="Debe ingresar un número de télefono"
+                                        message-when-pattern-mismatch="Ingrese solo números"
+                                        onchange={handleTelefonoArrendador}
+                                        max-length="10"
+                                        pattern="^(0|[1-9][0-9]*)$">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                        </div>
+                    </div>
+                </section>
+                <!-- End Arrendador Section -->
+
+                <!-- Inmueble Section -->
+                <section class="section-inmueble">
+                    <div class="colorregistro slds-box">
+                        <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+                        Datos Inmueble
+                        </h2>
+                    </div>
+                    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                        <div class="sub-container">
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="dirInmueble"
+                                        label="Dirección de Inmueble"
+                                        message-when-value-missing="Debe ingresar la dirección del inmueble"
+                                        onchange={handleDirInmueble}
+                                        required
+                                        max-length="100">
+                                    </lightning-input>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="barrio"
+                                        label="Barrio"
+                                        message-when-value-missing="Debe ingresar el barrio"
+                                        onchange={handleBarrio}
+                                        required
+                                        max-length="100">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <c-lookup 
+                                        required
+                                        record-api-name={poblacionApiName}
+                                        meta-label-field={metaLabelField}
+                                        filter={filter}
+                                        value={ciudad}
+                                        icon-name="custom:custom85"
+                                        onchange={handleChangeCiudad}
+                                        label="Municipio"
+                                    ></c-lookup>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input
+                                        data-id="vCurrency"
+                                        class="moneda"
+                                        type="number"
+                                        label="Canon de arrendamiento"
+                                        message-when-value-missing="Debe ingresar el canon de arrendamiento"
+                                        minlength="6"
+                                        message-when-too-short="Ingrese mínimo 6 caracteres"
+                                        onchange={handleCurrency}
+                                        onfocusout={validateLength}
+                                        formatter="currency"
+                                        format-fraction-digits="0"
+                                        required>
+                                    </lightning-input>                                    
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="nMatricula"
+                                        label="Número matrícula inmobiliaria"
+                                        message-when-value-missing="Debe ingresar el número de matrícula inmobiliaria"
+                                        placeholder="Dato registrado en el certificado de tradición y libertad del inmueble."
+                                        onchange={handleNumMatricula}
+                                        required
+                                        max-length="100">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    </div>
+                </section>
+                <!-- End Inmueble Section -->
+
+                
+            </template>
+            <!-- End Viabilidad -->
+            
+            
+            
+
+            <!-- Radicacion -->
+            <template if:true={showradicacion}>
+                <!-- Contrato Section -->
+                <section class="section-contrato">
+                    <div class="colorregistro slds-box">
+                        <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+                        Datos Contrato
+                        </h2>
+                    </div>
+                    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                        <div class="sub-container">
+                            <lightning-layout>                                
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="idTipoContrato"
+                                        message-when-value-missing= "Por favor seleccione un tipo de contrato"
+                                        label="Tipo de Contrato"
+                                        value={tipoContrato}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsContrato}
+                                        onchange={handleTipoContrato}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="duraContrato"
+                                        message-when-value-missing= "Por favor seleccione una duración de contrato"
+                                        label="Duración de contrato"
+                                        value={duracionContrato}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsDuracion}
+                                        onchange={handleDuracion}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="fechaFirmaContrato"
+                                        label="Fecha Firma Contrato"
+                                        message-when-value-missing="Debe ingresar una fecha"
+                                        required
+                                        onchange={handleFechaFirmaContrato}
+                                        type="date">
+                                    </lightning-input>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="fechaInicioContrato"
+                                        label="Fecha Inicio Contrato"
+                                        message-when-value-missing="Debe ingresar una fecha"
+                                        required
+                                        onchange={handleFechaInicioContrato}
+                                        type="date">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input data-formfield="telProp"
+                                        data-id="telPropietario"
+                                        label="Teléfono propietario del inmueble"
+                                        required
+                                        message-when-value-missing="Debe ingresar un número de télefono"
+                                        message-when-pattern-mismatch="Ingrese solo números"
+                                        onchange={handleTelefonoPropietario}
+                                        max-length="10"
+                                        pattern="^(0|[1-9][0-9]*)$">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="dirInmueble"
+                                        label="Dirección de Inmueble"
+                                        message-when-value-missing="Debe ingresar la dirección del inmueble"
+                                        onchange={handleDirInmueble}
+                                        required
+                                        max-length="100">
+                                    </lightning-input>
+                                </lightning-layout-item>                           
+                            </lightning-layout>
+
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="nMatricula"
+                                        label="Número matrícula inmobiliaria"
+                                        message-when-value-missing="Debe ingresar el número de matrícula inmobiliaria"
+                                        placeholder="Dato registrado en el certificado de tradición y libertad del inmueble."
+                                        onchange={handleNumMatricula}
+                                        required
+                                        max-length="100">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <c-lookup 
+                                        required
+                                        record-api-name={poblacionApiName}
+                                        meta-label-field={metaLabelField}
+                                        filter={filter}
+                                        value={ciudad}
+                                        icon-name="custom:custom85"
+                                        onchange={handleChangeCiudad}
+                                        label="Municipio"
+                                    ></c-lookup>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input
+                                        data-id="vCurrency"
+                                        type="number"
+                                        class="moneda"
+                                        label="Canon de arrendamiento"
+                                        message-when-value-missing="Debe ingresar el canon de arrendamiento"
+                                        minlength="6"
+                                        message-when-too-short="Ingrese mínimo 6 caracteres"
+                                        onchange={handleCurrency}
+                                        onfocusout={validateLength}
+                                        formatter="currency"
+                                        format-fraction-digits="0"
+                                        required>
+                                    </lightning-input>                                    
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input
+                                        data-id="vSubsidioCurrency"
+                                        type="number"
+                                        class="moneda"
+                                        label="Subsidio de arrendamiento"
+                                        message-when-value-missing="Debe ingresar el subsidio de arrendamiento"
+                                        minlength="6"
+                                        message-when-too-short="Ingrese mínimo 6 caracteres"
+                                        onchange={handleSubsidioCurrency}
+                                        onfocusout={validateLength}                                      
+                                        formatter="currency"
+                                        format-fraction-digits="0"
+                                        required>
+                                    </lightning-input>                                    
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input
+                                        data-id="vAporteCurrency"
+                                        type="number"
+                                        class="mes-moneda"
+                                        label="Aporte mensual del hogar para el canon de arrendamiento"
+                                        message-when-value-missing="Debe ingresar un valor"
+                                        minlength="5"
+                                        message-when-too-short="Ingrese mínimo 5 caracteres"
+                                        onchange={handleAporteMensual}
+                                        onfocusout={validateLength}                                   
+                                        formatter="currency"
+                                        format-fraction-digits="0"
+                                        required>
+                                    </lightning-input>                                    
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                        </div>
+                    </div>
+                </section>
+                <!-- End Contrato Section -->
+
+                <!-- Beneficiario Giro Section -->
+                <section class="section-benefgiro">
+                    <div class="colorregistro slds-box">
+                        <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+                        Datos Beneficiario Giro
+                        </h2>
+                    </div>
+                    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                        <div class="sub-container">
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="idArrendarCon"
+                                        message-when-value-missing= "Por favor seleccione un tipo de identificación"
+                                        label="El inmueble a arrendar se va hacer con"
+                                        value={vArrendarCon}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsArrendar}
+                                        onchange={handleArrendarCon}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        data-id="nArrendador"
+                                        label="Nombre Arrendador"
+                                        message-when-value-missing="Debe ingresar el nombre del beneficiario"
+                                        message-when-pattern-mismatch="Los nombres solo pueden contener letras"
+                                        required
+                                        max-length="100"
+                                        onchange={handleNomArrendador}
+                                        pattern="([a-zA-Z- ])*">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                            <lightning-layout>                                
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="tipoIdentBGiro"
+                                        message-when-value-missing= "Por favor seleccione un tipo de identificación"
+                                        label="Tipo de Identificación"
+                                        value={tipoIdentArrendador}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsTipoIdArrendador}
+                                        onchange={handleChangeArrendador}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        label="Número de Identificación"
+                                        message-when-value-missing="Debe ingresar el número de identificación del beneficiario del giro"
+                                        message-when-pattern-mismatch="Los números de identificación solo pueden contener números"
+                                        message-when-type-mismatch="Los números de identificación solo pueden contener números"
+                                        data-id="numIdentBenefGiro"
+                                        type="number"
+                                        max-length="12"
+                                        onchange={handleNumIdentArrendador}
+                                        required>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="banco"
+                                        message-when-value-missing= "Por favor seleccione una entidad bancaria"
+                                        label="Entidad Bancaria"
+                                        value={entidadBancaria}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsBanco}
+                                        onchange={handleChangeBanco}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-combobox 
+                                        data-id="idTipoCuenta"
+                                        message-when-value-missing= "Por favor seleccione un tipo de cuenta"
+                                        label="Tipo de Cuenta"
+                                        value={tipoCuenta}
+                                        placeholder="Seleccione una opción"
+                                        options={optionsCuenta}
+                                        onchange={handleChangeCuenta}
+                                        required
+                                    ></lightning-combobox>
+                                </lightning-layout-item>
+                                
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                    <lightning-input 
+                                        label="Número de Cuenta"
+                                        message-when-value-missing="Debe ingresar un número de cuenta"
+                                        message-when-pattern-mismatch="Los números de cuenta solo pueden contener números"                                        
+                                        data-id="numCuenta"
+                                        max-length="22"
+                                        onchange={handleNumCuenta}
+                                        pattern="^([0-9][0-9]*)$"
+                                        required>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- End Beneficiario Giro Section -->
+
+            </template>
+            <!-- End Radicacion -->
+            
+            <!-- Section Final -->
+            <section class="section-final">
+                <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                    <div class="sub-container">
+                        <div class="slds-text-body_regular bold bottom-space">Documentos Obligatorios</div>                      
+                        <template if:true={showviabilidad}>
+                            <template for:each={lstEvaluacion} for:item="doc">
+                                <lightning-layout key={doc.name}>
+                                    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                        <lightning-input label={doc.label}
+                                            class="slds-var-p-left_xx-small"
+                                            type="checkbox"
+                                            message-when-value-missing="Por favor diligencie este campo"
+                                            required={doc.required}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </template>
+                            <c-attachments-l-w-c vrequired={vIsRequired} vmultiple={isMultiple} showtamanio={showTamanio} oncallpasstoparent={passToParent}></c-attachments-l-w-c>
+                        </template>
+                        <template if:true={showradicacion}>
+                            <template for:each={lstRadicacion} for:item="doc">
+                                <lightning-layout key={doc.name} class={doc.clase}>
+                                    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                        <lightning-input label={doc.label}
+                                            class="slds-var-p-left_xx-small"
+                                            type="checkbox"
+                                            message-when-value-missing="Por favor diligencie este campo"
+                                            required={doc.required}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </template>
+                            <c-attachments-l-w-c vrequired={vIsRequired} vmultiple={isMultiple} showtamanio={showTamanio} oncallpasstoparent={passToParent}></c-attachments-l-w-c>
+                        </template>
+                        <lightning-layout>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                <div class="slds-text-body_regular bold">Autoriza envío de respuesta por correo electrónico</div>
+                                <lightning-input label="Acepto"
+                                    checked={autoriza}
+                                    class="slds-var-p-left_xx-small"
+                                    type="checkbox"
+                                    message-when-value-missing="Por favor diligencie este campo"
+                                    onchange={handleAutoriza}
+                                    required>
+                                </lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                                <div class="slds-text-body_regular bold">Acepto la política de <span class="color-naranja">protección de datos personales</span></div>
+                                <lightning-input label="Acepto"
+                                    checked={aceptaPolitica}
+                                    class="slds-var-p-left_xx-small"
+                                    message-when-value-missing="Por favor diligencie este campo"
+                                    onchange={handleHabeas}
+                                    type="checkbox"
+                                    required>
+                                </lightning-input>
+                                <br />
+                                <div class="slds-text-body_regular">
+                                    <lightning-formatted-url value={vPolitica}
+                                        tooltip="ver política"
+                                        label="Ver politica de protección de datos personales"
+                                        target="_blank">
+                                    </lightning-formatted-url>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+            </section>
+            <!-- End Section Final -->
+
+
+            <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+                <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+                    <div class="slds-align_absolute-center">
+                        <lightning-button disabled={vDisabled} variant="base" class="control-btn" label="Enviar" onclick={handleEnviar}></lightning-button>
+                        <lightning-button variant="base" class="control-btn space" label="Limpiar" onclick={handleLimpiar}></lightning-button>
+                        <!--<button disabled={vDisabled} class="control-btn" type="submit" onclick={handleEnviar}>Enviar</button>
+                        <button class="control-btn space" onclick={handleLimpiar}>Limpiar</button>-->
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+            <div class="spinner slds-is-relative">
+                <template if:true={loading}>
+                    <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                    </lightning-spinner>
+                </template>
+            </div>
+        </section>       
+            
+    </div>
+</template>

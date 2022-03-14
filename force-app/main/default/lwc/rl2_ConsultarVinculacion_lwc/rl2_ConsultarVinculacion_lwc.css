@@ -1,0 +1,30 @@
+.bottom-space{
+    margin-bottom: 20px;
+}
+
+.container-vinculacion{
+    padding: 10px;
+}
+
+.title{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 12px;
+}
+
+.li-style{
+    list-style-type: none;
+    margin: 10px;
+    padding: 0;
+}
+
+.second-title{
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 12px;
+}
+
+.section-accordion{
+    width: 100%;
+    font-size: 32px;
+}

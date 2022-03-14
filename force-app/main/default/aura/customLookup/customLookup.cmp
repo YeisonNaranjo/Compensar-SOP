@@ -1,0 +1,105 @@
+<aura:component controller="lookUpController" implements="force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome,force:hasRecordId">
+    <ltng:require styles="{!$Resource.SLDS0122 + '/cases/styles/salesforce-lightning-design-system.css'}"/>
+    
+    <aura:registerEvent name="valorMenu" type="c:MGLT_EventoMenu_evt"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.campoVariableMenu}" action="{!c.eventoMenu}"/>
+
+    <!--declare attributes--> 
+    <aura:attribute name="truthy" type="boolean" default="true" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="Label" type="String"/>
+    <aura:attribute name="value" type="String"/>
+    <aura:attribute name="campoCaso" type="String"/>
+    <aura:attribute name="campoVariableMenu" type="String" default=""/>
+    <aura:attribute name="valorCampoMenu" type="String"/>
+    <aura:attribute name="ValorSearch" type="String"/>
+    <aura:attribute name="filtro" type="String"/>
+    <aura:attribute name="filtroComplementario" type="String"/>
+    <aura:attribute name="objetoPadre" type="String"/>
+    <aura:attribute name="ObjetoSeleccionado" type="String"/>
+    <aura:attribute name="selectedNegocio" type="object" default="{}" access="global"/>
+    <aura:attribute name="valorObjeto" type="Sobject" default="{}"/>
+    <aura:attribute name="listOfSearchRecords" type="Sobject[]" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="ListCamposLupa" type="String[]"/>
+    <aura:attribute name="blnDisabled" type="Boolean"/>
+    <aura:attribute name="blnLanzoEvento" type="Boolean" default="false"/>
+
+    <aura:method name="enviarFiltro" action="{!c.tomarFiltro}"   description="Sample method with parameters">  
+        <aura:attribute name="paramFiltro" type="Object"/>
+        <aura:attribute name="blnDisabled2" type="Boolean"/>
+	</aura:method>
+    
+
+    
+    <!-- <aura:attribute name="selectedNegocio" type="Sobject" default="{}" description="Use,for store SELECTED sObject Record"/> -->
+    <aura:attribute name="selectedPrograma" type="Sobject" default="{}" description="Use,for store SELECTED sObject Record"/>
+    <aura:attribute name="selectedServicio" type="Sobject" default="{}" description="Use,for store SELECTED sObject Record"/>
+    <aura:attribute name="selectedAsunto" type="Sobject" default="{}" description="Use,for store SELECTED sObject Record"/>
+    <aura:attribute name="selectedGIE" type="Sobject" default="{}" description="Use,for store SELECTED sObject Record"/>
+    <aura:attribute name="currentLupa" type="boolean" default="" description="Saber cual lupa esta siendo trabajada"/>
+    
+    
+    <aura:attribute name="listOfSearchRecordsNegocio" type="Sobject[]" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="listOfSearchRecordsPrograma" type="Sobject[]" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="listOfSearchRecordsServicio" type="Sobject[]" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="listOfSearchRecordsAsunto" type="Sobject[]" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="listOfSearchRecordsGIE" type="Sobject[]" description="Use,for store the list of search records which returns from apex class"/>
+    
+    <aura:attribute name="SearchKeyWordNegocio" type="string"/>
+    <aura:attribute name="SearchKeyWordPrograma" type="string"/>
+    <aura:attribute name="SearchKeyWordServicio" type="string"/>
+    <aura:attribute name="SearchKeyWordAsunto" type="string"/>
+    <aura:attribute name="SearchKeyWordGIE" type="string"/>
+    
+    <aura:attribute name="Message" type="String" default="Search Result.."/>
+    
+    <!--declare events hendlers-->
+    <aura:handler name="change" value="{!v.value}" action="{!c.handleValueChange}"/>
+    <aura:handler name="oSelectedAccountEvent" event="c:selectedAccountEvent" action="{!c.handleComponentEvent}"/>
+
+    <!-- https://www.lightningdesignsystem.com/components/lookups/ --> 
+    <div class="slds-m-around--large">
+        <div aura:id="searchRes" class="slds-form-element slds-lookup slds-is-close">
+            <label class="slds-form-element__label" for="lookup-348"> {!v.Label} </label>
+            <!--This part is for display search bar for lookup-->  
+            <div class="slds-form-element__control">
+                <div class="slds-input-has-icon slds-input-has-icon--right">
+                    <c:svg class="slds-input__icon slds-show" xlinkHref="{!$Resource.SLDS0122 + '/assets/icons/utility-sprite/svg/symbols.svg#search'}" />
+                    <!-- This markup is for when an record is selected -->
+                    <div aura:id="lookup-pill" class="slds-pill-container slds-hide">
+                        <span class="slds-pill">
+                            <span class="slds-pill__label">
+                                {!v.selectedNegocio.Name}
+                            </span>
+                            <button class="slds-button slds-button--icon slds-pill__remove" onclick="{!c.clear}">
+                                <c:svg class="slds-button__icon" xlinkHref="{!$Resource.SLDS0122 + '/assets/icons/utility-sprite/svg/symbols.svg#close'}" />
+                                <span class="slds-assistive-text">Remove</span>
+                            </button>
+                        </span>
+                    </div>
+                    <div aura:id="lookupField" class="slds-show">
+                        <input type="text" aura:Id="{!v.Label}" value="{!v.ValorSearch}" class="slds-lookup__search-input slds-input" placeholder="buscar.." onkeyup="{!c.KeyPressPrograma}" onclick="{!c.defaultValuesNegocio}"/>
+                        <!-- <ui:inputText  aura:Id="{!v.Label}" updateOn="keyup" value="{!v.ValorSearch}" keyup="{!c.KeyPressPrograma}" click="{!c.defaultValuesNegocio}" class="slds-lookup__search-input slds-input "  placeholder="buscar.." disabled="{!v.blnDisabled}"/> -->
+                    </div>   
+                </div>
+            </div>
+            <!--This part is for Display typehead lookup result List-->  
+            <div class="slds-lookup__menu slds" id="lookup-348">
+                <div class="slds-scrollable_x">
+                    <div class="slds-lookup__item--label slds-text-body--small">{!v.Message}</div>
+                    <!--<center> <ui:spinner aura:id="spinner"/> </center>-->
+                    <ul class="slds-lookup__list" role="listbox">
+                        <aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+                            <c:customLookupResult oAccount="{!singleRec}" lupaTipo="{!v.Label}" CampoCaso="{!v.campoCaso}"/>
+                        </aura:iteration>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+        </div>
+    </div>
+        
+</aura:component>

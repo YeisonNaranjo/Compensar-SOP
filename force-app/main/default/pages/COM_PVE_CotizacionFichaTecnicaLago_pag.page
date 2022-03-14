@@ -1,0 +1,332 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Rubén Suárez Forero (RUSF)
+Proyecto:          Compensar
+Descripción:       Página para crear el PDF de ficha técnica de lagomar/lagosol
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ---------------------------          ---------------------------------------------
+    1.0      2017-08-14      Rubén Suárez Forero (RUSF)           Creación página.
+************************************************************************************************/ -->
+<apex:page id="COM_PVE_CotizacionFichaTecnicaLago_pag" standardController="Opportunity" extensions="COM_PVE_CotizacionFichaTecnicaLago_ctr" language="es_CO" cache="false" renderAs="pdf" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+
+    <head>
+        <style>
+            @page {size: legal;margin: 10mm;}
+        </style>
+        <style type="text/css">
+            body,table,tr,td    {font-family:"Arial";font-size:x-small}
+            table,td            {border:1px solid black;}
+            table               {border-spacing:0;border-collapse:collapse}
+            td                  {cellspacing:0;width:15px!important;height:21px;overflow: hidden}
+            .etiqueta           {font-weight:700}
+            .centrar            {text-align:center}
+            .titulo             {background-color:orange;text-align:center}
+            .tituloPpal         {height:22px!important;font-size:2em;}
+            .tituloEtiqueta     {font-size:1.1em}
+            .subtitulo          {font-size:0.9em}
+            .contenidoMin       {font-size:0.8em}
+            .nada               {}
+            .noBorde            {border:none;text-align:center}
+            .subTotal           {text-align:right!important}
+            td table            {width:100%!important; max-width:100%!important;border-spacing:0;border-collapse:collapse;overflow:hidden;font-family:"Arial";font-size:x-small}
+            td table td         {cellspacing:0;height:21px;overflow:hidden;font-family:"Arial";font-size:x-small}
+        </style>
+    </head>
+
+    <table>
+        <tr>
+            <td class="titulo etiqueta tituloPpal" colspan="54">FICHA TÉCNICA {!strOperador}</td>
+        </tr>
+        <tr>
+            <td class="etiqueta centrar" colspan="54">Datos del Cliente</td>
+        </tr>
+        <tr>
+            <td class="etiqueta" colspan="10">Empresa Contratante</td>
+            <td colspan="17">{!accCliente.Name}</td>
+            <td class="etiqueta" colspan="10">Nit:</td>
+            <td colspan="17">{!accCliente.COM_Numero_de_identificacion__c}</td>
+        </tr>
+        <tr>
+            <td class="etiqueta" colspan="10">Dirección</td>
+            <td colspan="17">{!accCliente.COM_Direccion__c}</td>            
+            <td class="etiqueta" colspan="10">Ciudad</td>
+            <td colspan="17">{!accCliente.COM_Ciudad__r.Name}</td>
+            
+        </tr>
+        <tr>            
+            <td class="etiqueta" colspan="10">Teléfonos</td>
+            <td colspan="17">{!accCliente.Phone}</td>
+            <td class="etiqueta" colspan="10">Tipo de Cliente</td>
+            <td colspan="17">{!accCliente.COM_TipoCliente__c}</td>
+        </tr>
+        <tr>
+            <td class="etiqueta" colspan="10">Coordinador del Evento</td>
+            <td colspan="17">{!oppOportunidad.Contacto__r.name}</td>
+            <td class="etiqueta" colspan="10">Valor Total del Evento</td>
+            <td colspan="17">
+                <apex:outputText value="$ {0, number, ###,###,###}">
+                    <apex:param value="{!decTotalEvento}"/>
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="etiqueta" colspan="10">Ficha No.</td>
+            <td colspan="17">{!oppOportunidad.COM_IdOportunidad__c}</td>
+            <td class="etiqueta" colspan="10">Clase de Evento</td>
+            <td colspan="17">{!oppOportunidad.COM_ClaseEvento__c}</td>
+        </tr>
+        <tr>
+            <td colspan="54"><span style="font-weight: 700">Observaciones :</span> {!oppOportunidad.COM_Descripcionoportunidad__c}</td>
+        </tr>
+
+        <tr>
+            <td class="titulo etiqueta" colspan="54">Datos de Facturación</td>
+        </tr>
+        <tr>
+            <td class="etiqueta" colspan="14">Factura Dirigida a</td>
+            <td class="etiqueta" colspan="7">Nit:</td>        
+            <td class="etiqueta" colspan="4">Dv.</td>
+            <td class="etiqueta" colspan="11">Dirección</td>
+            <td class="etiqueta" colspan="11">Teléfono</td>
+            <td class="etiqueta" colspan="7">Forma de Pago</td>
+        </tr> 
+        <apex:repeat value="{!cfoFacturacion}" var="facturacion">
+            <tr>
+                <td colspan="14">{!facturacion.COM_CuentaFacturadora__r.Name}</td>
+                <td colspan="7">{!facturacion.COM_NIT__c}</td>
+                <td colspan="4">{!facturacion.COM_CuentaFacturadora__r.COM_Digitoverificacion__c}</td>
+                <td colspan="11">{!facturacion.COM_Direccion__c}</td>
+                <td colspan="11">{!facturacion.COM_Telefono__c}</td>
+                <td colspan="7">{!facturacion.COM_FormaPago__c}</td>
+                <!--td colspan="17">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!facturacion.COM_ValorPagado__c}"/> 
+                    </apex:outputText>
+                </td-->
+            </tr>
+        </apex:repeat>     
+        <tr>
+            <td class="etiqueta" colspan="18">Nombre de quien recibe la factura</td>
+            <td class="etiqueta" colspan="18">Correo electrónico</td>
+            <td class="etiqueta" colspan="18">Concepto</td>
+        </tr>
+        <tr>
+                <td colspan="18">{!cfoFacturacion[0].COM_NombreQuienRecibeFactura__c}</td>
+                <td colspan="18">{!cfoFacturacion[0].COM_CorreoElectronicoFactura__c}</td>
+                <td colspan="18">{!cfoFacturacion[0].COM_Concepto__c}</td>
+        </tr>
+        <tr>
+            <td class="titulo etiqueta" colspan="54">Detalle General del Evento y Actividades Recreativas</td>
+        </tr>
+        <tr>
+            <td class="etiqueta centrar" colspan="7">Fecha y hora in</td>
+            <td class="etiqueta centrar contenidoMin" colspan="7">Fecha y hora Out</td>
+            <td class="etiqueta centrar" colspan="12">Actividad</td>
+            <td class="etiqueta centrar" colspan="12">Escenario</td>
+            <td class="etiqueta centrar" colspan="6">Montaje</td>
+            <td class="etiqueta centrar" colspan="2">Cant</td>
+            <td class="etiqueta centrar" colspan="4">Valor Unitario</td>
+            <td class="etiqueta centrar" colspan="4">Valor Total</td>  
+        </tr>
+        <apex:repeat value="{!lstEventoActividad}" var="eventoActividad">
+            <tr>
+                <!-- td class="contenidoMin" colspan="3">
+                    <apex:outputText value=" {!CASE(MONTH(DATEVALUE(eventoActividad.COM_FechaHoraInicio__c)), 1,'Ene', 2, 'Feb', 3, 'Mar', 4, 'Abr', 5, 'May', 6, 'Jun', 7, 'Jul', 8, 'Ago', 9, 'Sep', 10, 'Oct', 11, 'Nov', 12, 'Dic','-')} "/>
+                    <apex:outputField value="{!eventoActividad.COM_FechaHoraInicio__c}" />
+                    <apex:outputText value=" {0,date,dd}">
+                        <apex:param value="{!eventoActividad.COM_FechaHoraInicio__c}" />
+                    </apex:outputText >
+                </td-->
+                <td class="contenidoMin" colspan="7" style = "text-align:center !important">
+                    <apex:outputField value="{!eventoActividad.COM_FechaHoraInicio__c}" />
+                    <!--apex:outputText value="{0,time,hh a}">
+                        <apex:param value="{!eventoActividad.COM_FechaHoraInicio__c}" />
+                    </apex:outputText-->
+                </td>
+                <!--td class="contenidoMin" colspan="3">
+                    <apex:outputText value=" {!CASE(MONTH(DATEVALUE(eventoActividad.COM_FechaHoraFinalizacion__c)), 1,'Ene', 2, 'Feb', 3, 'Mar', 4, 'Abr', 5, 'May', 6, 'Jun', 7, 'Jul', 8, 'Ago', 9, 'Sep', 10, 'Oct', 11, 'Nov', 12, 'Dic','-')} "/>
+                    <apex:outputText value=" {0,date,dd}">
+                        <apex:param value="{!eventoActividad.COM_FechaHoraFinalizacion__c}" />
+                    </apex:outputText>
+                </td-->
+                <td class="contenidoMin" colspan="7" style = "text-align:center !important">
+                    <apex:outputField value="{!eventoActividad.COM_FechaHoraFinalizacion__c}" />
+                    <!--apex:outputText value="{0,time,hh a}">
+                        <apex:param value="{!eventoActividad.COM_FechaHoraFinalizacion__c}" />
+                    </apex:outputText-->
+                </td>
+                <td class="contenidoMin" colspan="12">{!eventoActividad.COM_Actividad__c}</td>
+                <td class="contenidoMin" colspan="12">{!eventoActividad.COM_Escenario__c}</td>
+                <td class="contenidoMin" colspan="6">{!eventoActividad.COM_Montaje__c}</td>
+                <td class="contenidoMin" colspan="2">{!eventoActividad.Quantity}</td>
+                <td class="contenidoMin" colspan="4">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!eventoActividad.UnitPrice}"/>
+                    </apex:outputText>
+                </td>
+                <td class="contenidoMin" colspan="4">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!eventoActividad.TotalPrice}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+        </apex:repeat>
+        <tr>
+            <td class="etiqueta subTotal" colspan="42">Sub Total</td>
+            <td colspan="12">
+                <apex:outputText value="$ {0, number, ###,###,###}">
+                    <apex:param value="{!decSubTotalEventoActividad}"/>
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="titulo etiqueta" colspan="54">Alojamiento</td>
+        </tr>
+        <apex:repeat value="{!mapAlojamiento}" var="alojamientoKey">    
+            <tr>
+                <td class="etiqueta centrar contenidoMin" colspan="54">
+                    <apex:outputText value="{0,date,dd/MM/yyyy}">
+                       <apex:param value="{!alojamientoKey}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td class="etiqueta centrar contenidoMin" colspan="8">Cant Pax</td>
+                <td class="etiqueta centrar contenidoMin" colspan="14">Acomodacion</td>
+                <td class="etiqueta centrar contenidoMin" colspan="8">Cant Habit</td>
+                <td class="etiqueta centrar contenidoMin" colspan="12">Valor pax</td>
+                <td class="etiqueta centrar contenidoMin" colspan="12">Valor Total</td>            
+            </tr>
+            <apex:repeat value="{!mapAlojamiento[alojamientoKey]}" var="productosAlojamiento">
+                <tr>
+                    <td class="centrar contenidoMin" colspan="8">{!productosAlojamiento.COM_CantidadAnterior__c}</td>
+                    <td class="centrar contenidoMin" colspan="14">{!productosAlojamiento.Product2.Name}</td>
+                    <td class="centrar contenidoMin" colspan="8">{!productosAlojamiento.COM_NumeroHabitaciones__c}</td>
+                    <td class="centrar contenidoMin" colspan="12">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!if(productosAlojamiento.discount == null,productosAlojamiento.ListPrice,productosAlojamiento.Precio_de_Venta_con_Descuento__c)}"/>
+                    </apex:outputText>
+                </td>
+                    <td class="centrar contenidoMin" colspan="12">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!productosAlojamiento.UnitPrice*productosAlojamiento.COM_CantidadAnterior__c*((100-if(productosAlojamiento.discount!=null,productosAlojamiento.discount,0))/100)}"/>  
+                    </apex:outputText>
+                </td>            
+                </tr>
+                
+            </apex:repeat> 
+             <tr>
+                <td class="etiqueta contenidoMin subTotal" colspan="42">Subtotal</td>
+                <td class="contenidoMin" colspan="12">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!mapAlojamientoValor[alojamientoKey]}"/>
+                    </apex:outputText>
+                </td>
+            </tr>          
+        </apex:repeat>
+        <tr>
+            <td class="titulo etiqueta" colspan="54">Minutograma</td>
+        </tr>
+        <tr>
+            <td colspan="54"><apex:outputText escape="false" value="{!strMinutograma}"/></td>
+        </tr>
+        <tr>
+            <td class="titulo etiqueta" colspan="54">Relación y Descripción de Servicios Solicitados</td>
+        </tr>
+        <tr>
+            <td class="etiqueta centrar" colspan="14">Concepto</td>
+            <td class="etiqueta centrar" colspan="20">Descripción</td>
+            <td class="etiqueta centrar" colspan="4">Cant</td>
+            <td class="etiqueta centrar" colspan="8">Valor Unitario</td>
+            <td class="etiqueta centrar" colspan="8">Valor Total</td>
+        </tr>
+        <apex:repeat value="{!lstServicios}" var="servicio">
+            <tr>
+                <td class="centrar" colspan="14">{!servicio.Product2.Name}</td>
+                <td class="centrar" colspan="20">{!servicio.Product2.Description}</td>
+                <td class="centrar" colspan="4">{!servicio.Quantity}</td>
+                <td class="centrar" colspan="8">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!servicio.UnitPrice}"/>
+                    </apex:outputText>
+                </td>
+                <td class="centrar" colspan="8">
+                    <apex:outputText value="$ {0, number, ###,###,###}">
+                        <apex:param value="{!servicio.TotalPrice}"/>
+                    </apex:outputText>
+                </td>
+            </tr>                       
+        </apex:repeat>
+        <tr>
+            <td class="etiqueta subTotal" colspan="42">Subtotal</td>
+            <td class="contenidoMin" colspan="12">
+                <apex:outputText value="$ {0, number, ###,###,###}">
+                    <apex:param value="{!decSubTotalServicio}"/>
+                </apex:outputText>
+            </td>
+        </tr>          
+        <tr>
+            <td class="titulo etiqueta" colspan="54">CONDICIONES GENERALES DEL CONTRATO</td>
+        </tr>
+        <tr>
+            <td class="contenidoMin" colspan="54"><apex:outputtext escape="false" value="{!condReservaciones}"></apex:outputtext></td>
+        </tr>
+        <tr>
+            <td class="contenidoMin" colspan="54"><apex:outputtext escape="false" value="{!condPagoAnticipado}"></apex:outputtext></td>
+        </tr>
+        <tr>
+            <td class="contenidoMin" colspan="54"><apex:outputtext escape="false" value="{!condCancelacion}"></apex:outputtext></td>
+        </tr>
+        <tr>
+            <td class="contenidoMin" colspan="54"><apex:outputtext escape="false" value="{!condAplazamientos}"></apex:outputtext></td>
+        </tr>
+        <tr>
+            <td class="contenidoMin" colspan="54"><apex:outputtext escape="false" value="{!condServicio}"></apex:outputtext></td>
+        </tr>
+        <tr>
+            <td class="contenidoMin" colspan="54"><apex:outputtext escape="false" value="{!condAceptacion}"></apex:outputtext></td>
+        </tr>
+        <tr>
+            <td class="etiqueta contenidoMin" colspan="27">CLIENTE</td>
+            <td class="etiqueta contenidoMin" colspan="27">COMPENSAR</td>
+        </tr>
+        <tr>
+            <td class="etiqueta contenidoMin" colspan="27">FIRMA</td>
+            <td class="etiqueta contenidoMin" colspan="27">FIRMA</td>
+        </tr>
+        <tr>
+            <td class="etiqueta contenidoMin" colspan="27">NOMBRE</td>
+            <td class="etiqueta contenidoMin" colspan="27">NOMBRE</td>
+        </tr>
+        <tr>
+            <td class="etiqueta contenidoMin" colspan="27">CLIENTE</td>
+            <td class="etiqueta contenidoMin" colspan="27">CLIENTE</td>
+        </tr>
+        <tr>
+            <td class="etiqueta contenidoMin" colspan="27">CARGO</td>
+            <td class="etiqueta contenidoMin" colspan="27">CARGO</td>
+        </tr>
+        <tr>
+            <td class="etiqueta contenidoMin" colspan="27">FECHA</td>
+            <td class="etiqueta contenidoMin" colspan="27">FECHA</td>
+        </tr>
+        <tr>
+            <td class="contenidoMin noBorde" colspan="27">Rev. PSJ/gejm 13-04-2016</td>
+        </tr>
+        <tr>
+            <td class="contenidoMin noBorde" colspan="27">FOR-PVE-0076</td>
+        </tr>
+        
+        <tr>
+            <apex:repeat value="{!lstColumnas}" var="columna">
+                <td class="noBorde">{!columna}</td>
+            </apex:repeat>
+        </tr>
+
+
+    </table>
+
+</apex:page>

@@ -1,0 +1,92 @@
+<aura:component implements="lightningsnapin:prechatUI" description="Sample custom pre-chat component for Snap-ins. Implemented using Aura.">
+    <!-- You must implement "lightningsnapin:prechatUI" for this component to appear in the "Pre-chat Component" customization dropdown in the Snap-ins setup -->
+    <!-- SLDS stylesheet-->
+    <ltng:require styles="{!$Resource.SLDS +'/styles/salesforce-lightning-design-system.min.css'}" />
+    
+    <!-- Prechat field components to render. -->
+    <aura:attribute name="prechatFieldComponents" 
+                    type="List" 
+                    description="An array of objects representing the prechat fields specified in prechat setup."/>
+    
+    <!-- Attribute to check if all required fields are populated -->
+    <aura:attribute name="validationSuccessful" 
+                    type="Boolean" 
+                    description="Determines if all required fields are populated or not" 
+                    default="true"/>
+    
+    <!-- Attribute for errormessage -->
+    <aura:attribute name="errorMessage" 
+                    type="String" 
+                    description="Error message to be displayed"/> 
+    
+    <aura:attribute name="checkbox" type="boolean" default="false"/>
+    
+    <aura:attribute name="bhour" type="boolean" default="false"/>
+    
+    <!-- Handler for when this component is initialized -->
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    
+    <!-- For Aura performance -->
+    <aura:locator target="startButton" description="Pre-chat form submit button."/>
+    
+    <!-- Contains methods for getting pre-chat fields, starting a chat, and validating fields -->
+    <lightningsnapin:prechatAPI aura:id="prechatAPI"/>
+    
+    <div class="prechatUI  slds-scrollable_y">
+
+        <img src="{!$Label.c.MGLT_UrlImagen_lbl}"  style="height:150px; height:46px; margin:20px;"/>
+	
+
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <aura:iteration items="{!v.prechatFieldComponents}" var="field">
+                    <div class="slds-p-bottom_xx-small slds-text-align_left slds-p-horizontal_medium" >
+                        {!field}
+                    </div>
+                </aura:iteration>
+                <div class="slds-p-around_medium">
+                    <div class="slds-text-body_regular slds-text-color_weak" style="text-align: justify">Apreciado usuario: Los datos registrados serán tratados de acuerdo a la política de protección de
+                    datos personales ley 1581 de 2012, para ampliar la información <a
+                        href="https://corporativo.compensar.com/politicas-privacidad-condiciones-uso" target="_blank">consulte nuestra
+                        Política de Privacidad y condiciones de uso.</a></div>
+
+                    <div class="slds-checkbox">
+                        <input type="checkbox" name="options" id="checkBox"  value="{!v.checkbox}" checked="{!c.handleCheck}" />
+                        <label class="slds-checkbox__label" for="checkBox">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">Acepto Términos y
+                            Condiciones</span>
+                        </label>
+                    </div>
+
+                    <!-- <div class="slds-p-top_small">
+                        <ui:inputCheckbox id="checkbox" change="{!c.handleCheck}" value="{!v.checkbox}"/>
+                        <div class="slds-text-body_regular slds-text-color_weak" style="text-align: left">Acepto Términos y
+                        Condiciones</div> -->
+                        <!-- <lightning:input  aura:id="checkBox" type="checkbox" label="Acepto Términos y
+                        Condiciones" name="checkBox" required="true" value="{!v.checkbox}" onclick="{!c.handleCheck}"/> -->
+                    <!-- </div> -->
+                </div>
+                <div class="slds-p-top_medium slds-p-bottom_xx-small">
+                    <aura:if isTrue="{!v.bhour}">
+                    	<lightning:button aura:id="startButton" variant="neutral" label="{!$Label.LiveAgentPrechat.StartChat}"
+                        	title="{!$Label.LiveAgentPrechat.StartChat}" onclick="{! c.handleStartButtonClick}" />
+                	</aura:if>
+                    <aura:if isTrue="{!v.bhour == false}" >
+                        <div class="slds-p-around_medium">
+                            <div class="slds-text-body_regular slds-text-color_weak" style="text-align: justify">
+                                Nuestro horario de atención es:<br/>Lunes a viernes: 7:00 am - 8:00 pm,<br/>Sábados 8:00 am - 5:00 pm,<br/>Domingos y Festivos 10:00 am - 6:00 pm.
+                            </div>
+                        </div>
+                    </aura:if>
+                </div>
+
+                <div class="slds-align_absolute-center">
+                    <aura:if isTrue="{!v.validationSuccessful!=true}">
+                        <div class="warningMsg">{!v.errorMessage}</div>                        
+                    </aura:if>
+                </div>
+            </div>
+        </div>
+    </div>
+</aura:component>

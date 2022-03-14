@@ -1,0 +1,38 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             William Aldana (WAC)
+Proyecto:          Compensar
+Descripción:       Pagina para generar PDFs de Alojamiento
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ---------------------------          ---------------------------------------------
+    1.0      2017-12-01     William Aldana (WAC)     	  		 Creación página.
+************************************************************************************************/ -->
+<apex:page standardController="Quote" extensions="COM_BotonGenerarPdfSalud_ctr">
+<apex:slds />
+<div class="slds-scope">
+	<apex:form id="idForm">
+	<apex:pageBlock title="Generar PDF Salud">
+	<apex:pagemessages id="errorMessage" />
+	<apex:pageBlock rendered="{!noError}">
+	<h1>Seleccione el tipo de Cotizacion</h1>
+
+	<apex:selectList id="tipoDoc" value="{!strTipoDoc}" size="1">
+		<apex:selectOption itemValue="COM_PVECotizacionChequeosMedicos_pag" itemLabel="Cotización de chequeos médicos"/>
+		<apex:selectOption itemValue="COM_PVECotizacionEvaluacionVoz_pag" itemLabel="Cotización evaluación voz"/>
+		<!--<apex:selectOption itemValue="COM_PVECotizacion_Inmunizacion_pag" itemLabel="Cotización Inmunización"/>-->
+		<apex:selectOption itemValue="COM_PVE_CotizacionRiesgoPsicosocial_pag" itemLabel="Cotizacion Riesgo Psicosocial"/>
+		<apex:selectOption itemValue="COM_PVE_CotizacionCapacitaciones_pag" itemLabel="Cotizacion Capacitaciones"/>
+		<apex:selectOption itemValue="COM_PVE_CotizacionTiqueteras_pag" itemLabel="Cotizacion Tiqueteras"/>
+	</apex:selectList>
+
+	<apex:pageBlockButtons location="bottom" styleClass="slds-align_absolute-center">
+		<apex:commandButton styleClass="slds-button slds-button_stateful slds-button_neutral slds-not-selected" action="{!redireccionar}" value="Generar PDF" />
+	</apex:pageBlockButtons>
+</apex:pageBlock>
+</apex:pageBlock>
+</apex:form>
+</div>
+</apex:page>

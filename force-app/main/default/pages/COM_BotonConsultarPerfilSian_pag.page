@@ -1,0 +1,25 @@
+<apex:page standardController="Account" extensions="COM_BotonConsultarPerfilSian_ctr">
+    <apex:slds />
+    <div class="slds-scope">
+        <apex:form id="idForm">
+            <div style="text-align: center;">
+                <apex:pagemessages id="errorMessage" />
+                 <apex:inputHidden value="{!ieValue}" id="inptHdn"/>
+                <apex:actionFunction name="passStringToController" action="{!redireccionar}" rerender="inptHdn"/>
+                <apex:commandButton styleClass="slds-button slds-button_stateful slds-button_brand slds-not-selected" value="Abrir SIAN" onclick="openSian();" />
+            </div>
+        </apex:form>
+    </div>
+    <script>
+		function openSian(){
+		  var str = /*@cc_on!@*/false || !!document.documentMode;
+		  var element = document.querySelectorAll('[id$=inptHdn]')[0];
+		  element.value = str;
+		  if(str){
+		  	passStringToController();
+		  }else{
+		  	alert('Esta funcionalidad solo esta disponible en Internet Explorer');
+		  }
+		}
+	</script>
+ </apex:page>

@@ -1,0 +1,272 @@
+<apex:page standardcontroller="AVX_ENC_Encuesta__c" extensions="ENC_ResponderEncuesta_ctr" cache="false" showHeader="false" id="idPageEncuesta" standardStylesheets="false">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS0122, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script src="{!$Resource.AVX_ENC_AdminPreguntas}"></script>
+
+        <style>
+            .fondo
+            {
+                background-color:#F5F5F5;
+                background-repeat:repeat;
+                background-position:absolute;
+                background-attachment:fixed;
+                font-family:Arial;
+                font-size:14px;
+                font-style:normal;
+                font-weight:normal;
+                text-align:justify;
+                color:#323232;
+                padding: 0px 0px;
+            }
+            .div1
+            {
+                background-color:#F5F5F5;
+                background-repeat:repeat;
+                background-position:absolute;
+                background-attachment:fixed;
+                font-family:Arial;
+                font-size:14px;
+                font-style:normal;
+                font-weight:normal;
+                text-align:left;
+                color:#323232;
+                padding: 0px 0px;
+                position: relative;
+                left: 10%;
+                float: left;
+            }
+            .div2
+            {
+                background-color:#F5F5F5;
+                background-repeat:repeat;
+                background-position:absolute;
+                background-attachment:fixed;
+                font-family:Arial;
+                font-size:14px;
+                font-style:normal;
+                font-weight:normal;
+                text-align:left;
+                color:#323232;
+                padding: 0px 0px;
+                position:relative;
+                left:15%;
+            }
+            .div3
+            {
+                background-color:#F5F5F5;
+                background-repeat:repeat;
+                background-position:absolute;
+                background-attachment:fixed;
+                font-family:Arial;
+                font-size:14px;
+                font-style:normal;
+                font-weight:normal;
+                text-align:left;
+                color:#323232;
+                position: relative;
+                left: -5%;
+                float: left;
+            }
+            .div4
+            {
+                background-color:#F5F5F5;
+                background-repeat:repeat;
+                background-position:relative;
+                background-attachment:fixed;
+                font-family:Arial;
+                font-size:14px;
+                font-style:normal;
+                font-weight:normal;
+                text-align:left;
+                color:#323232;
+                position: relative;
+                left: 20%;
+                float: left;
+                
+            }
+            .div5
+            {
+                background-color:#F5F5F5;
+                background-repeat:repeat;
+                background-position:relative;
+                background-attachment:fixed;
+                font-family:Arial;
+                font-size:14px;
+                font-style:normal;
+                font-weight:normal;
+                text-align:left;
+                color:#323232;
+                position: relative;
+                left: 25%;
+                float: left;
+                
+            }
+            .required {
+                font-family: Arial,Verdana,Helvetica,Sans-serif;
+                font-size: 14px;
+                font-weight: bold;
+                color: #EE2934;
+                padding: 10px 0px;
+            }
+            .panels
+            {
+                text-align:left;
+                font-family:Arial;
+                font-size:14px;
+                font-style:normal;
+                font-weight:normal;
+                letter-spacing:2px;
+                line-height:10px;
+                text-indent:20px;
+                color:#323232;
+                font-weight:bold;
+                padding: 10px 0px;
+            }
+            .textbox
+            {
+                padding: 10px 0px;
+                border: 1px solid #DBE1EB;
+                font-size: 12px;
+                font-family: Arial, Verdana;
+                padding-left: 7px;
+                padding-right: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                border-radius: 5px;
+                display: block;
+                width: 100%;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                -o-border-radius: 4px;
+                background: #FFFFFF;
+                background: linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -moz-linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
+                color: #2E3133;
+            }
+            .textbox2
+            {
+                 padding: 10px 0px;
+                border: 1px solid #DBE1EB;
+                font-size: 12px;
+                font-family: Arial, Verdana;
+                padding-left: 7px;
+                padding-right: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                border-radius: 5px;
+                display: block;
+                width: 260%;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                -o-border-radius: 4px;
+                background: #FFFFFF;
+                background: linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -moz-linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
+                color: #2E3133;
+            }
+             .lista
+            {
+                border: 1px solid #DBE1EB;
+                font-size: 12px;
+                font-family: Arial, Verdana;
+                padding-left: 7px;
+                padding-right: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                border-radius: 5px;
+                display: block;
+                width: 60%;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                -o-border-radius: 4px;
+                background: #FFFFFF;
+                background: linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -moz-linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
+                background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
+                color: #2E3133;
+            }
+            .textbox:hover
+            {
+                color: #2E3133;
+                border-color: #FBFFAD;
+            }
+        </style>
+
+    </head>
+    <body class="fondo">
+        <div class="slds" id="contenedorGeneral">
+            <!-- PRIMARY CONTENT WRAPPER -->
+            <div class="myapp">
+                <div class="fondo" style="padding:30px;">
+                    <apex:outputText value="{!AVX_ENC_Encuesta__c.RecordTypeId}" rendered="false"/>
+                    <apex:outputText value="{!AVX_ENC_Encuesta__c.Plantilla_encuesta__c}" rendered="false"/>
+                    <apex:outputText value="{!AVX_ENC_Encuesta__c.Plantilla_encuesta__r.Activo__c}" rendered="false"/>
+                    <apex:repeat value="{!$ObjectType.AVX_ENC_Encuesta__c.Fieldsets.ENC_CargaPreguntas}" var="p" id="lasRespuestasCargadas">
+                        <apex:outputText value="{!AVX_ENC_Encuesta__c[p]}" rendered="false"/>
+                        <apex:outputText value="{!AVX_ENC_Encuesta__c[p]}" rendered="false"/>
+                    </apex:repeat>
+                    <apex:outputPanel layout="none" rendered="{!boolPreguntas}" styleClass="fondo">
+                        <div >
+                            <apex:outputField value="{!encuesta.Encabezado__c}" styleClass="slds-text-body--regular"/>
+                            <BR/>
+                            <!--<apex:repeat value="{!$ObjectType.AVX_ENC_Encuesta__c.Fieldsets.ENC_DetalleAdicional}" var="p" id="detalleAdicional">
+                                <apex:outputLabel value="{!p.Label}: "/>
+                                <apex:outputField value="{!AVX_ENC_Encuesta__c[p]}" styleClass="slds-text-body--regular"/><BR/>
+                            </apex:repeat>-->
+                        </div>
+                        <!--<br style="clear:both;"/>-->
+                        <div >
+                            <apex:pageMessages />
+                        </div>
+                        <!--<br style="clear:both;"/>-->
+                        <div >
+                            <apex:form id="idGenForm" styleclass="fondo">
+                                <table width="100%">
+                                    <apex:repeat value="{!lstPreguntas}" var="pInterna" id="lasPreguntas">
+                                        <c:ENC_PreguntaAbierta_cmp pregunta="{!pInterna}" controlador="{!elControl}" rendered="{!pInterna.pregunta.RecordType.DeveloperName = $Label.ENC_001_Pregunta_abierta}"/>
+                                        <c:ENC_PreguntaCerrada_cmp pregunta="{!pInterna}" controlador="{!elControl}" rendered="{!pInterna.pregunta.RecordType.DeveloperName = $Label.ENC_002_Pregunta_seleccion}"/>
+                                        <c:ENC_PreguntaMatricial_cmp pregunta="{!pInterna}" controlador="{!elControl}" rendered="{!pInterna.pregunta.RecordType.DeveloperName = $Label.ENC_015_Pregunta_matricial}"/>
+                                    </apex:repeat>
+                                </table>
+                                <br style="clear:both;"/>
+                                <div >
+                                    <apex:outputField value="{!encuesta.Pie_pagina__c}" styleClass="slds-text-body--regular"/>
+                                </div>
+                                <br style="clear:both;"/><br style="clear:both;"/><br style="clear:both;"/>
+                                <div class="slds-align--absolute-center slds-button-group" role="group">
+                                        <apex:commandButton rendered="{!NOT(boolReadonly)}" value="{!$Label.ENC_012_Finalizar_encuesta}" action="{!guardar}" styleClass="slds-button slds-button--neutral"/>
+                                        <apex:commandButton rendered="{!NOT(boolReadonly) && encuesta.Guardar_temporalmente__c}" value="{!$Label.ENC_013_Continuar_despues}" action="{!guardarTemporal}" immediate="true" oncomplete="guardarEncuesta();" styleClass="slds-button slds-button--neutral"/>
+                                        <apex:commandButton rendered="{!NOT(boolReadonly)}" value="{!$Label.ENC_014_Cancelar}" styleClass="slds-button slds-button--neutral"/>
+                                        <apex:actionFunction name="guardarEncuesta" action="{!guardar}"/>
+                                </div>
+                            </apex:form>
+                            <br/><br/>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!NOT(boolPreguntas) && boolEncuestaCerrada}" styleclass="fondo">
+                        <br /><br /><br /><br />
+                        <center>
+                        <apex:outputField value="{!encuesta.Cierre_encuesta__c}" styleClass="slds-text-body--regular">
+                        </apex:outputField>
+                        </center>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!NOT(boolPreguntas) && NOT(boolEncuestaCerrada)}" styleclass="fondo">
+                        <br /><br /><br /><br />
+                        <center>
+                        <apex:outputField value="{!encuesta.Encuesta_cerrada__c}" styleClass="slds-text-body--regular">
+                        </apex:outputField>
+                        </center>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+    </body> 
+</html>
+</apex:page>

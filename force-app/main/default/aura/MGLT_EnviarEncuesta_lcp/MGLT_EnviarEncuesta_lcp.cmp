@@ -1,0 +1,33 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader"
+    controller="COM_EncuestasController_cls" access="global">
+    <aura:attribute name="recordId" type="Id" />
+    <lightning:messages />
+
+    <aura:attribute name="encuestaRecord" type="AVX_ENC_Encuesta__c" />
+    <aura:attribute name="recordLoadError" type="String" />
+    
+    <force:recordData aura:id="recordLoader" 
+                    recordId="{!v.recordId}" 
+                    fields="Name"
+                    targetFields="{!v.encuestaRecord}"
+                    targetError="{!v.recordLoadError}" />
+    <aura:handler name="change" value="{!v.encuestaRecord}" action="{!c.doInit}" />
+    <aura:html tag="style">
+        .slds-backdrop {
+        background: rgba(43, 40, 38, 0) !important;
+        }
+        .backgroundSpinner{
+        background: rgba(0, 0, 0, 0) !important;
+        }
+        .modal-body {
+        background: rgba(0, 0, 0, 0) !important;
+        box-shadow: none !important;
+        }
+        .closeIcon {
+        display:none !important;
+        }
+        .desktop {
+        overflow: visible !important;
+        }
+    </aura:html>
+</aura:component>

@@ -1,0 +1,66 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" controller="DescargarMultiplesArchivos_ctr" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="blnIsCase" type="Boolean" />
+    <aura:attribute name="blnIsMobile" type="Boolean" />
+    <aura:attribute name="blnShowDivReafiliacion" type="Boolean" />
+    <aura:attribute name="blnShowTipificacion1" type="Boolean" />
+    <aura:attribute name="blnShowTipificacion2" type="Boolean" />
+    <aura:attribute name="blnShowTipificacion3" type="Boolean" />
+    <aura:handler name="sampleComponentEvent" event="c:MGLT_EventoGeneracionCartaReafiliacion_evt" action="{!c.handleComponentEvent}"/>   
+    <aura:handler name="cerrarModal" event="c:CerrarTipificacion_evt" action="{!c.handleComponentEvent}"/>  
+    <!-- <aura:handler name="sampleComponentEvent" event="c:MGLT_EventoGeneracionCartaReafiliacion_evt" action="{!c.handleComponentEvent}"/>     -->
+   
+    <lightning:messages />
+    
+    <!-- <aura:html tag="style">
+        .slds-backdrop {
+        background: rgba(43, 40, 38, 0) !important;
+        }
+        .backgroundSpinner{
+        background: rgba(0, 0, 0, 0) !important;
+        }
+        .modal-body {
+        background: rgba(0, 0, 0, 0) !important;
+        box-shadow: none !important;
+        }
+        .closeIcon {
+        display:none !important;
+        }
+        .desktop {
+        overflow: visible !important;
+        }
+    </aura:html> -->
+    
+    
+    <lightning:layout horizontalAlign="space">
+        <lightning:layoutItem  >
+            <div class="custom-box">
+                <aura:renderIf isTrue="{!v.blnIsCase}">
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="Neutral" label="Descargar archivos" title="Descargar archivos" onclick="{! c.handleClick }" />
+                    </div>
+                </aura:renderIf>                    
+            </div>
+        </lightning:layoutItem>
+
+        <lightning:layoutItem >
+            <div class="custom-box">
+                <div class="slds-align_absolute-center">
+                    <lightning:button variant="Neutral" label="Tipificación PCA" title="Tipificación PCA" onclick="{!c.handleClickTipificacion1}"/>
+                </div>   
+                <aura:renderIf isTrue="{!v.blnShowTipificacion1}">
+                    <div class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__content slds-p-around--medium">
+                                <div>
+                                    <c:CEL_LookupPCA_cmp recordId="{!v.recordId}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aura:renderIf> 
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>    
+</aura:component>

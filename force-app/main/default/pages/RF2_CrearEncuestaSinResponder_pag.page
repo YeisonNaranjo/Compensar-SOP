@@ -1,0 +1,42 @@
+<!--/************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Juan David Uribe Ruiz (JDUR)
+Proyecto:          Compensar
+Descripción:       Pagina encargada de crear encuestas desde las Oportunidades
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------  ---------------------------------------------
+    1.0     2017/12/04      Juan David Uribe Ruiz   Creación Clase.
+************************************************************************************************/-->
+<apex:page standardController="Opportunity" extensions="RF2_CrearEncuestaSinResponder_ctr" >
+    <apex:slds />
+    <div class="slds-scope">
+        <apex:form id="idForm">
+            <apex:pagemessages id="TheMessage" />
+            <apex:pageBlock >
+                <apex:pageBlockSection columns="1" id="block1" title="Información">
+                    <apex:pageBlockSectionItem id="_pgsPlantilla">
+	                    <apex:outputLabel value="Plantilla" for="selPlantilla"/>
+	                    <apex:selectList id="selPlantilla" value="{!strPlantilla}" size="1" multiselect="false">
+	                       <apex:selectOptions value="{!lstOpcionesPlantillas}"/>
+	                    </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                    <apex:outputField value="{!objEncuesta.COM_Cliente__c}" id="Cliente"/>
+                    <apex:outputField value="{!objEncuesta.COM_Oportunidad__c}" id="Oportunidad"/>
+                    <apex:pageBlockSectionItem id="_pgsContacto">
+	                    <apex:outputLabel value="Contacto" for="selContacto"/>
+	                    <apex:selectList id="selContacto" value="{!strContacto}" size="1" multiselect="false">
+	                       <apex:selectOptions value="{!lstContactos}"/>
+	                    </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons >
+	                <apex:commandButton action="{!guardar}" value="Guardar"/>
+	                <!--<apex:commandButton action="{!cancel}" value="Cancelar"/>-->
+	            </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>

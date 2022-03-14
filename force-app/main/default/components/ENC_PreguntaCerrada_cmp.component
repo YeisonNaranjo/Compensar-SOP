@@ -1,0 +1,173 @@
+<apex:component controller="ENC_PreguntaCerrada_ctr">
+	<apex:attribute name="pregunta" assignTo="{!preguntaInterna}" description="Información de la pregunta a mostrar" type="ENC_PreguntaInterna_cls" required="true"/>
+	<apex:attribute name="controlador" assignTo="{!ctr}" description="Controlador de la encuesta" type="ENC_ResponderEncuesta_ctr" required="false"/>
+	
+	<style>
+		.margen_general
+		{
+			width:20px;
+		}
+		.sub_margen
+		{
+			width:20px;
+		}
+		.btnIzq
+		{
+			text-align:left;
+		}
+		.btnDer
+		{
+			text-align:right;
+		}
+		.celdaSecciones
+		{
+			padding:15px;
+		}
+		.fondo{
+			background-color:#F5F5F5;
+			background-repeat:no-repeat;
+			background-position:absolute;
+			background-attachment:fixed;
+			font-family:Arial;
+			font-size:14px;
+			font-style:normal;
+			font-weight:normal;
+			text-align:left;
+			color:#323232;
+			padding: 0px 0px;
+		}
+		.required {
+			font-family: Arial,Verdana,Helvetica,Sans-serif;
+			font-size: 14px;
+			font-weight: bold;
+			color: #EE2934;
+			padding: 10px 0px;
+		}
+		.panels
+		{
+			text-align:left;
+			font-family:Arial;
+			font-size:14px;
+			font-style:normal;
+			font-weight:normal;
+			letter-spacing:2px;
+			line-height:10px;
+			text-indent:20px;
+			color:#323232;
+			font-weight:bold;
+			padding: 10px 0px;
+		}
+		.textbox
+		{
+			padding: 10px 0px;
+			border: 1px solid #DBE1EB;
+			font-size: 12px;
+			font-family: Arial, Verdana;
+			padding-left: 7px;
+			padding-right: 15px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			border-radius: 5px;
+			display: block;
+			width: 50%;
+			-moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			-o-border-radius: 4px;
+			background: #FFFFFF;
+			background: linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -moz-linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
+			color: #2E3133;
+		}
+		.textbox2
+		{
+			padding: 10px 0px;
+			border: 1px solid #DBE1EB;
+			font-size: 12px;
+			font-family: Arial, Verdana;
+			padding-left: 7px;
+			padding-right: 15px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			border-radius: 5px;
+			display: block;
+			width: 260%;
+			-moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			-o-border-radius: 4px;
+			background: #FFFFFF;
+			background: linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -moz-linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
+			color: #2E3133;
+		}
+		.lista
+		{
+			border: 1px solid #DBE1EB;
+			font-size: 12px;
+			font-family: Arial, Verdana;
+			padding-left: 7px;
+			padding-right: 15px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			border-radius: 5px;
+			display: block;
+			width: 60%;
+			-moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			-o-border-radius: 4px;
+			background: #FFFFFF;
+			background: linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -moz-linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
+			background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
+			color: #2E3133;
+		}
+		.textbox:hover
+		{
+			color: #2E3133;
+			border-color: #FBFFAD;
+		}
+	</style>
+	
+	<apex:outputPanel layout="Block" rendered="{!blnMostrarPregunta}" styleclass="fondo">
+		<tr>
+			<td>
+				<br/>
+				<apex:outputText value="{!preguntaInterna.pregunta.Pregunta__c}" escape="false" styleClass="slds-text-body--regular"/>
+				<apex:outputPanel layout="Block" rendered="{!preguntaInterna.blnMostrarError && estaGuardando}">
+					<br/><span style="color:red;"><strong>Error:&nbsp;</strong>{!$Label.ENC_011_Valor_invalido_respuesta}</span>
+				</apex:outputPanel>
+				<br/><br/>
+				<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+					<tbody id="bodyTablaPreguntas">
+						<tr class="slds-text-body--regular">
+							<td scope="col">
+								<apex:outputPanel layout="Block" rendered="{!preguntaInterna.pregunta.Tipo_pregunta__c = $Label.ENC_010_Pregunta_radio}" >
+									<apex:selectRadio value="{!strRespuesta}" id="SU_RB" layout="{!IF(OR(preguntaInterna.pregunta.Orientacion__c=NULL,preguntaInterna.pregunta.Orientacion__c='',preguntaInterna.pregunta.Orientacion__c='Vertical'),'pageDirection','lineDirection')}" styleClass="slds-text-body--regular">
+										<apex:selectOptions value="{!lstOpciones}" />
+										<apex:actionSupport event="onchange" action="{!actualizarPregunta}" reRender="idGenForm"/>
+									</apex:selectRadio>
+								</apex:outputPanel>
+								<apex:outputPanel layout="Block" rendered="{!preguntaInterna.pregunta.Tipo_pregunta__c = $Label.ENC_009_Pregunta_lista}">
+									<apex:selectList value="{!strRespuesta}" multiselect="false" size="1" id="SU_LST" styleClass="slds-text-body--regular">
+										<apex:selectOptions value="{!lstOpciones}"/>
+										<apex:actionSupport event="onchange" action="{!actualizarPregunta}" reRender="idGenForm"/>
+									</apex:selectList>
+								</apex:outputPanel>
+								<apex:outputPanel layout="Block" rendered="{!preguntaInterna.pregunta.Tipo_pregunta__c = $Label.ENC_008_Pregunta_casilla}">
+									<apex:selectCheckboxes value="{!lstRespuestasSeleccionadas}" id="SM_CB" layout="{!IF(OR(preguntaInterna.pregunta.Orientacion__c=NULL,preguntaInterna.pregunta.Orientacion__c='',preguntaInterna.pregunta.Orientacion__c='Vertical'),'pageDirection','lineDirection')}" styleClass="slds-text-body--regular">
+										<apex:selectOptions value="{!lstOpciones}"/>
+										<apex:actionSupport event="onchange" action="{!actualizarPregunta}" reRender="idGenForm"/>
+									</apex:selectCheckboxes>
+								</apex:outputPanel>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</apex:outputPanel>
+</apex:component>

@@ -1,0 +1,28 @@
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="DescargarMultiplesArchivos_ctr" >
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <apex:pageBlock >
+    <h1>Descarga de Múltiples Archivos</h1>
+    <ul>
+            <apex:repeat var="archivo" value="{!lstAttachments}">
+                <li>{!archivo.Name}</li>    
+            </apex:repeat>
+            {!IF(lstAttachments.empty,'El registro no tiene archivos aduntos!','')}
+        </ul>
+    <script>
+      function downloadAll(files){
+          if(files.length == 0) return;
+          file = files.pop();
+         var url = '/servlet/servlet.FileDownload?file='+file[1];
+         var theAnchor = $('<a />')
+              .attr('href', url)
+              .attr('target','_blank')
+              .attr('download',file[0])
+              .appendTo('body');
+          theAnchor[0].click(); 
+          downloadAll(files);
+      }
+      //setTimeout(function(){ downloadAll([{!Attachments}]); }, 4000);
+      (function(){downloadAll([{!Attachments}]);})();
+    </script>
+  </apex:pageBlock>
+</apex:page>

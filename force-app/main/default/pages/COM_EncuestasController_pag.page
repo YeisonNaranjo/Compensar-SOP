@@ -1,0 +1,10 @@
+<apex:page standardController="AVX_ENC_Encuesta__c" extensions="COM_EncuestasController_cls" action="{!procesarEncuestaPagina}">
+    <apex:slds />
+    <div class="slds-scope">
+        <apex:form id="idForm">
+            <apex:pageBlock title="Enviar Encuesta">
+                <apex:pagemessages id="errorMessage" />
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>

@@ -1,0 +1,60 @@
+<template>
+    <lightning-card title="Histórico de Vinculaciones" icon-name="standard:recent">
+        <div class="spinner">
+            <template if:true={loading}>
+                 <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                 </lightning-spinner>
+            </template>
+        </div>
+        <div class="container-vinculacion">
+            <template if:true={showVinculaciones}>
+                <lightning-accordion onsectiontoggle={handleSectionToggle} allow-multiple-sections-open>
+                    <lightning-accordion-section name="vHistorial" label="Mostrar Histórico">
+                        <template for:each={lstVinculaciones} for:item="data" for:index="index">
+                            <div key={data} class="bottom-space slds-box">
+                                <lightning-layout multiple-rows>
+                                    <lightning-layout-item key={data.vinculacion.tipoVinculacion}>
+                                        <ul>
+                                            <li class="title li-style">
+                                                <span>Tipo de Vinculación: </span><lightning-formatted-text value={data.vinculacion.tipoVinculacion}></lightning-formatted-text>
+                                            </li>
+                                            <li class="second-title li-style">
+                                                <span>Fecha Ingreso Empresa: </span><lightning-formatted-text value={data.vinculacion.fechaIngreso}></lightning-formatted-text>
+                                            </li>
+                                            <li class="second-title li-style">
+                                                <span>Fin Vinculación: </span><lightning-formatted-text value={data.vinculacion.fechaFin}></lightning-formatted-text>
+                                            </li>
+                                            <li class="second-title li-style">
+                                                <span>Estado: </span><lightning-formatted-text value={data.vinculacion.estado}></lightning-formatted-text>
+                                            </li>
+                                            <li class="second-title li-style">
+                                                <span>Categoría: </span><lightning-formatted-text value={data.vinculacion.categoria}></lightning-formatted-text>
+                                            </li>
+                                            <li class="second-title li-style">
+                                                <span>Número de Identificación: </span><lightning-formatted-text value={data.vinculacion.trabajador}></lightning-formatted-text>
+                                            </li>
+                                            <li class="second-title li-style">
+                                                <span>Empleador: </span><lightning-formatted-text value={data.vinculacion.empleador}></lightning-formatted-text>
+                                            </li>
+                                        </ul>
+                                        
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                        </template>
+                        
+                    </lightning-accordion-section>
+                </lightning-accordion>
+            </template>
+            
+            <template if:true={showError}>
+                <div class="card">
+                    <div class="card-text">
+                        <span class="slds-badge"> {errorMessage} </span><br/>
+                        <br/>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

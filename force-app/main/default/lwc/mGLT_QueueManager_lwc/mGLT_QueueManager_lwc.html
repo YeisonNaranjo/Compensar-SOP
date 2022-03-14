@@ -1,0 +1,70 @@
+<template>
+    <div class="fullSize">
+        <div class="slds-grid slds-grid_vertical fullSize">
+            <div class="slds-is-relative fullSize">
+            <section>
+                <div if:true={isLoading}>
+                    <lightning-spinner alternative-text="Cargando..." size="large" class="slds-align_absolute-center"></lightning-spinner>
+                </div>
+                <div if:true={hasActiveAgents} class="slds-m-horizontal_xx-small slds-m-bottom_medium">
+                    <lightning-datatable    data-id="dataTable" data={activeAgents} columns={agentColumns}
+                                            key-field="strId"   resize-column-disabled></lightning-datatable>
+                </div>
+                <div if:true={hasNoActiveAgents} class="slds-m-around_small">
+                    <lightning-formatted-rich-text value={noActiveAgentsMessage}></lightning-formatted-rich-text>
+                </div>
+                <div if:true={isNotAuthorized} class="slds-m-around_small">
+                    <lightning-formatted-rich-text value={userNotAuthorizedMessage}></lightning-formatted-rich-text>
+                </div>
+
+                <footer class="slds-footer slds-float--right">
+                    <lightning-button class="slds-button" variant="neutral" label="Cancelar" onclick={cancel}></lightning-button>
+                        <lightning-button if:true={hasActiveAgents} class="slds-button" variant="brand" label="Cambiar colas" onclick={changeQueues}></lightning-button>
+                </footer>
+            </section>
+            </div>
+        </div>
+
+    </div>
+    <template if:true={openModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Cerrar" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" size="medium">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">Cerrar</span>
+                    </button>
+                    <h1 style="font-size: 140%;">Cambiar colas</h1>
+                    <div class="slds-m-top_xx-small">{changeQueueInfoText}</div>
+                </header>
+                <div class="slds-modal__content slds-p-horizontal_medium slds-p-top_x-small slds-p-bottom_medium" id="modal-content-id-1" style="min-height: 100px;">
+                    <div class="slds-is-relative" style="overflow-y: auto; height: 100%;">
+                        <div if:true={isLoadingModal}>
+                            <lightning-spinner alternative-text="Cargando..." size="large" class="slds-align_absolute-center"></lightning-spinner>
+                        </div>
+                        <div if:true={hasActiveQueues} class="slds-m-bottom_medium">
+                            <div class="slds-m-bottom_x-small">
+                                <span><a href="javascript:void(0)" onclick={handleExpandAll}>{expandAllOptionName}</a></span>
+                                <span class="slds-m-left_small"><a href="javascript:void(0)" onclick={handleCollapseAll}>{collapseAllOptionName}</a></span>
+                            </div>
+                            <lightning-tree-grid    data-id="treeGrid" data={activeQueues} columns={queueColumns}
+                                                    key-field="strUniqueId" selected-rows={queueSelectedRows} expanded-rows={queueExpandedRows}
+                                                    onrowselection={handleOnRowSelection}></lightning-tree-grid>
+                        </div>
+                        <div if:true={hasNoActiveQueues}>
+                            <lightning-formatted-rich-text value={noActiveQueuesMessage}></lightning-formatted-rich-text>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancelar" variant="neutral" onclick={closeModal}></lightning-button>
+                    <lightning-button if:true={hasActiveQueues} class="slds-m-left_x-small" variant="brand" label="Cambiar colas" onclick={confirmChanges} disabled={isLoadingModal}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

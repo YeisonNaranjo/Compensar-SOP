@@ -1,0 +1,134 @@
+﻿    body {
+        font-family: Arial, Helvetica, sans-serif;    
+    }
+    
+    label {
+        margin-bottom: 0px;
+    }
+        
+    .row div {
+        margin-top: 3px;
+    }
+    
+    .row div div {
+        padding-left: 0px;
+    }
+	
+	.message {
+	background-color: #ff6600;
+    border-style: solid;
+    border-width: 1px;
+    padding: 6px 8px 6px 6px;
+    margin: 4px 20px;
+	}
+	.infoM3{}
+    .messageCell{
+	color: #ffffff;
+	}   
+	.messageCell h4{
+	color: #ffffff;
+	} 
+    .gray {
+        background-color: #f7f7f7;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+    
+    .form-control {
+        height: 26px;
+        padding: 2px 4px;
+        font-family: Arial, Helvetica, sans-serif;
+        display: inline;
+    }
+    
+    #consulta {
+        background: #f60;
+        clear: both;
+        position: relative;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+    
+    .consulta-control {
+        height: 34px;
+        padding: 6px 12px;
+    }
+    
+    .boton, .boton:hover {
+        color: #fff;
+        background: #f60;
+        font-size: 14px;
+        margin: 0;
+        padding: .5em 50px .5em 50px;
+        text-decoration: none;
+        /* border: 1px solid #fff; */
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        font-family: Open Sans, sans-serif;
+    }
+    
+    .mboton, .mboton:hover {
+        margin: 0;
+        padding: .5em 10px .5em 10px;
+    }
+    
+    .titulo {
+        width: 100%;
+        margin: 0;
+        padding: 12px 0 0 0;
+        font-size: 26px;
+        color: #f60;
+        border-bottom: 1px solid #e5e5e5;
+        text-align: center;
+        font-family: Open Sans, sans-serif;
+        font-weight: 300;
+    }
+    
+    .acciones {
+        margin-top: 10px;
+    }
+        
+    .soportes td, th {
+        text-align: left;
+        padding: 3px;
+    }
+  
+    #notification {
+	    position: fixed;
+	    bottom: 0;
+	    padding: 0;
+	    height: 24px;
+	    margin: 0;
+	    width: 100%;
+	    background-color: #F26822;
+	    display: block;
+	    text-align: center;
+	    font-weight: bold;
+	    font-size: 12px;
+	    font-family: Arial, Helvetica, sans-serif;
+	    padding-top: 3px;
+	    padding-bottom: 3px;
+        color: #fff;
+        text-shadow:1px 1px 1px rgba(0,0,0,0.5);   
+    }
+	
+	a:link { color: #ff6600!important; }
+	a:visited { color: #ff6600!important; }
+	a:hover { color: #777777!important; }
+	a:active { color: #ff6600!important; }
+	
+	
+	@media screen and (max-width: 800px) {
+		.dataCol {
+			display: block;  
+			text-align:left;
+		}    
+	}
+    

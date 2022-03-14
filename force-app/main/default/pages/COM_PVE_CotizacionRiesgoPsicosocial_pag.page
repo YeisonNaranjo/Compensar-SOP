@@ -1,0 +1,184 @@
+<!--
+ - Created by AVX_RSuarez on 23/10/2017.
+-->
+
+<apex:page renderAs="pdf" standardStylesheets="false" controller="COM_PVE_CotizacionRiesgoPsicosocial_ctr" applyHtmlTag="false" showHeader="false" sidebar="true">
+    <html>
+        <head>
+            <title>Cotización Riego Psicosocial</title>
+            <style type="text/css" media="print">
+                @media print{
+                    table {page-break-inside:auto; }
+                    tr    { page-break-inside:avoid; page-break-after:auto }
+                    thead { display:table-header-group }
+                }
+                @page {
+                    size:8.5in 11in;
+                    margin-top: 102px;
+                    margin-bottom: 168px;
+                    @PageBreak{ page-break:always; page-break-inside:avoid; }
+                    @top-center { content: element(header); }
+                    @bottom-center { content: element(footer); }
+                    @left-middle { content: element(izquierda); }
+                }
+                * {
+                    font-size: 10pt;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                div.header {
+                    padding:1px;
+                    position: running(header);
+                    width:100%;
+                    height:102px;
+                    background-image: url("{!$Resource.headerCotizacionSalud}");
+                }
+                div.footer {
+                    padding:1px;
+                    position: running(footer);
+                    width:100%;
+                    height:168px;
+                    background-image: url("{!$Resource.footerCotizacionSalud}");
+                }
+                div.izquierda {
+                    padding:1px;
+                    position: running(izquierda);
+                    width:23px;
+                    height:164px;
+                    margin-left:30px;
+                    margin-top:500px;
+                    background-image: url("{!$Resource.izquierdaCotizacionSalud}");
+                }
+                div.contenido {
+                    position:absolute;
+                }
+                .propuesta{
+                    border-spacing: 0;
+                    border-collapse: collapse;
+                }
+                .propuesta tr td, .propuesta tr th{
+                    border:1px solid black;
+                    text-align: center;
+                    font-size: 9pt!important;
+
+                }
+
+
+            </style> 
+        </head>
+        <body class="watermark" LANG="en-US" TEXT="#000000" LINK="#0000ff" DIR="LTR">
+            <div class="header"></div>
+            <div class="footer"></div>
+            <div class="izquierda"></div> 
+            <!--INICIO CARTA-->
+            <br/>
+            <p>{!contenido.ciudad__c}{!fecha}</p>
+            <br/>
+            <p> 
+                <apex:outputText value="{!contenido.saludoCliente__c}" escape="false"/><br/>
+                <strong>{!clienteNombre}</strong><br/>
+                {!clienteContacto}<br/> 
+                {!clienteCargo} 
+            </p>
+            <br/>
+            <p align="justify"><apex:outputText value="{!contenido.saludo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.parrafoUno__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.parrafoDos__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.parrafoTres__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.tituloIntroduccion__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.IntroduccionParrafo1__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.IntroduccionParrafo2__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.IntroduccionParrafo3__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.IntroduccionParrafo4__c}" escape="false"/></p>
+            <p align="center"><img src="{!$Resource.CotizacionRiesgoPsicosocial_1}" align="center" width="491" height="339" /></p>
+            <p align="justify"><apex:outputText value="{!contenido.tituloObjetivos__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.ObjetivosParrafo1__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos1Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos1Parrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos11Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos11Parrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos2Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos11__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos3Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos31Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos31__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos32Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos32Parrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos33Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos33Parrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivo34Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivo34Parrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivo4Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivo4Parrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivo5Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivo5Parrafo__c}" escape="false"/></p>
+            
+            <p align="justify"><apex:outputText value="{!contenido.tituloPropuesta__c}" escape="false"/></p>
+            <table class="propuesta">
+                <tr>
+                    <th bgcolor="FF9933">Concepto</th>
+                    <th bgcolor="FF9933">Descripción</th>
+                    <th bgcolor="FF9933">No Pax</th>
+                    <th bgcolor="FF9933">Población</th>
+                    <th bgcolor="FF9933">Valor por persona</th>
+                    <th bgcolor="FF9933">SubTotal</th>
+                    <th bgcolor="FF9933">Descuento</th>
+                    <th bgcolor="FF9933">Total</th>
+                </tr>
+                <apex:repeat value="{!lstProductosPropuesta}" var="item">
+                    <tr>
+                        <td>{!item.nombre}</td>
+                        <td>{!item.descripcion}</td>
+                        <td>
+                            <apex:outputText value="{0,number,###}"> 
+                                <apex:param value="{!item.nopax}"/> 
+                            </apex:outputText>
+                        </td>
+                        <td>{!item.poblacion}</td>
+                        <td>
+                            <apex:outputText value="{0,number,$###,###,###}"> 
+                                <apex:param value="{!item.unitario}"/> 
+                            </apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,number,$###,###,###}"> 
+                                <apex:param value="{!item.subtotal}"/> 
+                            </apex:outputText>
+                        </td>
+                        <td><apex:outputText value="{0,number,###}%"> 
+                                <apex:param value="{!item.descuento}"/> 
+                            </apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,number,$###,###,###}"> 
+                                <apex:param value="{!item.total}"/> 
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </apex:repeat>
+                <tr>
+                    <td colspan="7">Total General</td>
+                    <td>
+                        <apex:outputText value="{0,number,$###,###,###}"> 
+                            <apex:param value="{!valorTotal}"/> 
+                        </apex:outputText>
+                    </td>
+                </tr>
+            </table>
+
+            <p align="justify"><apex:outputText value="{!contenido.OtrosTitulo__c}" escape="false"/><img src="{!$Resource.CotizacionRiesgoPsicosocial_2}" width="30" height="27" /></p>
+            <p align="justify"><apex:outputText value="{!contenido.OtrosParrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos7Titulo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.Objetivos7Parrafo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.parrafoFin__c}" escape="false"/></p>   
+            <p align="justify"><apex:outputText value="{!contenido.despedida__c}" escape="false"/></p>   
+            <p> 
+                <strong>{!asesorNombre}</strong><br/>
+                {!asesorCargo}<br/>
+                {!asesorProceso}<br/>
+                {!asesorCelular}<br/>
+                {!asesorCorreo}          
+            </p>     
+            <!--FIN CARTA-->
+        </body>
+    </html>
+</apex:page>

@@ -1,0 +1,43 @@
+<apex:page controller="COM_PAF_Calculadora_ctr" >
+    <apex:slds />
+    <div class="slds-scope">
+    <apex:form id="idForm">
+    <apex:pageBlock title="Simulador Superávit">
+        <apex:pagemessages id="errorMessage" />
+            <apex:pageblockbuttons location="bottom">
+                <apex:commandbutton action="{!fnCalcular}" value="Calcular Superávit" status="loadingStatus" />
+            </apex:pageblockbuttons>
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >                
+                    <apex:outputlabel value="Valor Actual Nómina:" for="idText1"/>
+                    <apex:inputtext id="idText1" value="{!decValorNomina}"></apex:inputtext>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >                
+                    <apex:outputlabel value="Total Trabajadores:" for="idText2"/>
+                    <apex:inputtext id="idText2" value="{!decTotalTrabajadores}"></apex:inputtext>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >                
+                    <apex:outputlabel value="Total Hijos con Derecho a Subsidio:" for="idText3"/>
+                    <apex:inputtext id="idText3" value="{!decHijosSubsidio}"></apex:inputtext>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="Resultado">
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >                
+                    <apex:outputlabel value="Aporte 4%:" for="idText4"/>
+                        <apex:outputText id="idText4" value="{0, number,$###,###,###}">
+                        <apex:param value="{!decAporte}"/>
+                    </apex:outputText>  
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >                
+                    <apex:outputlabel value="D/S:" for="idText5"/>
+                        <apex:outputText id="idText5" value="{0, number,$###,###,###}">
+                        <apex:param value="{!decDS}"/>
+                    </apex:outputText>  
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    </div>
+</apex:page>

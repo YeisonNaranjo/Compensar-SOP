@@ -1,0 +1,47 @@
+<aura:component controller="CEL1_LookupCustom_ctr" implements="force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.buscarCampos}"/>
+    <aura:handler name="oSelectedAccountEvent" event="c:selectedAccountEvent" action="{!c.handleComponentEvent}"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="ListCamposLupa" type="String[]"/>
+    <aura:attribute name="valorFiltro" type="String"/>
+    <aura:attribute name="valorLupa" type="String"/>
+    <aura:attribute name="valorMenu" type="String"/>
+    <aura:attribute name="valorObjeto" type="Sobject" default="{}"/>
+
+    <aura:registerEvent name="cerrarModal" type="c:CerrarTipificacion_evt"/>
+    <aura:handler name="valorMenu" event="c:MGLT_EventoMenu_evt" action="{!c.ocultarMenu}"/>
+    <aura:handler name="oSelectedAccountEvent" event="c:selectedAccountEvent" action="{!c.handleCmpEvent}"/>
+
+    <lightning:accordion aura:id="lstE" activeSectionName="Tipifiación PCA">
+        <lightning:accordionSection name="Tipifiación PCA" label="Tipifiación PCA">
+            <aura:iteration items="{!v.ListCamposLupa}" var="lstE">
+                <aura:if isTrue="{!lstE.strTipo == 'Lupa'}">
+                    <c:customLookup Label="{!lstE.strNombre}" aura:id="idFiltro"
+                    ObjetoSeleccionado ="{!lstE.strObjeto}"
+                    ListCamposLupa="{!v.ListCamposLupa}"
+                    blnDisabled="{!lstE.blnDisabled}"
+                    selectedNegocio="{!lstE.objSoBject}"
+                    filtroComplementario="{!lstE.strComplementoFiltro}"
+                    campoCaso="{!lstE.strCampoCaso}"
+                    objetoPadre="{!lstE.strObjetoPadre}"
+                    filtro="{!lstE.strCampoFiltro}"
+                    campoVariableMenu="{!v.valorMenu}"/>
+                    <aura:set attribute="else">
+                        <lightning:Select label="{!lstE.strNombre}" required="true" name="{!lstE.strNombre}" value="{!lstE.strValorLupa}">
+                            <option value="">--Ninguno--</option>
+                            <aura:iteration items="{!lstE.lstValoresPiscklist}" var="ind">
+                                <option text="{!ind}" value="{!ind}" />
+                            </aura:iteration>
+                        </lightning:Select>
+                    </aura:set>
+                </aura:if>
+            </aura:iteration>
+        </lightning:accordionSection>
+        <div style="float:right">
+            <!-- <lightning:buttonGroup > -->
+                <lightning:button label="Cancelar" iconPosition="right" variant="neutral" onclick="{!c.cerrarVentana}"/>
+                <lightning:button label="Guardar" iconPosition="right" variant="brand" onclick="{!c.guardarCampos}"/>
+            <!-- </lightning:buttonGroup> -->
+        </div>
+    </lightning:accordion>
+</aura:component>

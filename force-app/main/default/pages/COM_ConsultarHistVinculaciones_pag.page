@@ -1,0 +1,193 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Rubén Suárez Forero (RUSF)
+Proyecto:          Compensar
+Descripción:       Pagina para mostrar histórico de beneficiarios y vinculaciones
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------          ---------------------------------------------
+    1.0      03/11/17        Rubén Suárez Forero (RUSF)     Creación página.
+************************************************************************************************/ -->
+<apex:page title="Beneficiarios y Vinculaciones" id="COM_ConsultarHistVinculaciones_pag" standardStylesheets="false" docType="html-5.0" applyBodyTag="False" showHeader="false" sidebar="false" extensions="COM_ConsultarHistVinculaciones_ctr" standardController="Account" action="{!consultarVinculaciones}">
+    <head>
+        <title>Beneficiarios y Vinculaciones</title>
+        <apex:slds />
+        <style>
+            .tituloContenido {
+                font-weight: 700;
+                display:none;
+            }
+            tbody tr:nth-of-type(2n) {
+                background-color: #fff;
+            }
+            th {
+                background-color:#ddd;
+                font-weight:bold;
+            }
+            tbody tr td:nth-of-type(1) {
+                font-weight: bold;
+            }
+            td, th {
+                padding: 5px 8px 10px;
+                vertical-align:top;
+                line-height: 1.5;
+            }
+            @media screen and (max-width: 800px) {
+                table {
+                    width:100%;
+                }
+                thead {
+                    display: none;
+                }
+                tr:nth-of-type(2n) {
+                    background-color: inherit;
+                }
+                tr td:first-child {
+                    font-weight:normal;
+                    font-size:1.3em;
+                }
+                tbody td {
+                    display: block;  
+                    text-align:left;
+                }
+                tbody td:before { 
+                    content: attr(data-th); 
+                    display: block;
+                    text-align:left;  
+                    font-weight: normal;
+                }
+                tbody td::before {
+                    content: attr(data-th);
+                    display: none;
+                }
+                .tituloContenido {
+                    display:inline;
+                }
+            }
+        </style>
+    </head>
+    <body class="slds-scope" style="padding:5px">
+        <div class="slds-page-header">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-lead">
+                    <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#lead" />
+                    </svg>
+                </span>
+            </div>
+            <div class="slds-media__body">
+                <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="{!Account.Name}">{!Account.Name}</h1>
+                <p class="slds-text-body_small slds-line-height_reset">Cliente</p>
+            </div>
+            </div>
+        </div>
+        <br/>
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon_container_circle slds-icon-standard-avatar" title="">
+                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#avatar" />
+                            </svg>
+                        </span>
+                    </div>
+                <div class="slds-media__body">
+                    <h2>
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+                            <span class="slds-text-heading_small">Grupo Familiar</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Número documento</th>
+                        <th>Nombre</th>
+                        <th>Fecha de nacimiento</th>
+                        <th>Edad</th>
+                        <th>Programa</th>
+                        <th>Estado</th>
+                        <th>Categoría</th>
+                        <th>Vinculado desde</th>
+                        <th>Fin vinculación</th>
+                        <th>Fecha de retiro</th>
+                        <th>Indicador de subsidio</th>
+                        <th>Clase de parentesco</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!historialVinculaciones.grupoFamiliar}" var="familiar">
+                        <tr class="contenidoTabla">
+                            <td><span class="tituloContenido">Número documento: </span>{!familiar.tipoIdentificacion} {!familiar.identificacion}</td>
+                            <td><span class="tituloContenido">Nombre: </span>{!familiar.nombre}</td>
+                            <td><span class="tituloContenido">Fecha de nacimiento: </span>{!familiar.nacimientoFecha}</td>
+                            <td><span class="tituloContenido">Edad: </span>{!familiar.edad}</td>
+                            <td><span class="tituloContenido">Programa: </span>{!familiar.nombrePrograma}</td>
+                            <td><span class="tituloContenido">Estado: </span>{!familiar.estadoAfiliacion}</td>
+                            <td><span class="tituloContenido">Categoría: </span>{!familiar.categoriaAfiliacion}</td>
+                            <td><span class="tituloContenido">Vinculado desde: </span>{!familiar.fechaVinculacion}</td>
+                            <td><span class="tituloContenido">Fin vinculación: </span>{!familiar.fechaFinVinculacion}</td>
+                            <td><span class="tituloContenido">Fecha de retiro: </span>{!familiar.fechaRetiro}</td>
+                            <td><span class="tituloContenido">Indicador de subsidio: </span>{!familiar.identificadorSubsidio}</td>
+                            <td><span class="tituloContenido">Clase de parentesco: </span>{!familiar.tipoParentesco}</td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+            <footer class="slds-card__footer"> </footer>
+        </article>
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon_container_circle slds-icon-standard-contract" title="">
+                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#contract" />
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2>
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+                                <span class="slds-text-heading_small">Historico de Vinculaciones</span>
+                            </a>
+                        </h2>
+                    </div>
+                </header>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo vinculacion</th>
+                        <th>Fecha ing. empresa</th>
+                        <th>Fin vinculación</th>
+                        <th>Estado</th>
+                        <th>Categoria</th>
+                        <th>Doc. Trabajador</th>
+                        <th>Empleador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!historialVinculaciones.vinculaciones}" var="vinculacion">
+                        <tr class="contenidoTabla">
+                            <td><span class="tituloContenido">Tipo vinculacion: </span>{!vinculacion.tipoVinculacion}</td>
+                            <td><span class="tituloContenido">Fecha ing. empresa: </span>{!vinculacion.fechaIngresoEmpresa}</td>
+                            <td><span class="tituloContenido">Fin vinculación: </span>{!vinculacion.fechaFin}</td>
+                            <td><span class="tituloContenido">Estado: </span>{!vinculacion.estadoAfiliacion}</td>
+                            <td><span class="tituloContenido">Categoria: </span>{!vinculacion.categoriaAfiliacion}</td>
+                            <td><span class="tituloContenido">Doc. Trabajador: </span>{!vinculacion.trabajador}</td>
+                            <td><span class="tituloContenido">Empleador: </span>{!vinculacion.empleador}</td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+            <footer class="slds-card__footer"> </footer>
+        </article>
+    </body>
+</apex:page>

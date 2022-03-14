@@ -1,0 +1,49 @@
+<apex:page standardController="Opportunity" extensions="COS_reasignacionOportunidad_ctr" recordSetVar="accs" lightningStylesheets="true" showHeader="false" docType="html-5.0" applyBodyTag="false">
+    <script>
+    	function doRedirect(){
+        	window.history.back();
+        }
+    	function doRedirect2(){
+        	window.history.go(-2);
+        }
+    </script>
+    <apex:form >
+        
+        <apex:pageMessages id="showmsg"></apex:pageMessages>
+        <apex:pageBlock title="Reasignación de oportunidades" id="reasignarOportunidad">
+            <apex:outputPanel id="reasignarExitoso" rendered="{!blnExitoso}">
+                <p style="text-align:center;color:green;">Oportunidades reasignados exitosamente!!!</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarFallido" rendered="{!blnFallido}">
+                <p style="text-align:center;color:red;">Ocurrio un error en la reasignación de oportunidades, intente de nuevo por favor</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarSelectOption" rendered="{!blnSelectOption}">
+                <p style="text-align:center;color:blue;">Debe seleccionar una opción de reasignación</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarUsersNull" rendered="{!blnUsersNull}">
+                <p style="text-align:center;color:red;">No existen asesores asignados para distribuir las oportuniades seleccionadas</p>
+            </apex:outputPanel>
+            
+        	<apex:pageBlockSection columns="2">
+                <apex:selectList label="Cambiar propietario" size="1" value="{!selectedAsesor}" > 
+                    <apex:selectOptions value="{!selectedaccnamefields}"/> 
+                </apex:selectList>
+                <apex:inputCheckbox label="Reasignación masiva" selected="false" value="{!asesorDistribucion}"/>
+            </apex:pageBlockSection>
+            <br/><br/>
+            
+            <apex:pageBlockTable value="{!lstOpp}" var="op" title="Cuentas a reasignar" id="opportunityTable">
+                <apex:column headervalue="Nombre" value="{!op.name}"/>
+                <apex:column headervalue="Cuenta" value="{!op.Account.Name}"/>
+                <apex:column headervalue="Propietario" value="{!op.Owner.Name}"/>
+                <apex:column headervalue="Etapa" value="{!op.StageName}"/>
+            </apex:pageBlockTable>
+            <br/><br/>
+            <apex:pageBlockButtons location="bottom">
+<!--                <apex:commandButton value="Cancelar" onclick="doRedirect()"/>-->
+                <apex:commandButton value="Enviar" onclick="if(!confirm('Desea reasignar las oportunidades ?')){return false};" action="{!reasignar}" reRender="opportunityTable,reasignarExitoso,reasignarOportunidad"/>
+         <!--       <apex:commandButton value="Regresar" onclick="doRedirect2()"/>		-->
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,42 @@
+<apex:page id="_thePage" showHeader="true" sidebar="true" standardController="Opportunity" extensions="COM_VincularCliente_ctr" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0">
+
+	<html>
+		<head>
+	        <title>Vinculación</title>
+	        <apex:slds />
+	    </head>	
+		<body class="slds-scope">
+			<apex:pageMessages id="TheMessages"/>
+			<apex:pageBlock title="Vinculación">
+				<apex:form id="idForm">
+					<div style="padding-top:2%;width:90%;margin:0 auto;">
+		        		
+		                    <div class="container-fluid">
+		                        <div class="row">
+		                            <div class="labels" style="margin: 0 auto; padding: 1%">
+		                            	<center>
+			                                <apex:outputLabel >
+			                                    <p style="font-size:20px;"><b>Vincular Cliente: {!strNombreCliente}</b></p>
+			                                    <p style="font-size:20px;"><b>Programa: {!strPrograma}</b></p>
+			                                </apex:outputLabel>
+			                            </center>
+		                            </div>                            
+		                    	</div>
+		                    	
+		                    	<center style="padding:10px;">
+		                    		<apex:commandButton value=" Vincular " action="{!vincularCliente}" rendered="{!blnBotonGuardar}" status="loading" style="width:100px;"/>
+									<apex:commandButton action="{!cancel}" value="Regresar" style="width:100px;"/>
+								</center>
+		                    </div>
+		                    <br/>
+						
+					</div>
+					
+				</apex:form>
+			</apex:pageBlock>
+			<apex:pageBlock rendered="{!blnMensaje}" title="Resultado Vinculación">
+				<apex:outputText value="{!strMensaje}" escape="false" />
+			</apex:pageBlock>
+		</body>
+	</html>
+</apex:page>

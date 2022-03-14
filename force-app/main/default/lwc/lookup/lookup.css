@@ -1,0 +1,20 @@
+div[role="listbox"] {
+    max-height: 450% !important;
+    overscroll-behavior: contain;
+}
+
+.new-record-form {
+    z-index: 4;
+    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+}
+
+.overlay {
+    background-color: rgba(1,1,1,.25);
+    width: 300%;
+    height: 100vh;
+    top: 0;
+    left: -100%;
+    z-index: 3;
+}

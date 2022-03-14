@@ -1,0 +1,1082 @@
+<!--/************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Juan David Uribe Ruiz (JDUR)
+Proyecto:          Compensar
+Descripciï¿½n:       Pagina encargada de la creacion de los casos desde portal Web
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                    Descripciï¿½n
+----------  -------------   ----------------------  ---------------------------------------------
+    1.0     2017/12/04      Juan David Uribe Ruiz   		Creaciï¿½n Clase.
+    1.1     2019-08-23      Camilo Andrés Gamarra (CG)      Se adiciona el campo "Medio de Respuesta"   
+    1.2     2020-07-27      Yeison Naranjo Rendón (YNR)     Cambio Titulos.   
+************************************************************************************************/-->
+<apex:page applyHtmlTag="false" showHeader="false" sidebar="false" docType="" Controller="RF2_CrearCasoWeb_ctr" id="PagCrearCaso">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, iial-scale=1" />
+
+<link href="https://www.compensar.com/favicon.ico" rel="icon" />
+<title>OyS WEB</title>
+
+
+<apex:stylesheet value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'bootstrap.min.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'font-awesome.min.css')}"/>   
+<apex:stylesheet value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'corporativo-general.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.modalcss)}"/>
+<apex:includeScript value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'jquery-2.2.4.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'bootstrap.min.js')}"/>    
+<apex:includeScript value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'portalCasos.js')}"/>  
+<apex:stylesheet value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'custom.css')}"/> 
+<apex:stylesheet value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'jquery-ui.css')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'jquery-ui.js')}"/>  
+<apex:includeScript value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'vanilla.js')}"/>  
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<script type="text/javascript">
+
+
+    var strNegocio;
+    
+    $(function () {
+        strNegocio = $("#strNegocio").val();
+        
+        if(strNegocio == WEB_PCE){
+            $("#ContentPlaceHolder1_DatosSuceso").show();
+            $("#ContentPlaceHolder1_divAnonimo").show();
+            $("#documentosSoporte").hide();
+        } else{
+            $("#ContentPlaceHolder1_DatosSuceso").hide();
+            //$("#ContentPlaceHolder1_divAnonimo").hide();
+            $(".visibilidadAnon").html("");
+            $("#documentosSoporte").show();
+        }
+    });
+    
+    //window.onload = function() {
+    $(document).ready(function() {
+        var sessionEsAnonimo = sessionStorage.getItem('sessionEsAnonimo');
+        if (sessionEsAnonimo !== null && sessionEsAnonimo == '1'){
+            $("#chkAnonimo").prop('checked', true);
+            $("#ContentPlaceHolder1_divDatosIdentificacion").hide();
+            $("#ContentPlaceHolder1_divDatosBasicos").hide();
+            $("#ContentPlaceHolder1_divDatosAutorizacion").hide();
+        } else{
+            $("#chkAnonimo").prop('checked', false);
+            $("#ContentPlaceHolder1_divDatosIdentificacion").show();
+            $("#ContentPlaceHolder1_divDatosBasicos").show();
+            $("#ContentPlaceHolder1_divDatosAutorizacion").show();
+        }
+        
+        var sessionstrNegocio = sessionStorage.getItem('sessionstrNegocio');
+        if (sessionstrNegocio !== null){
+            $('#strNegocio').val(sessionstrNegocio);
+        }
+        
+        var sessionPrograma = sessionStorage.getItem('sessionPrograma');
+        if (sessionPrograma !== null){
+            $('#_Programa').val(sessionPrograma);
+            
+            var programa = sessionPrograma, lcns = RelacionadoCon[programa] || [];
+        
+            var html = $.map(lcns, function(lcn){
+                return '<option value="' + lcn.value + '">' + lcn.label + '</option>'
+            }).join('');
+            
+            $('#_RelacionadoCon').html(html)
+        } else{
+            //Por aca deberia entrar la primer vez que se cargue la pagina
+            if(strNegocio == WEB_PCE){
+                
+                var programa = $('#_Programa').val(), lcns = RelacionadoCon[programa] || [];
+        
+                var html = $.map(lcns, function(lcn){
+                    return '<option value="' + lcn.value + '">' + lcn.label + '</option>'
+                }).join('');
+                
+                $('#_RelacionadoCon').html(html)
+            }
+        }
+
+        var sessionRelacionadoCon = sessionStorage.getItem('sessionRelacionadoCon');
+        if (sessionRelacionadoCon !== null){
+            $('#_RelacionadoCon').val(sessionRelacionadoCon);
+        }
+        
+        var sessionDescripcionSolicitud = sessionStorage.getItem('sessionDescripcionSolicitud');
+        if (sessionDescripcionSolicitud !== null){
+            $('#descripcionSolicitud').val(sessionDescripcionSolicitud);
+        }
+        
+        var sessionAutorizaCorreo = sessionStorage.getItem('sessionAutorizaCorreo');
+        if (sessionAutorizaCorreo !== null && sessionAutorizaCorreo == '1'){
+            $("#autorizaCorreo").prop('checked', true);
+        } else{
+            $("#autorizaCorreo").prop('checked', false);
+        }
+        
+        var sessionAutorizaHabeas = sessionStorage.getItem('sessionAutorizaHabeas');
+        if (sessionAutorizaHabeas !== null && sessionAutorizaHabeas == '1'){
+            $("#autorizaHabeas").prop('checked', true);
+        } else{
+            $("#autorizaHabeas").prop('checked', false);
+        }
+        
+        var sessionTipoIdentificacion = sessionStorage.getItem('sessionTipoIdentificacion');
+        if (sessionTipoIdentificacion !== null){
+            $('#tipoIdentificacion').val(sessionTipoIdentificacion);
+            if(sessionTipoIdentificacion == NIT){
+                $("#ContentPlaceHolder1_DatosIdentificacionContacto").show();
+                $("#ContentPlaceHolder1_RazonSocial").show();
+            } else{
+                $("#ContentPlaceHolder1_DatosIdentificacionContacto").hide();
+                $("#ContentPlaceHolder1_RazonSocial").hide();
+            }
+        }
+        
+        var sessionNumeroDeIdentificacion = sessionStorage.getItem('sessionNumeroDeIdentificacion');
+        if (sessionNumeroDeIdentificacion !== null){
+            $('#numeroDeIdentificacion').val(sessionNumeroDeIdentificacion);
+        }
+        
+        var sessionRazonsocial = sessionStorage.getItem('sessionRazonsocial');
+        if (sessionRazonsocial !== null){
+            $('#razonsocial').val(sessionRazonsocial);
+        }
+        
+        var sessionTipoIdContacto = sessionStorage.getItem('sessionTipoIdContacto');
+        if (sessionTipoIdContacto !== null){
+            $('#tipoIdContacto').val(sessionTipoIdContacto);
+        }
+        
+        var sessionNumeroDeIdentificacionContacto = sessionStorage.getItem('sessionNumeroDeIdentificacionContacto');
+        if (sessionNumeroDeIdentificacionContacto !== null){
+            $('#numeroDeIdentificacionContacto').val(sessionNumeroDeIdentificacionContacto);
+        }
+        
+        var sessionNombreContacto = sessionStorage.getItem('sessionNombreContacto');
+        if (sessionNombreContacto !== null){
+            $('#nombreContacto').val(sessionNombreContacto);
+        }
+        
+        var sessionCorreoContacto = sessionStorage.getItem('sessionCorreoContacto');
+        if (sessionCorreoContacto !== null){
+            $('#correoContacto').val(sessionCorreoContacto);
+        }
+        
+        var sessionDireccionContacto = sessionStorage.getItem('sessionDireccionContacto');
+        if (sessionDireccionContacto !== null){
+            $('#direccionContacto').val(sessionDireccionContacto);
+        }
+        
+        var sessionCiudad = sessionStorage.getItem('sessionCiudad');
+        if (sessionCiudad !== null){
+            $('#ciudad').val(sessionCiudad);
+        }
+        
+        var sessionTelefonoFijo = sessionStorage.getItem('sessionTelefonoFijo');
+        if (sessionTelefonoFijo !== null){
+            $('#telefonoFijo').val(sessionTelefonoFijo);
+        }
+        
+        var sessionTelefonoMovil = sessionStorage.getItem('sessionTelefonoMovil');
+        if (sessionTelefonoMovil !== null){
+            $('#telefonoMovil').val(sessionTelefonoMovil);
+        }
+        
+        var sessionSedeSuceso = sessionStorage.getItem('sessionSedeSuceso');
+        if (sessionSedeSuceso !== null){
+            $('#sedeSuceso').val(sessionSedeSuceso);
+        }
+        
+        var sessionFechaSuceso = sessionStorage.getItem('sessionFechaSuceso');
+        if (sessionFechaSuceso !== null){
+            $('#fechaSuceso').val(sessionFechaSuceso);
+        }
+
+        var sessionMedioRespuesta = sessionStorage.getItem('sessionMedioRespuesta');
+        if (sessionMedioRespuesta !== null){
+            $('#medioRespuesta').val(sessionMedioRespuesta);
+        }
+        
+        var sessionTipoSolicitud = sessionStorage.getItem('sessionTipoSolicitud');
+        if (sessionTipoSolicitud !== null){
+            $('#_TipoSolicitud').val(sessionTipoSolicitud);
+        }
+        
+    });
+    
+    window.onbeforeunload = function() {
+        if ($("#chkAnonimo").is(":checked")) {
+            sessionStorage.setItem("sessionEsAnonimo", '1');
+        } else{
+            sessionStorage.setItem("sessionEsAnonimo", '0');
+        }
+        
+        if ($("#autorizaCorreo").is(":checked")) {
+            sessionStorage.setItem("sessionAutorizaCorreo", '1');
+        } else{
+            sessionStorage.setItem("sessionAutorizaCorreo", '0');
+        }
+        
+        if ($("#autorizaHabeas").is(":checked")) {
+            sessionStorage.setItem("sessionAutorizaHabeas", '1');
+        } else{
+            sessionStorage.setItem("sessionAutorizaHabeas", '0');
+        }
+        
+        //sessionStorage.setItem("sessionEsAnonimo", $('#chkAnonimo').val());
+        sessionStorage.setItem("sessionstrNegocio", $('#strNegocio').val());
+        sessionStorage.setItem("sessionPrograma", $('#_Programa').val());
+        sessionStorage.setItem("sessionRelacionadoCon", $('#_RelacionadoCon').val());
+        sessionStorage.setItem("sessionDescripcionSolicitud", $('#descripcionSolicitud').val());
+        //sessionStorage.setItem("sessionAutorizaCorreo", $('#autorizaCorreo').val());
+        //sessionStorage.setItem("sessionAutorizaHabeas", $('#autorizaHabeas').val());
+        sessionStorage.setItem("sessionTipoIdentificacion", $('#tipoIdentificacion').val());
+        sessionStorage.setItem("sessionNumeroDeIdentificacion", $('#numeroDeIdentificacion').val());
+        sessionStorage.setItem("sessionRazonsocial", $('#razonsocial').val());
+        sessionStorage.setItem("sessionTipoIdContacto", $('#tipoIdContacto').val());
+        sessionStorage.setItem("sessionNumeroDeIdentificacionContacto", $('#numeroDeIdentificacionContacto').val());
+        sessionStorage.setItem("sessionNombreContacto", $('#nombreContacto').val());
+        sessionStorage.setItem("sessionCorreoContacto", $('#correoContacto').val());
+        sessionStorage.setItem("sessionDireccionContacto", $('#direccionContacto').val());
+        sessionStorage.setItem("sessionCiudad", $('#ciudad').val());
+        sessionStorage.setItem("sessionTelefonoFijo", $('#telefonoFijo').val());
+        sessionStorage.setItem("sessionTelefonoMovil", $('#telefonoMovil').val());
+        sessionStorage.setItem("sessionSedeSuceso", $('#sedeSuceso').val());
+        sessionStorage.setItem("sessionFechaSuceso", $('#fechaSuceso').val());
+        sessionStorage.setItem("sessionMedioRespuesta", $('#medioRespuesta').val());
+        sessionStorage.setItem("sessionTipoSolicitud", $('#_TipoSolicitud').val());
+    }
+    
+    function validaSeleccionNIT(){
+        var tipoIdentificacion = $("#tipoIdentificacion").val();
+
+        if(tipoIdentificacion == NIT){
+            $("#ContentPlaceHolder1_DatosIdentificacionContacto").show();
+            $("#ContentPlaceHolder1_RazonSocial").show();
+        } else{
+            $("#ContentPlaceHolder1_DatosIdentificacionContacto").hide();
+            $("#ContentPlaceHolder1_RazonSocial").hide();
+        }
+    }
+
+    function fnObtenerDocumentosCaso() {
+        var varPrograma = $("#_Programa").val();
+        var varRelacionadoCon = $("#_RelacionadoCon").val();
+        var tipoSolicitud;
+        
+        if(strNegocio == WEB_PCE){
+            tipoSolicitud = 'Solicitud PCE'
+        } 
+        
+        if(strNegocio == WEB_GIE){
+            tipoSolicitud = 'Solicitud GIE'
+        }
+
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.RF2_CrearCasoWeb_ctr.obtenerDocumentosCaso}',
+            tipoSolicitud,
+            varPrograma,
+            varRelacionadoCon,
+            function(result, event) {
+                if (event.status) {
+                    $("#textDocumentosSoporte").text(result);
+                }
+            }, 
+            {escape: true}
+        );
+    }
+       
+    function fnEnviar(){
+        
+        if(!fnValidar()){
+            //alert('paila');
+            return false;
+        }
+        
+        var esAnonimo;
+        var autorizaCorreo;
+        var autorizaHabeas;
+        var tipoSolicitud;
+        
+        if ($("#chkAnonimo").is(":checked")) {
+            esAnonimo = true;
+        } else{
+            esAnonimo = false;
+        }
+        
+        if ($("#autorizaCorreo").is(":checked")) {
+            autorizaCorreo = true;
+        } else{
+            autorizaCorreo = false;
+        }
+        
+        if ($("#autorizaHabeas").is(":checked")) {
+            autorizaHabeas = true;
+        } else{
+            autorizaHabeas = false;
+        }
+        
+       
+        if(strNegocio == WEB_PCE){
+            tipoSolicitud = $('#_TipoSolicitud').val();
+        } 
+        
+        if(strNegocio == WEB_GIE){
+            tipoSolicitud = 'Solicitud GIE'
+        }
+        
+        myApp.showPleaseWait();
+        document.getElementById("botonEnviar").disabled = true;
+        document.getElementById("botonEnviar").style.background='#585858 ';
+        
+        Visualforce.remoting.Manager.invokeAction( 
+            '{!$RemoteAction.RF2_CrearCasoWeb_ctr.finalizar}',
+            esAnonimo,
+            $("#_Programa").val(),
+            $("#_RelacionadoCon").val(),
+            $("#descripcionSolicitud").val(),
+            autorizaCorreo,
+            autorizaHabeas,
+            $("#tipoIdentificacion").val(),
+            $("#numeroDeIdentificacion").val(),
+            $("#razonsocial").val(),
+            $("#tipoIdContacto").val(),
+            $("#numeroDeIdentificacionContacto").val(),
+            $("#nombreContacto").val(),
+            $("#correoContacto").val(),
+            $("#direccionContacto").val(),
+            $("#ciudad").val(),
+            $("#telefonoFijo").val(),
+            $("#telefonoMovil").val(),
+            $("#sedeSuceso").val(),
+            $("#fechaSuceso").val(),
+            $("#medioRespuesta").val(),
+            $("#strNegocio").val(),
+            $("#lstIdsArchivos").val(),
+            tipoSolicitud,
+            function(result, event) {
+                if (event.status) {
+                    var RespuestaCrearCasoWrapper = result;
+                    
+                                        console.log('RespuestaCrearCasoWrapper: ' , RespuestaCrearCasoWrapper);
+                    if(RespuestaCrearCasoWrapper.blnError) {
+                        $("#laConfirmacion2").html(RespuestaCrearCasoWrapper.strMensaje);
+                        //alert(result);
+                        $("#myModal2").modal();
+                    } else{
+                    
+                        Visualforce.remoting.Manager.invokeAction( 
+                            '{!$RemoteAction.RF2_CrearCasoWeb_ctr.consultarCaso}',
+                            RespuestaCrearCasoWrapper.idCaso,
+                            function(result2, event2) {
+                                if (event2.status) {
+                                    result2;
+                                    myApp.hidePleaseWait();
+                                    $("#laConfirmacion2").html(result2);
+                                    //alert(result);
+                                    $("#myModal2").modal();
+                                }else if (event2.type === 'exception') {
+                                    alert(event2.message);
+                                } 
+                                else {
+                                }
+                            }, 
+                            {escape: true}
+                        );
+                    }
+                    //fnLimpiarFormulario();
+                }else if (event.type === 'exception') {
+                    alert(event.message);
+                } 
+                else {
+                }
+            }, 
+            {escape: true}
+        );
+        
+        
+
+    }
+
+        
+
+    function fnValidar(){
+        
+        var blnError = false;
+        
+        var recaptcha = $("#g-recaptcha-response").val();
+        if (recaptcha === "") {
+            event.preventDefault();
+            $("#labelMsjCaptcha").show();
+            blnError = true;
+        } else{
+            $("#labelMsjCaptcha").hide();
+        }
+        
+        if($("#_Programa").val() == 'Seleccione'){
+            $("#labelMsjPrograma").show();
+            blnError = true;
+        } else{
+            $("#labelMsjPrograma").hide();
+        }
+        
+        if( $("#_RelacionadoCon").val() == null || $("#_RelacionadoCon").val() == 'Seleccione >'){
+            $("#labelMsjRelacionadoCon").show();
+            blnError = true;
+        } else{
+            $("#labelMsjRelacionadoCon").hide();
+        }
+        
+        if (!$("#descripcionSolicitud").val()) {
+            $("#labelMsjDescSolicitud").show();
+               blnError = true;
+        } else{
+            $("#labelMsjDescSolicitud").hide();
+        }
+        
+        if(strNegocio == WEB_PCE){
+            if($("#sedeSuceso").val() == 'Seleccione'){
+             $("#labelMsjSedeSuceso").show();
+             blnError = true;
+            } else{
+             $("#labelMsjSedeSuceso").hide();
+            }
+
+            if($("#fechaSuceso").val() == ''){
+             $("#labelMsjFechaSuceso").show();
+             blnError = true;
+            } else{
+             $("#labelMsjFechaSuceso").hide();
+            }
+
+
+            if($("#medioRespuesta").val() == 'Seleccione'){
+             $("#labelMsjmedioRpta").show();
+             blnError = true;
+            } else{
+             $("#labelMsjmedioRpta").hide();
+            }
+
+            if($("#_TipoSolicitud").val() == '' || $("#_TipoSolicitud").val() == 'Seleccione'){
+             $("#labelMsjPrograma").show();
+             blnError = true;
+            } else{
+             $("#labelMsjPrograma").hide();
+            }
+        }
+        
+        if ($("#chkAnonimo").is(":checked")) {
+            //alert('Anonimo checkeado');
+        } else{
+            
+            if($("#tipoIdentificacion").val() == 'Seleccione'){
+                $("#labelMsjTipIdentificacion").show();
+                blnError = true;
+            } else{
+                $("#labelMsjTipIdentificacion").hide();
+            }
+            
+            if($("#numeroDeIdentificacion").val() == ''){
+                $("#labelMsjNumIdentificacion").show();
+                blnError = true;
+            } else{
+                $("#labelMsjNumIdentificacion").hide();
+            }
+            
+            
+            if($("#tipoIdentificacion").val() == NIT){
+                if($("#razonsocial").val() == ''){
+                    $("#labelMsjRazonSocial").show();
+                    blnError = true;
+                } else{
+                    $("#labelMsjRazonSocial").hide();
+                }
+            
+                if($("#tipoIdContacto").val() == 'Seleccione'){
+                    $("#labelMsjTipoIdContacto").show();
+                    blnError = true;
+                } else{
+                    $("#labelMsjTipoIdContacto").hide();
+                }
+                
+                if($("#numeroDeIdentificacionContacto").val() == ''){
+                    $("#labelMsjNumIdContacto").show();
+                    blnError = true;
+                } else{
+                    $("#labelMsjNumIdContacto").hide();
+                }
+            }
+            
+            if($("#nombreContacto").val() == ''){
+                $("#labelMsjNombreContacto").show();
+                blnError = true;
+            } else{
+                $("#labelMsjNombreContacto").hide();
+            }
+            
+            if($("#correoContacto").val() == ''){
+                $("#labelMsjCorreoContacto").show();
+                blnError = true;
+            } else{
+                $("#labelMsjCorreoContacto").hide();
+                if(!validateEmail(document.getElementById('correoContacto'))){
+                    $("#labelFormatoCorreoContacto").show();
+                } else{
+                    $("#labelFormatoCorreoContacto").hide();
+                }
+            }
+            
+            if($("#direccionContacto").val() == ''){
+                $("#labelMsjDireccionContacto").show();
+                blnError = true;
+            } else{
+                $("#labelMsjDireccionContacto").hide();
+            }
+            
+            if($("#ciudad").val() == 'Seleccione'){
+                $("#labelMsjCiudad").show();
+                blnError = true;
+            } else{
+                $("#labelMsjCiudad").hide();
+            }
+<!--Inicio 1.1-->
+           
+        if(!$("#autorizaCorreo").is(':checked')){
+            $("#labelMsjAutorizacion").show();
+            blnError = true;
+        } else{
+            $("#labelMsjAutorizacion").hide();
+        }
+
+        if(!$("#autorizaHabeas").is(':checked')){
+            $("#labelMsjAutorizacionHabeas").show();
+            blnError = true;
+        } else{
+            $("#labelMsjAutorizacionHabeas").hide();
+        }
+
+
+<!--Fin 1.1-->
+
+            
+            /*if($("#telefonoFijo").val() == ''){
+                $("#labelMsjTelefonoFijo").show();
+                blnError = true;
+            } else{
+                $("#labelMsjTelefonoFijo").hide();
+            }
+            
+            if($("#telefonoMovil").val() == ''){
+                $("#labelMsjTelefonoMovil").show();
+                blnError = true;
+            } else{
+                $("#labelMsjTelefonoMovil").hide();
+            }*/
+            
+            
+        }
+        
+        if(blnError){
+            return false;
+        } else{
+            return true;
+        }
+
+    }
+    
+    function fnLimpiarFormulario(){
+        
+        $("#chkAnonimo").prop('checked', false);
+        $("#ContentPlaceHolder1_divDatosIdentificacion").show();
+        $("#ContentPlaceHolder1_divDatosBasicos").show();
+        $("#ContentPlaceHolder1_divDatosAutorizacion").show();
+        $("#autorizaCorreo").prop('checked', false);
+        $("#autorizaHabeas").prop('checked', false);
+        
+        if(strNegocio == WEB_PCE){
+            $('#_Programa').val('URL PCE');
+            $('#_RelacionadoCon').val('Seleccione >');
+            $('#_TipoSolicitud').val('Seleccione');
+        }else{
+            $('#_Programa').val('Seleccione');
+            //$('#_RelacionadoCon').val(null);
+            $('#_RelacionadoCon')
+                .find('option')
+                .remove()
+                .end()
+            ;
+            $('#_TipoSolicitud').val('');
+        }
+        $('#descripcionSolicitud').val('');
+        $('#tipoIdentificacion').val('Seleccione');
+        $("#ContentPlaceHolder1_DatosIdentificacionContacto").hide();
+        $("#ContentPlaceHolder1_RazonSocial").hide();
+        $('#numeroDeIdentificacion').val('');
+        $('#razonsocial').val('');
+        $('#tipoIdContacto').val('Seleccione');
+        $('#numeroDeIdentificacionContacto').val('');
+        $('#nombreContacto').val('');
+        $('#correoContacto').val('');
+        $('#direccionContacto').val('');
+        $('#ciudad').val('Seleccione');
+        $('#telefonoFijo').val('');
+        $('#telefonoMovil').val('');
+        $('#sedeSuceso').val('Seleccione');
+        $('#medioRespuesta').val('Seleccione');
+        $('#fechaSuceso').val('');
+        
+        fnEliminarTodosDocumentos();
+
+    }
+    
+    function fnLimpiarFormularioBoton(){
+        if(confirm('Esta seguro(a) que desea limpiar el formulario?')){
+            fnLimpiarFormulario();
+        }
+    }
+    
+    function validateEmail(inputText){
+        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;  
+        if(!inputText.value.match(mailformat)){  
+            return false;
+        }
+        return true;  
+    }  
+
+    function justNumbers(element){
+        element.value = element.value.replace(/[^0-9]/g, '');
+    }
+
+    function justText(element){
+        element.value = element.value.replace(/[^a-zA-Z]/g, '');
+    }
+
+    function justTextName(element){
+        element.value = element.value.replace(/[^a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\s]/g, '');
+    }
+
+
+</script>
+
+</head>
+<body>
+    <div class="container">
+    <form method="post" action="" onsubmit="" id="form1" autocomplete="off" enctype="multipart/form-data">
+        <input type="hidden" name="strNegocio" id="strNegocio" value="{!strNegocio}" /> 
+        <div style="height: 30px; line-height: 30px; text-align: right;">
+            <label> <strong><span style="color: #FF0000">* Datos obligatorios</span> </strong> </label>
+        </div>
+        <div id="ContentPlaceHolder1_DivTitBasicosCI" class="titulo"></div>
+        <div id="ContentPlaceHolder1_DatosIniClExterno" class="row gray" 
+            style="margin-right:0px;margin-left:0px;">
+            <!-- Inicio 1.2 -->
+            <div id="ContentPlaceHolder1_DivTitBasicos" class="titulo">Datos cliente</div>
+            <!-- Fin 1.2 -->
+            <div id="ContentPlaceHolder1_divAnonimo">
+                <div class="col-xs-6 col-sm-4 visible-xs visibilidadAnon">
+                    <label> <strong>Radicaci&#243;n An&#243;nima<span style="color: #FF0000"> *</span></strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-4 visibilidadAnon">
+                    <label class="hidden-xs"> <strong>Radicaci&#243;n An&#243;nima<span style="color: #FF0000"> *</span> </strong> </label> 
+                    <input id="chkAnonimo" type="checkbox" name="chkAnonimo" /><span>&nbsp;</span>
+                </div>
+            </div>
+            <div id="ContentPlaceHolder1_divDatosIdentificacion">
+                <div class="col-xs-6 col-sm-4 visible-xs">
+                    <label> <strong>Tipo identificaci&#243;n<span style="color: #FF0000"> *</span></strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                    <label class="hidden-xs"> <strong>Tipo de identificaci&#243;n<span style="color: #FF0000"> *</span> </strong> </label> 
+                    <label id="labelMsjTipIdentificacion" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <select name="tipoIdentificacion" id="tipoIdentificacion" class="form-control" disabled="" onChange="validaSeleccionNIT();">
+                        <option value="Seleccione">Seleccione &gt;</option>
+                        <option selected="selected" value="1">C&#201;DULA CIUDADAN&#205;A</option>
+                        <option value="2">NIT</option>
+                        <option value="3">TARJETA IDENTIDAD</option>
+                        <option value="4">C&#201;DULA EXTRANJER&#205;A</option>
+                        <option value="5">PASAPORTE</option>
+                        <!--<option value="6">FECHA DE NACIMIENTO</option> -->
+                        <!--<<option value="7">REGISTRO CIVIL</option> -->
+                        <!--<<option value="8">NUIP</option> -->
+                        <!--<option value="9">MENOR SIN IDENTIFICACI&#211;N</option> -->
+                    </select>
+                </div>
+                <span id="ContentPlaceHolder1_rfvTipoIdentificacion" style="visibility: hidden;"></span>
+                <div class="col-xs-6 col-sm-4 visible-xs">
+                    <label> <strong>N&#250;mero identificaci&#243;n<span style="color: #FF0000"> *</span> </strong> </label>
+                </div>
+                <div class="col-xs-6 col-sm-4 form-inline">
+                    <label class="hidden-xs"> <strong>N&#250;mero de identificaci&#243;n<span style="color: #FF0000"> *</span> </strong> </label> 
+                    <label id="labelMsjNumIdentificacion" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <input id="numeroDeIdentificacion" name="numeroDeIdentificacion" type="text" value="" maxlength="12" onkeyup="justNumbers(this);" class="form-control numero" style="width: 100%;" /> 
+                </div>
+            </div>
+        </div>
+
+        <div id="ContentPlaceHolder1_divDatosBasicos">
+            <!-- Inicio 1.2 -->
+            <div id="ContentPlaceHolder1_DivTitBasicos" class="titulo">Datos de contacto</div>
+            <!-- Fin 1.2 -->
+            <div id="ContentPlaceHolder1_RazonSocial" class="row" style="display: none;">
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Raz&#243;n Social<span style="color: #FF0000"> *</span> </strong> </label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Raz&#243;n Social<span style="color: #FF0000"> *</span> </strong> </label> 
+                    <label id="labelMsjRazonSocial" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <input name="razonsocial" type="text" maxlength="100" id="razonsocial" class="form-control alfabeto" />
+                </div>
+            </div>
+
+            <div class="row" id="ContentPlaceHolder1_DatosIdentificacionContacto" style="display: none;">
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label><strong>Tipo Id Contacto<span style="color: #FF0000"> *</span> </strong> </label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"><strong>Tipo de Identicaci&#243;n Contacto<span style="color: #FF0000"> *</span> </strong></label> 
+                    <label id="labelMsjTipoIdContacto" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <select name="tipoIdContacto" onchange="" id="tipoIdContacto" class="form-control">
+                        <option value="Seleccione">Seleccione &gt;</option>
+                        <option selected="selected" value="1">C&#201;DULA CIUDADAN&#205;A</option>
+                        <option value="2">NIT</option>
+                        <option value="3">TARJETA IDENTIDAD</option>
+                        <option value="4">C&#201;DULA EXTRANJER&#205;A</option>
+                        <option value="5">PASAPORTE</option>
+                        <!--<option value="6">FECHA DE NACIMIENTO</option> -->
+                        <!--<<option value="7">REGISTRO CIVIL</option> -->
+                        <!--<<option value="8">NUIP</option> -->
+                        <!--<option value="9">MENOR SIN IDENTIFICACI&#211;N</option> -->
+                    </select>
+                </div>
+
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>N&#250;m id Contacto<span style="color: #FF0000"> *</span> </strong> </label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>N&#250;mero de identificaci&#243;n Contacto<span style="color: #FF0000"> *</span> </strong> </label>
+                    <label id="labelMsjNumIdContacto" style="color:red!important;display: none;"><b> Obligatorio</b></label>  
+                    <input id="numeroDeIdentificacionContacto" name="numeroDeIdentificacionContacto" type="text" maxlength="12" onkeyup="justNumbers(this);" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Nombre de Contacto<span style="color: #FF0000"> *</span> </strong> </label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"><strong>Nombre de Contacto<span style="color: #FF0000"> *</span> </strong> </label> 
+                    <label id="labelMsjNombreContacto" style="color:red!important;display: none;"><b> Obligatorio</b></label>  
+                    <input name="nombreContacto" type="text" maxlength="100" id="nombreContacto" class="form-control alfabeto" />
+                </div>
+                <div id="ContentPlaceHolder1_tdCorreoContacoXS" class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Correo Contacto<span style="color: #FF0000"> *</span></strong> </label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Correo de Contacto<span style="color: #FF0000"> *</span> </strong> </label> 
+                    <label id="labelMsjCorreoContacto" style="color:red!important;display: none;"><b> Obligatorio</b></label>
+                    <label id="labelFormatoCorreoContacto" style="color:red!important;display: none;"><b> Correo Invalido</b></label>  
+                    <input name="correoContacto" type="text" maxlength="100" id="correoContacto" class="form-control alfabeto" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Direcci&#243;n contacto<span style="color: #FF0000"> *</span></strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Direcci&#243;n de contacto<span style="color: #FF0000"> *</span> </strong></label> 
+                    <label id="labelMsjDireccionContacto" style="color:red!important;display: none;"><b> Obligatorio</b></label>  
+                    <input name="direccionContacto" type="text" maxlength="100" id="direccionContacto" class="form-control" />
+                </div>
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Ciudad<span style="color: #FF0000"> *</span></strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Ciudad<span style="color: #FF0000"> *</span></strong></label> 
+                    <label id="labelMsjCiudad" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <apex:outputText value="{!strSelectCiudad}" escape="false" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Tel&#233;fono Fijo</strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Tel&#233;fono Fijo</strong></label> 
+                    <label id="labelMsjTelefonoFijo" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <input name="telefonoFijo" type="text" maxlength="10" id="telefonoFijo" onkeyup="justNumbers(this);" class="form-control numero" />
+                </div>
+                
+                <div id="ContentPlaceHolder1_tdCelularXS" class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Tel&#233;fono m&#243;vil</strong></label>
+                </div>
+                <div id="ContentPlaceHolder1_tdCelular" class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Tel&#233;fono m&#243;vil</strong></label> 
+                    <label id="labelMsjTelefonoMovil" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <input name="telefonoMovil" type="text" maxlength="10" id="telefonoMovil" onkeyup="justNumbers(this);" class="form-control numero" />
+                </div>
+            </div>
+
+        </div>
+
+        <div id="ContentPlaceHolder1_divDatosSolicitud">
+            <div id="ContentPlaceHolder1_DivTitSolicitud" class="titulo">Datos solicitud</div>
+            <div class="row" id="ContentPlaceHolder1_DatosSuceso" style="display: none;">
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Sede Suceso<span style="color: #FF0000"> *</span></strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Sede del Suceso<span style="color: #FF0000"> *</span> </strong></label> 
+                    <label id="labelMsjSedeSuceso" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <apex:outputText value="{!strSedeSuceso}" escape="false"/>
+                </div>
+                
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Fecha Suceso<span style="color: #FF0000"> *</span></strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Fecha del Suceso<span style="color: #FF0000"> *</span></strong></label> 
+                    <label id="labelMsjFechaSuceso" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <input type="text" id="fechaSuceso" onKeyup="this.value='';" maxlength="100" class="form-control alfabeto"/>
+                </div>
+            </div>
+            <div class="row">
+                <div id="ContentPlaceHolder1_tdTipoAfiliacionXS" class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>{!strlabelTipoSolicitud}<span style="color: #FF0000"> *</span></strong> </label>
+                </div>
+                <div id="ContentPlaceHolder1_tdTipoAfiliacion" class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>{!strlabelTipoSolicitud}<span style="color: #FF0000"> *</span> </strong></label> 
+                    <label id="labelMsjPrograma" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <apex:outputText value="{!strSelectPrograma}" escape="false" />
+                    <apex:outputText value="{!strSelectTipoSolicitud}" escape="false" />
+                </div>
+                
+                <div class="col-xs-6 col-sm-3 visible-xs">
+                    <label> <strong>Relacionado Con<span style="color: #FF0000"> *</span></strong></label>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <label class="hidden-xs"> <strong>Relacionado Con<span style="color: #FF0000"> *</span> </strong></label> 
+                    <label id="labelMsjRelacionadoCon" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <select name="_RelacionadoCon" onchange="fnObtenerDocumentosCaso()" id="_RelacionadoCon" class="form-control">
+                    </select>
+                </div>
+            </div>
+
+            <div class = "row"><!--Nuevo Campo CG -->
+                    <div class="col-xs-6 col-sm-3 visible-xs">
+                            <label> <strong>Medio de Respuesta<span style="color: #FF0000"> *</span></strong></label>
+                    </div>
+                    <div class="col-xs-6 col-sm-6">
+                        <label class="hidden-xs"> <strong>Medio de Respuesta<span style="color: #FF0000"> *</span> </strong></label> 
+                        <label id="labelMsjmedioRpta" style="color:red!important;display: none;"><b> Obligatorio</b></label>
+                        <apex:outputText value="{!strMedioRespuesta}" escape="false"/>
+                    </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+
+                    <div id="documentosSoporte" class="panel panel-default col-xs-12 col-sm-9">
+                        <div class="panel-heading"><strong>Documentos Obligatorios Soporte <span style="color: #FF0000"> *</span></strong></div>
+                        <div class="panel-body" id="textDocumentosSoporte">
+                        </div>
+                    </div>
+                
+                    
+                    <!--div class="clearfix"></div-->
+                    <div class="col-xs-12 col-sm-8 visible-xs">
+                        <label> <strong>Aclaraci&#243;n de su solicitud<span style="color: #FF0000"> *</span></strong></label>
+                    </div>
+                    <div class="col-xs-12 col-sm-8">
+                        <label class="hidden-xs"> <strong>Descripci&#243;n de su solicitud<span style="color: #FF0000"> *</span> </strong> </label>
+                        <label id="labelMsjDescSolicitud" style="color:red!important;display: none;"><b> Obligatorio22</b></label> 
+                        <textarea name="descripcionSolicitud" rows="3" cols="20" id="descripcionSolicitud" onkeyup="" onkeydown="" class="form-control"></textarea>
+                    </div>
+                    
+                    <div id="ContentPlaceHolder1_divDatosAutorizacion">
+                        <div class="clearfix"></div>
+                        <div class="col-xs-12 col-sm-7 visible-xs">
+                            <label> <strong>Autoriza env&#237;o de respuesta por correo electr&#243;nico<span style="color: #FF0000"> * </span> </strong> </label>
+                        </div>
+                        <div id="ContentPlaceHolder1_DivAutorizacion" class="col-xs-12 col-sm-7">
+                            <label class="hidden-xs"> <strong>Autoriza env&#237;o de respuesta por correo electr&#243;nico<span style="color: #FF0000"> *</span> </strong></label> 
+                            <input id="autorizaCorreo" type="checkbox" name="autorizaCorreo" /><span>&nbsp;Autorizo.</span>
+                             <!--Inicio 1.1-->
+                              <label id="labelMsjAutorizacion" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                              <!--Fin 1.1-->
+                        </div>
+                        
+                        <div id="ContentPlaceHolder1_DivAutorizacion2" class="col-xs-12 col-sm-7">
+                            <label> <strong>Acepto la pol&#237;tica de <a href="https://corporativo.compensar.com/proteccion-de-datos" target="_blank">protecci&#243;n de datos personales</a><span style="color: #FF0000"> *</span> </strong> </label>
+                            <input id="autorizaHabeas" type="checkbox" name="autorizaHabeas" /><span>&nbsp;Autorizo.</span>
+                             <!--Inicio 1.1-->
+                              <label id="labelMsjAutorizacionHabeas" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                              <!--Fin 1.1-->
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xs-12 col-sm-5">
+                    <div class="col-xs-6 col-sm-12 visible-xs"></div>
+                    <div id="ContentPlaceHolder1_DivDocClienteExterno" class="col-xs-6 col-sm-12">
+                        <div style="max-height: 160px; overflow: auto">
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+    
+
+    <div class="row">
+        <div id="ContentPlaceHolder1_divFileUpload" class="col-xs-12 col-sm-12">
+            <apex:form enctype="multipart/form-data" id="formAdjuntos">
+                <input type="hidden" name="lstIdsArchivos" id="lstIdsArchivos" value="{!lstIdsArchivos}" /> 
+                <apex:pageMessages id="TheMessage" />
+                <apex:actionFunction name="fnEliminarTodosDocumentos" action="{!eliminarTodosDocumento}">
+                </apex:actionFunction>
+                <apex:pageBlock id="_BloquePrincipal">
+                    <apex:pageBlockSection showHeader="false" columns="2" id="block1">
+                        <apex:pageBlockSectionItem id="_pgsArchivos">
+                            <apex:inputFile value="{!document.body}" onchange="return validarArchivo();" filename="{!strNombreArchivo}" id="attachmentID" />
+                        </apex:pageBlockSectionItem>
+                        <apex:commandButton action="{!cargarArchivo}" value="Cargar Archivo"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1" id="_pbsTablaArchivos" title="Documentos Adjuntos" collapsible="false">
+                        <apex:pageBlockTable id="_TablaDocumentos" value="{!lstDocumentos}" var="documento" width="100%">
+                            <apex:column headerValue="Item" >
+                                <apex:outputText value="{!documento.intIndex}" /> 
+                            </apex:column>
+                            <apex:column headerValue="Nombre Archivo" >
+                                <apex:outputText value="{!documento.strNombreDocumento}" /> 
+                            </apex:column>
+                            <apex:column headerValue="Eliminar">
+                                <apex:commandlink action="{!eliminarDocumento}" value="Eliminar" id="_LinkEliminar">                         
+                                    <apex:param name="intRow" assignTo="{!intRow}" value="{!documento.intIndex}"/>  
+                                </apex:commandlink>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:form>
+        </div>
+    </div>
+    
+    <script>
+    function validarArchivo(){
+        if ($("[id$='attachmentID']")[0].files.length > 0) {
+            var fileName = $("[id$='attachmentID']")[0].files[0].name;
+            var fileExt = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+            
+            if (EXTENSIONES_VALIDAS.indexOf(fileExt) < 0) {
+                $("#laConfirmacion").html('Puede cargar archivos con las siguientes extensiones .csv, .txt, .tiff, .tif, .pdf, .xls, .xlsx, .doc, .docx, .jpg, .png, .jpeg, .gif, .bmp y .rtf');
+                $("#myModal").modal();
+                $("[id$='attachmentID']").val('');
+                return false;
+            }
+            
+            var uploadFileSize = $("[id$='attachmentID']")[0].files[0].size;
+            if (uploadFileSize > 1024 * 1024 * 4) {
+                //alert('File uploads must be less than 100k in size. Your file is: '+(Math.round(uploadFileSize/1024)) + 'k');
+                $("#laConfirmacion").html('El tama&#241;o del archivo debe ser menor a 4 MB. el tama&#241;o de su archivo es de '+(Math.round((uploadFileSize/1024)/1024)) + ' MB');
+                $("#myModal").modal();
+                $("[id$='attachmentID']").val('');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    </script>
+    
+
+    <form method="post" action="" onsubmit="" id="form1" autocomplete="off" enctype="multipart/form-data">
+        <div class="container">
+            <div id="ContentPlaceHolder1_divDatosSolicitud">            
+                <!--<div id="Captcha" class="row">
+                    <label id="labelMsjCaptcha" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                    <div class="g-recaptcha" data-sitekey="{!$Label.RF2_TokenRecapcha_lbl}"></div>
+                </div>-->
+                <div id="ContentPlaceHolder1_trAcciones" class="row acciones">
+                    <div class="col-xs-12 col-sm-12 col-md-12" style="text-align:center;">
+                        <input id = "botonEnviar" type="button" class="boton" value="Enviar" onclick="fnEnviar();"/>
+                        <input type="button" class="boton" value="Limpiar" onclick="fnLimpiarFormularioBoton();"/>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </form>
+</div>
+    
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content" style="position:absolute !important; top: 50% !important; margin-top : 299px !important; width: 100% !important; ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                Confirmaci&#243;n
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title" id="laConfirmacion">Some text in the modal.</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal2" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                Confirmaci&#243;n
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title" id="laConfirmacion2">Some text in the modal.</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="botonPrueba">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$('#modal_id').modal({ backdrop: 'static', keyboard: true });
+    var myApp;
+        myApp = myApp || (function () {
+            var pleaseWaitDiv = $('<div style="z-index: 1000; vertical-align=middle; background-color: #000; opacity:1" class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" data-backdrop="static"><div class="modal-header"></div>');
+            return {
+                showPleaseWait: function() {
+                    pleaseWaitDiv.modal();
+                },
+                hidePleaseWait: function () {
+                    pleaseWaitDiv.modal('hide');
+                },
+
+            };
+        })();
+        $("#botonPrueba").click(function(){
+            fnLimpiarFormulario();
+        });
+</script>
+ 
+
+</body>
+</html>
+</apex:page>

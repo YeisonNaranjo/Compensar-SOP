@@ -1,0 +1,23 @@
+<!--/************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Juan David Uribe Ruiz (JDUR)
+Proyecto:          Compensar
+Descripción:       Pagina encargada de redireccionar al visulizador para ver la ficha tecnica de alojamiento
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------  ---------------------------------------------
+    1.0     2017/12/01      Juan David Uribe Ruiz   Creación Clase.
+************************************************************************************************/-->
+<apex:page standardController="Opportunity" extensions="COM_BotonFichaTecnicaAlojamiento_ctr" action="{!redireccionar}">
+    <apex:slds />
+    <div class="slds-scope">
+        <apex:form id="idForm">
+            <apex:pageBlock title="Ficha Tecnica Alojamiento">
+                <apex:pagemessages id="errorMessage" />
+                <h1>... Cargando el visualizador</h1>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>

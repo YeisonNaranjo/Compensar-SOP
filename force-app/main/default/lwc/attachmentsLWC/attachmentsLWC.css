@@ -1,0 +1,9 @@
+.full-width{
+    max-width: 100%;
+    width: 100%;
+    border: 0;
+}
+
+.bottom-space{
+    margin-bottom: 10px;
+}

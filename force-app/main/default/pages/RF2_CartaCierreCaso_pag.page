@@ -1,0 +1,102 @@
+<!--/**
+* Avanxo Colombia
+* @author           Rubén Suárez Forero href=<rsuarez@avanxo.com>
+* Project:          Compensar
+* Description:      Visualforce para generar el pdf de la carta de cierre del caso
+*
+* Changes (Version)
+* -------------------------------------
+*           No.     Date            Author                          Description
+*           -----   ----------      --------------------            ---------------
+* @version  1.0     2017-11-09      Rubén Suárez Forero (RUSF)      Creación clase.
+*************************************************************************************************************/-->
+<apex:page renderAs="pdf" standardStylesheets="false" controller="RF2_CartaCierreCaso_ctr" applyHtmlTag="false" showHeader="false" sidebar="true">
+    <html>
+        <head>
+            <title>Carta Cierre Caso</title>
+            <style type="text/css" media="print">
+                @page {
+                    size:8.5in 11in;
+                    margin-top: 200px;
+                    margin-bottom: 150px;
+                    @top-left { content: element(header); }
+                    @left-middle { content: element(footer); }
+                    @right-middle { content: element(derecha); }
+                }
+                * {
+                    font-size: 10pt;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                div.header {
+                    padding:1px;
+                    position: running(header);
+                    width:100%;
+                    height:107px;
+                    margin-top:55px;
+                }
+                div.footer {
+                    padding:1px;
+                    position: running(footer);
+                    width:278px;
+                    height:90px;
+                    margin-top:720px;
+                    margin-left:270px;  
+                    
+                }
+                div.derecha {
+                    padding:1px;
+                    position: running(derecha);
+                    width:23px;
+                    height:164px;
+                    margin-top:650px;   
+                    margin-left: 10px;  
+                    
+                }
+                  .page-break {
+                    display:block;
+                    page-break-inside: avoid;
+                }
+            </style> 
+        </head>
+        <body>
+            <div class="header"><img src="{!$Resource.RF2_GIENuevoLogoCompensar}" width="693px" height="106px" /></div>
+            <div class="footer"><img src="{!$Resource.RF2_GIECertificaciones}" width="277px" height="89px" /></div>
+            <div class="derecha"><img src="{!$Resource.RF2_GIESuperSubsidio}" width="20" height="162px" /></div> 
+            <!--INICIO CARTA-->
+            <p>
+                <strong><apex:outputText value="{!cabecera}" escape="false"/></strong>  
+            </p>
+            <p>{!contenido.RF2_Ciudad__c} {!fecha}</p>
+            <br/>
+            <p> 
+                {!titulo} <!--<apex:outputText value="{!contenido.RF2_Titulo__c}" escape="false"/>--><br/>
+                {!clienteNombre}<br/>
+                {!clienteDireccion}<br/> 
+                Teléfono {!clienteTelefono}<br/>
+                {!clienteCiudad} 
+            </p>
+            <br/>
+            <p align="justify"><!--{!saludo}--><apex:outputText value="{!contenido.RF2_Saludo__c} {!contenido.RF2_ParrafoUno__c}" escape="false"/></p>
+
+            <apex:variable var="primerParrafo" value="{! 1==1}"/>
+            <apex:repeat value="{!lstComentarioCierre}" var="comentarioParrafo">
+                 <p align="justify">{! If(primerParrafo, respuestaParrafo+' '+comentarioParrafo, comentarioParrafo)}</p>
+                 <apex:variable var="primerParrafo" value="{! 1==2}"/>
+            </apex:repeat>
+
+            <!--<p align="justify"><apex:outputtext style="white-space:pre-wrap;" value="{!comentariosCierre}" escape="false" /><br /></p>-->
+            <!--<apex:outputtext style="white-space:pre-wrap;" value="{!comentariosCierre}" escape="false" /><br /></p>-->
+            <p align="justify"><apex:outputText value="{!contenido.RF2_ParrafoTres__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenido.RF2_ParrafoCuatro__c}" escape="false"/></p>
+            <div class="page-break"><!-- CARLOS VILLALBA INICIO-->
+                <p align="justify"><apex:outputText value="{!contenido.RF2_Despedida__c}" escape="false"/></p>
+                <br/>
+                <apex:outputText value="{!responsableCaso}" escape="false"/><br/>
+                <apex:outputText value="{!responsableCargo}" escape="false"/><br/>
+                <!--<apex:outputText value="{!responsableArea}" escape="false"/><br/>-->
+                <apex:outputText value="{!contenido.RF2_DatosFirma__c}" escape="false"/>
+            </div><!--CARLOS Villalba-->
+            <!--FIN CARTA-->
+        </body>
+    </html>
+</apex:page>

@@ -1,0 +1,51 @@
+<apex:page standardController="Lead" extensions="COS_reasignacionProspecto_ctr" recordSetVar="accs" lightningStylesheets="true" showHeader="false" docType="html-5.0" applyBodyTag="false">
+    <script>
+    	function doRedirect(){
+        	window.history.back();
+        }
+    </script>
+    <apex:form >
+        
+        <apex:pageMessages id="showmsg"></apex:pageMessages>
+        
+        <apex:pageBlock title="Reasignación de prospectos" id="reasignarProspecto" >
+            <apex:outputPanel id="reasignarExitoso" rendered="{!blnExitoso}">
+                <p style="text-align:center;color:green;">Prospectos reasignados exitosamente!!!</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarFallido" rendered="{!blnFallido}">
+                <p style="text-align:center;color:red;">Ocurrio un error en la reasignación de prospectos, itente de nuevo por favor</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarSelectOption" rendered="{!blnSelectOption}">
+                <p style="text-align:center;color:blue;">Debe seleccionar una opción de reasignación</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarUsersNull" rendered="{!blnUsersNull}">
+                <p style="text-align:center;color:red;">No existen asesores asignados para distribuir las oportuniades seleccionadas</p>
+            </apex:outputPanel>
+            
+        	<apex:pageBlockSection columns="2">
+                <apex:selectList label="Cambiar propietario" size="1" value="{!selectedAsesor}" > 
+                    <apex:selectOptions value="{!selectedaccnamefields}"/> 
+                </apex:selectList>
+                <apex:inputCheckbox label="Reasignación masiva" selected="false" value="{!asesorDistribucion}"/>
+            </apex:pageBlockSection>
+            <br/><br/>
+            
+            <apex:pageBlockTable value="{!lstLead}" var="ld" title="Cuentas a reasignar" id="prospectTable">
+                <apex:column headervalue="Nombre" value="{!ld.name}"/>
+                <apex:column headervalue="Tipo documento" value="{!ld.CEL1_TipoDocumento__c}"/>
+                <apex:column headervalue="No. documento" value="{!ld.CEL1_NumeroDocumento__c}"/>
+                <apex:column headervalue="Propietario" value="{!ld.Owner.Name}"/>
+                <apex:column headervalue="Estado" value="{!ld.Status}"/>
+            </apex:pageBlockTable>
+            <br/><br/>
+            <apex:pageBlockButtons location="bottom">
+<!--                <apex:commandButton value="Cancelar" onclick="doRedirect()"/>		-->
+                <apex:commandButton value="Enviar" onclick="if(!confirm('Desea reasignar los prospectos?')){return false};" action="{!reasignar}" reRender="prospectTable,reasignarExitoso,reasignarProspecto"/>
+            </apex:pageBlockButtons>
+            
+            
+        </apex:pageBlock>
+        
+        
+    </apex:form>
+</apex:page>

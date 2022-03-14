@@ -1,0 +1,27 @@
+<apex:page id="_thePage" showHeader="true" sidebar="true" standardController="Account" extensions="COM_RegistrarCliente_ctr" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0" action="{!procesarRegistro}">
+
+	<html>
+		
+		<body>
+			<apex:pageMessages id="TheMessages"/>
+			<apex:form id="idForm">
+				<div style="padding-top: 2%;width: 90%;margin: 0 auto;">
+	        		<div class="demo-only slds-grid" style="background: rgb(65, 154, 199);">
+	                    <div class="container-fluid">
+	                        <div class="row">
+	                            <div class="col-xs-12 col-md-12 labels" style="color: white; margin: 0 auto; padding: 1%">
+	                            	<center>
+		                                <apex:outputLabel >
+		                                    <p style="font-size:20px;"><b>{!strMensaje}</b></p>
+		                                </apex:outputLabel>
+		                            </center>
+	                            </div>                            
+	                    	</div>
+
+	                    </div>
+					</div>
+				</div>
+			</apex:form>
+		</body>
+	</html>
+</apex:page>

@@ -1,0 +1,105 @@
+<!--/**
+* Avanxo Colombia
+* @author           Rubén Suárez Forero href=<rsuarez@avanxo.com>
+* Project:          Compensar
+* Description:      Visualforce para generar el pdf de la carta de cierre del caso GIE
+*
+* Changes (Version)
+* -------------------------------------
+*           No.     Date            Author                          Description
+*           -----   ----------      --------------------            ---------------
+* @version  1.0     2017-11-28      Rubén Suárez Forero (RUSF)      Creación clase.
+*************************************************************************************************************/-->
+<apex:page renderAs="pdf" standardStylesheets="false" controller="RF2_CartaCierreCasoGIE_ctr" applyHtmlTag="false" showHeader="false" sidebar="true" action="{!cargarContenidoCarta}">
+    <html>
+        <head>
+            <title>Carta Cierre Caso GIE</title>
+            <style>
+                @page {
+                    size:8.5in 11in;
+                    margin-top: 150px;
+                    margin-bottom: 150px;
+                    @top-left { content: element(header); }
+                    @left-middle { content: element(footer); }
+                    @right-middle { content: element(derecha); }
+                }
+                * {
+                    font-size: 10pt;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                div.header {
+                    padding:1px;
+                    position: running(header);
+                    width:100%;
+                    height:107px;
+                    margin-top:55px;
+                }
+                div.footer {
+                    padding:1px;
+                    position: running(footer);
+                    width:278px;
+                    height:90px;
+                    margin-top:720px;
+                    margin-left:270px;  
+                    
+                }
+                div.derecha {
+                    padding:1px;
+                    position: running(derecha);
+                    width:23px;
+                    height:164px;
+                    margin-top:650px;   
+                    margin-left: 10px;  
+                    
+                }
+                .page-break {
+			        display:block;
+			        page-break-inside: avoid;
+	        	}
+            </style> 
+        </head>
+        <body LANG="es-CO">
+            <div class="header"><img src="{!$Resource.RF2_GIENuevoLogoCompensar}" width="693px" height="106px" /></div>
+            <!--<div class="footer"><img src="{!$Resource.RF2_GIECertificaciones}" width="277px" height="89px" /></div>-->
+            <div class="derecha"><img src="{!$Resource.RF2_GIESuperSubsidio}" width="20" height="162px" /></div> 
+            <!--INICIO CARTA-->
+            <p align="justify"><strong>{!consecutivo}</strong></p>
+            <br/>
+            <p align="justify">{!contenidoCarta.RF2_Ciudad__c} {!fecha}</p>
+            <br/>
+            <p> 
+                <apex:outputText value="{!contenidoCarta.RF2_Dignidad__c}" escape="false"/><br/>
+                <strong>{!clienteNombre}</strong><br/>
+                {!clienteDireccion}<br/> 
+                {!contenidoCarta.RF2_Telefono__c} {!clienteTelefono}<br/> 
+                {!clienteCiudad} 
+            </p>
+
+            <p align="justify"><apex:outputText value="{!contenidoCarta.RF2_Saludo__c}" escape="false"/></p>
+            <p align="justify"><apex:outputText value="{!contenidoCarta.RF2_ParrafoUno__c}" escape="false"/></p>
+            <br/>
+            <p align="justify"><apex:outputText value="{!casoRespuesta}" escape="false"/></p>
+            <br/>
+            <div class="page-break"><!-- CARLOS VILLALBA INICIO-->
+                <p align="justify"><apex:outputText value="{!contenidoCarta.RF2_Despedida__c}" escape="false"/></p> 
+                
+                <p>
+                    <apex:image url="{!$Resource.RF2_FirmaGestorAtencionEmpresarial}" width="193" height="69" rendered="{!NOT(ISNULL(elaboro))}"/>
+                    <apex:outputText rendered="{!ISNULL(elaboro)}" value="<br/>" escape="false"/>
+                </p>
+                <p> 
+                    <strong>{!asesorNombre}</strong><br/>
+                    {!asesorCargo}<br/>
+                    {!asesorProceso}<br/>
+                    {!contenidoCompensar.RF2_RazonSocial__c}<br/>
+                    {!contenidoCompensar.RF2_Direccion__c}<br/>          
+                    {!contenidoCompensar.RF2_Telefono__c}<br/>          
+                    <a>{!contenidoCompensar.RF2_URL__c}</a>          
+                </p>
+                <apex:outputText rendered="{!NOT(ISNULL(elaboro))}" value="{!elaboro}" escape="false"/>
+            </div><!-- CARLOS VILLALBA FIN-->
+            <!--FIN CARTA-->
+        </body>
+    </html>
+    
+</apex:page>

@@ -1,0 +1,619 @@
+<template>
+<div class="spinner">
+<template if:true={isLoading}>
+<lightning-spinner alternative-text="Loading" variant="brand" size="large">
+</lightning-spinner>
+</template>
+</div>
+
+<c-modal show={showModal} showfooter={showfooter} showbuttonpositive={showButtonPositive} onpositive={handleModal} positive-label="Aceptar">
+<lightning-card>
+<div class="slds-text-body_regular">
+<p class="bold">Señor Usuario</p>
+<ul class="custom-list">
+<li>Recuerde que la gestión de estos requerimientos no tiene costo y que para nosotros es importante conocer su opinión.</li>
+<li>Basta con radicar una sola PQRS en referencia a un mismo hecho. Cuando se adviertan que existen quejas,
+solicitudes, reconocimientos y sugerencias con contenido idéntico, únicamente se tramitará la primera que haya sido radicada
+por nuestros canales.
+</li>
+<li>Por favor a continuación describa los hechos que dan origen a este requerimiento. Sea lo más detallado posible indicando, 
+hechos, nombres, lugares, pantallazos de errores tecnológicos, etc.
+</li>
+<li>
+Le informamos que recibirá respuesta en un máximo de 10 días hábiles a partir del día de la radicación. 
+</li>
+</ul>
+</div>
+</lightning-card>
+<!--<template if:true={isLoading}>
+<div class="lgc-bg">
+<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+</div>
+</template>-->
+</c-modal>
+
+
+<c-modal show={showModalLimpiar} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} showbuttonnegative={showButtonNegative} onnegative={handleCloseLimpiar} onpositive={handleOKLimpiar} positive-label="Aceptar">
+<h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">ADVERTENCIA</h2>
+<lightning-card>
+<div class="slds-text-body_regular">
+<p class="bold">Esta a punto de limpiar el formulario, Desea continuar?.</p>
+<p class="bold">Debe tener en cuenta que se reiniciara el formulario y la información ingresada se perdera.</p>
+</div>
+</lightning-card>
+</c-modal>
+
+<c-modal show={showModalEnviar} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} onpositive={handleCloseEnviar} positive-label="OK">
+<h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">ADVERTENCIA</h2>
+<lightning-card>
+<div class="slds-text-body_regular">
+<p class="bold">No es posible registrar su PQRS sin completar los campos requeridos.</p>
+<p class="bold">Valide las secciones del formulario donde le indique que faltan campos por completar o corregir.</p>
+</div>
+</lightning-card>
+<template if:true={loading}>
+<div class="lgc-bg">
+<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+</div>
+</template>
+</c-modal>
+
+<c-modal show={showSuccess} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} onpositive={handleCloseSuccess} positive-label="OK">
+<h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">CREACIÓN EXITOSA</h2>
+<lightning-card>
+<div class="slds-text-body_regular">
+<p class="bold">Buenas noticias.</p>
+<p class="bold">Se ha creado el caso nro: {numeroCaso}.</p>
+<p class="bold">Le informamos que recibirá respuesta en un máximo de 10 días hábiles a partir del día de la radicación.</p>
+</div>
+</lightning-card>
+</c-modal>
+
+<c-modal show={showError} showheader={showHeader}  showfooter={showfooter} showbuttonpositive={showButtonPositive} onpositive={handleError} positive-label="OK">
+<h2 class="slds-text-heading_medium slds-hyphenate bold" slot="header">Error</h2>
+<lightning-card>
+<div class="slds-text-body_regular">
+<p class="bold">Ha ocurrido un error</p>
+<p class="bold">{errorMedio}</p>
+</div>
+</lightning-card>
+</c-modal>
+
+<template if:true={showComponent}>
+<div class="container">
+
+<section class="section-main">
+<div class="slds-text-body_regular bold align-rightB"><span class="obligatorio space-top">* Datos Obligatorios</span></div>
+
+<!-- Contact Section -->
+<template if:true={showAnonimo}>
+<section class="section-contacto">
+<div class="colorregistro slds-box">
+<h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+Datos de contacto
+</h2>
+</div>
+<div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+<div class="sub-container">
+<template if:true={showNit}>
+    <lightning-layout class="slds-grid slds-gutters align-default">
+        <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+            <lightning-input 
+                label="Razón Social"
+                data-id="rSocial"
+                message-when-value-missing="Por favor ingrese su Razón Social"
+                max-length="100"
+                onchange={handleRSocial}
+                required>
+            </lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+        <lightning-layout-item flexibility="auto" padding="around-small">
+            <lightning-combobox 
+                data-id="tIdentContact"
+                message-when-value-missing="Por favor seleccione un tipo de identificación de Contacto"
+                label="Tipo de Identicación Contacto"
+                value={tIdContact}
+                placeholder="Seleccione una opción"
+                options={optionsTipoIdenContact}
+                onchange={handleChangeIdentContact}
+                required
+            ></lightning-combobox>
+        </lightning-layout-item>
+
+        <lightning-layout-item flexibility="auto" padding="around-small" class="slds-form-element__control">
+            <lightning-input 
+                data-id="numIdentContact"
+                label="Número de identificación Contacto"
+                message-when-value-missing="Debe ingresar el número de identificación de Contacto"
+                message-when-pattern-mismatch="Los números de identificación solo pueden contener números"
+                message-when-type-mismatch="Los números de identificación solo pueden contener números"
+                type="number"
+                max-length="12"
+                onchange={handleNIdentContact}
+                required>
+            </lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
+
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+        <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+            <lightning-input 
+                data-id="nContact"
+                label="Nombre de contacto de quien radica"
+                message-when-value-missing="Debe ingresar su nombre de contacto"
+                message-when-pattern-mismatch="Los nombres solo pueden contener letras"
+                required
+                max-length="100"
+                onchange={handleNomContact}
+                pattern="([a-zA-Z- ])*">
+            </lightning-input>
+        </lightning-layout-item>
+
+        <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+            <lightning-input 
+                data-id="emailContact"
+                label="Correo de Contacto"
+                message-when-value-missing="Debe ingresar su email"
+                message-when-pattern-mismatch="Debe ingresar un formato de email válido"
+                onchange={handleEmailContact}
+                required="true"
+                pattern="(^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-](?:[a-zA-Z0-9-]*[a-zA-Z0-9-])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9]*[a-zA-Z0-9])?$)"
+                type="email">
+            </lightning-input>
+        </lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">        
+    <lightning-layout-item flexibility="auto" padding="around-small">
+    <lightning-combobox 
+        data-id="tipoIdent"
+        message-when-value-missing= "Por favor seleccione un tipo de identificación"
+        label="Tipo de Identificación de quien radica"
+        value={tipoIdentificacion}
+        placeholder="Seleccione una opción"
+        options={options}
+        onchange={handleChange}
+        required
+    ></lightning-combobox>
+    </lightning-layout-item>
+
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-form-element__control">
+    <lightning-input 
+        label="Número de Identificación de quien radica"
+        message-when-value-missing="Debe ingresar su número de identificación"
+        message-when-pattern-mismatch="Los números de identificación solo pueden contener números"
+        message-when-type-mismatch="Los números de identificación solo pueden contener números"
+        data-id="numIdent"
+        type="number"
+        max-length="12"
+        onchange={handleNumIdent}
+        required>
+    </lightning-input>
+    </lightning-layout-item>           
+</lightning-layout>
+
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <lightning-combobox 
+            data-id="rPropio"
+            message-when-value-missing="Por favor seleccione una opción"
+            label="Registrar a nombre propio"
+            value={propio}
+            placeholder="Seleccione una opción"
+            options={optionsPropio}
+            onchange={handleChangePropio}
+            required>
+        </lightning-combobox>
+    </lightning-layout-item>
+
+        
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <template if:true={showPropio}>
+            <lightning-input 
+                data-id="radNombre"
+                label="Radica en nombre de"
+                message-when-value-missing="Por favor diligencie este campo"
+                message-when-pattern-mismatch="Los nombres solo pueden contener letras"
+                onchange={handleRadicaNombre}
+                required
+                max-length="100"
+                pattern="([a-zA-Z- ])*">
+            </lightning-input>
+        </template>
+    </lightning-layout-item>
+    
+</lightning-layout>
+
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+    <template if:true={showPropio}>
+        <lightning-layout-item flexibility="auto" padding="around-small">
+        <lightning-combobox
+            data-id="actSol"
+            message-when-value-missing= "Por favor complete este campo"
+            label="Actúa cómo solicitante de"
+            value={solicitante}
+            placeholder="Seleccione una opción"
+            options={solicitantes}
+            onchange={handleSolicitante}
+            required
+        ></lightning-combobox>
+    </lightning-layout-item>
+    
+    <lightning-layout-item flexibility="auto" padding="around-small">
+        <lightning-combobox 
+            data-id="tipoIdent"
+            message-when-value-missing= "Por favor seleccione un tipo de identificación"
+            label="Tipo de Identificación de a quien representa"
+            value={tipoIdentificacionRepresentado}
+            placeholder="Seleccione una opción"
+            options={options}
+            onchange={handleChangeRepresentado}
+            required
+        ></lightning-combobox>
+    </lightning-layout-item>
+
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-form-element__control">
+        <lightning-input 
+            label="Número de Identificación de a quien representa"
+            message-when-value-missing="Debe ingresar su número de identificación"
+            message-when-pattern-mismatch="Los números de identificación solo pueden contener números"
+            message-when-type-mismatch="Los números de identificación solo pueden contener números"
+            data-id="numIdentRepresentado"
+            type="number"
+            max-length="12"
+            onchange={handleNumIdentRepresentado}
+            required>
+        </lightning-input>
+    </lightning-layout-item> 
+</template>       
+</lightning-layout>   
+</div>              
+</div>
+</section>
+</template>
+
+<section class="section-radicaanonimo">
+<div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+    <div class="sub-container">
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small">
+        <div class="slds-checkbox">
+            <!--<abbr class="slds-required" title="required">*</abbr>-->
+            <input type="checkbox" id="checkbox-unique-id-75" checked={checked} onchange={changeToggle} />
+            <label class="slds-checkbox__label" for="checkbox-unique-id-75">
+            <span class="slds-checkbox_faux"></span>
+            <span class="slds-form-element__label align-right">Radicación Anónima</span>
+            </label>
+        </div>
+    </lightning-layout-item>
+</lightning-layout> 
+</div>              
+</div>
+</section>
+
+<template if:true={showAnonimo}>
+<section class="section-contacto2">
+<div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+    <div class="sub-container">
+        <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <lightning-input 
+            data-id="dirContact"
+            label="Dirección de Contacto"
+            message-when-value-missing="Debe ingresar su dirección"
+            onchange={handleDirContact}
+            required
+            max-length="100">
+        </lightning-input>
+    </lightning-layout-item>
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <c-lookup 
+            required
+            record-api-name={poblacionApiName}
+            meta-label-field={metaLabelField}  
+            filter={filter}
+            value={pais}
+            icon-name="custom:custom85"
+            onchange={handleChangePais}
+            label="País de Origen"
+        ></c-lookup>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <c-lookup 
+            required
+            record-api-name={poblacionApiName}
+            meta-label-field={metaLabelField}
+            filter={depFilter}
+            value={departamento}
+            icon-name="custom:custom85"
+            onchange={handleChangeDepartamento}
+            label="Departamento"
+        ></c-lookup>
+    </lightning-layout-item>
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <!--<lightning-combobox 
+            data-id="ciudadContact"
+            message-when-value-missing="Por favor seleccione una ciudad"
+            label="Ciudad"
+            value={ciudad}
+            placeholder="Seleccione una Ciudad"
+            options={optionsCiudad}
+            onchange={handleChangeCiudad}
+            required>
+        </lightning-combobox>-->
+        <c-lookup 
+            required
+            record-api-name={poblacionApiName}
+            meta-label-field={metaLabelField}
+            filter={ciudadFilter}
+            value={ciudad}
+            icon-name="custom:custom85"
+            onchange={handleChangeCiudad}
+            label="Ciudad"
+        ></c-lookup>
+    </lightning-layout-item>
+</lightning-layout>
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <lightning-input data-formfield="fijoContacto"
+            data-id="fijoContact"
+            label="Teléfono fijo"
+            message-when-pattern-mismatch="Ingrese solo números"
+            onchange={handleTelefono}
+            formatter="decimal"
+            max-length="10"
+            pattern="^(0|[1-9][0-9]*)$">
+        </lightning-input>
+    </lightning-layout-item>
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <lightning-input data-formfield="movilContacto"
+            data-id="movilContact"
+            label="Teléfono móvil"
+            message-when-pattern-mismatch="Ingrese solo números"
+            onchange={handleCelular}
+            formatter="decimal"
+            max-length="10"
+            pattern="^(0|[1-9][0-9]*)$">
+        </lightning-input>
+    </lightning-layout-item>
+</lightning-layout> 
+</div>              
+</div>
+</section>
+</template>
+<!-- End Contact Section -->
+
+<!-- Request Section -->
+<section class="section-solicitud">
+<div class="colorregistro slds-box">
+<h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+Datos de solicitud
+</h2>
+</div>
+
+<div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+<div class="sub-container">
+
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+<lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+    <lightning-combobox 
+        data-id="sedeSuceso"
+        message-when-value-missing="Por favor seleccione un departamento"
+        label="Sede del Suceso"
+        value={suceso}
+        placeholder="Seleccione una Sede"
+        options={optionsSuceso}
+        onchange={handleChangeSuceso}
+        required>
+    </lightning-combobox>
+</lightning-layout-item>
+<lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_1-of-4">
+    <lightning-input 
+        data-id="fechaSuceso"
+        label="Fecha del Suceso"
+        message-when-value-missing="Debe ingresar una fecha"
+        required
+        onchange={handleFechaSuceso}
+        type="date"
+        max={todaysDate}>
+    </lightning-input>
+</lightning-layout-item>
+<lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_1-of-4">
+
+</lightning-layout-item>
+</lightning-layout>
+
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <lightning-combobox 
+            data-id="tipoProgram"
+            message-when-value-missing="Por favor seleccione un tipo de PQRS"
+            label="Tipo de PQRS"
+            value={programa}
+            placeholder="Seleccione una opción"
+            options={optionsPrograma}
+            onchange={handleChangeProgram}
+            required>
+        </lightning-combobox>
+    </lightning-layout-item>
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <lightning-combobox 
+            data-id="relaCon"
+            message-when-value-missing="Por favor diligencie este campo"
+            label="Relacionado Con"
+            value={relacionado}
+            placeholder="Seleccione una opción"
+            options={optionsRelacionado}
+            onchange={handleChangeRelacionado}
+            required>
+        </lightning-combobox>
+    </lightning-layout-item>
+</lightning-layout>
+<template if:true={showAnonimo}>
+<lightning-layout class="align-default slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_1-of-4">
+        <lightning-combobox 
+            data-id="mediosRta"
+            message-when-value-missing="Por favor seleccione un medio de respuesta"
+            label="Medio de Respuesta"
+            value={medioRespuesta}
+            placeholder="Seleccione una opción"
+            options={optionsMedio}
+            onchange={handleChangeMedio}
+            required>
+        </lightning-combobox>
+    </lightning-layout-item>
+</lightning-layout>
+</template>
+<lightning-layout class="align-default slds-grid slds-gutters">
+<lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+    <lightning-textarea 
+        data-id="descSol"
+        label="Descripción de su solicitud"
+        message-when-value-missing="Debe ingresar una descripción de su solicitud"
+        onchange={handleChangeDescrip}
+        required
+        max-length="131000">
+    </lightning-textarea>
+</lightning-layout-item>
+</lightning-layout>
+<template if:true={showAnonimo}>
+<lightning-layout class="align-default slds-grid slds-gutters">
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+        <div class="slds-text-body_regular bold">Autoriza envío de respuesta por correo electrónico</div>
+        <lightning-input label="Acepto"
+            checked={autoriza}
+            class="slds-p-left_xx-small"
+            type="checkbox"
+            message-when-value-missing="Por favor diligencie este campo"
+            onchange={handleAutoriza}
+            required>
+        </lightning-input>
+    </lightning-layout-item>
+</lightning-layout>
+</template>
+<lightning-layout class="align-default slds-grid slds-gutters">
+<lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+    <div class="slds-text-body_regular bold">Acepto la política de <span class="color-naranja">protección de datos personales</span></div>
+    <lightning-input label="Acepto"
+        checked={aceptaPolitica}
+        class="slds-p-left_xx-small"
+        message-when-value-missing="Por favor diligencie este campo"
+        onchange={handleHabeas}
+        type="checkbox"
+        required>
+    </lightning-input>
+    <br />
+    <div class="slds-text-body_regular">
+        <lightning-formatted-url value="https://corporativo.compensar.com/proteccion-de-datos"
+            tooltip="ver política"
+            message-when-value-missing="Por favor diligencie este campo"
+            label="Ver politica de tratamiento de datos"
+            
+            target="_blank">
+        </lightning-formatted-url>
+    </div>
+</lightning-layout-item>
+</lightning-layout>
+<!--<c-attachments-l-w-c></c-attachments-l-w-c>-->
+<lightning-layout class="align-default slds-grid slds-gutters">
+<div class="slds-box full-width">
+    <div class="colorregistro slds-box">
+        <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+            Archivos Adjuntos
+        </h2>
+    </div>
+    <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_1-of-4">
+        <div class="slds-text-body_regular bold">Seleccione sus archivos - (Tamaño máximo total 3MB)</div>
+        <div class="slds-text-body_regular bold">Formatos permitidos: .xlsx, .xls, .png, .pdf, .doc, .docx, .jpg, .jpeg</div>
+        <lightning-input 
+            name="file uploader"
+            accept={acceptedFormats}
+            onchange={handleMultipleFileChanges}
+            type="file"
+            variant="label-hidden"
+            multiple>
+        </lightning-input>
+    </lightning-layout-item>
+    <template if:true={errorMessage}>
+        <p class="red-text bold">{errorMessage}</p>
+    </template>
+    <div if:true={activo}>
+        <lightning-card title="Archivos Cargados" icon-name="standard:file">
+            <table class="slds-table slds-table_cell-buffer slds-table_header-hidden">
+                <thead>
+                <tr class="">
+                    <th class="slds-size_3-of-10"
+                        scope="col">
+                    <div class="slds-truncate"
+                        title="Name">Archivo</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <template for:each={filesUploaded}
+                            for:item="marca"
+                            for:index="indexVar">
+                    <tr key={marca.Title}
+                        class="slds-hint-parent">
+                    <td class="slds-size_3-of-10 font-custom"
+                        data-label="Prospecting">
+                        <div>
+                        <lightning-input 
+                            type="text"
+                            key={marca.Title}
+                            data-id={marca.Title}
+                            name="input1"
+                            read-only
+                            label=Participacion
+                            value={marca.Title}
+                            variant="label-hidden">
+                            </lightning-input>
+                        </div>
+                    </td>
+                    <td class="slds-size_1-of-10"
+                        data-label="Prospecting">
+                        <a name={indexVar}
+                        data-id={marca.Title}
+                        onclick={removeRow}>
+                        <lightning-icon icon-name="action:delete"
+                                        alternative-text="delete"
+                                        size="small"></lightning-icon>
+                        </a>
+                    </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </lightning-card>
+    </div>
+</div>
+</lightning-layout>
+<lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+<lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-4">
+    <div class="slds-align_absolute-center">
+        <div class="slds-size_5-of-10">
+        <button disabled={vDisabled} class="controlButton" type="submit" onclick={handleEnviar}>Enviar</button>
+        </div>
+        <div class="slds-size_5-of-10 space">
+            <button class="controlButton" onclick={handleLimpiar}>Limpiar</button>
+        </div>
+    </div>
+</lightning-layout-item>
+</lightning-layout>
+</div>             
+</div>
+</section>
+<!-- End Request Section -->
+</section>
+
+</div>
+</template>
+
+</template>

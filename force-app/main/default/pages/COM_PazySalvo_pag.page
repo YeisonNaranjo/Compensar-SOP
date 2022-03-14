@@ -1,0 +1,76 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Cristian David Mejia (CM)
+Proyecto:          Compensar
+Descripción:       Pagina encargada de la creación de los PDF de paz y salvo
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------  ---------------------------------------------
+    1.0     01/08/17             Cristian David Mejia (CM)             Creación Clase.
+    2.0     12/12/17             Rubén Suárez Forero (RUSF)            Ajuste plantilla del pdf.
+************************************************************************************************/ -->
+<apex:page showHeader="false" sidebar="false" standardController="Account" extensions="COM_PazySalvo_ctr" renderAs="PDF" action="{!getBody}" applyHtmlTag="false">
+    <html>
+        <head>
+            <title>Carta Cierre Caso GIE</title>
+            <style type="text/css" media="print">
+                @page {
+                    size:8.5in 11in;
+                    margin-top: 200px;
+                    margin-bottom: 150px;
+                    @PageBreak{ page-break:always; page-break-inside:avoid; }
+                    @top-left { content: element(header); }
+                    @left-middle { content: element(footer); }
+                    @right-middle { content: element(derecha); }
+                }
+                * {
+                    font-size: 11pt;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                div.header {
+                    padding:1px;
+                    position: running(header);
+                    width:100%;
+                    height:107px;
+                    margin-top:55px;
+                }
+                div.footer {
+                    padding:1px;
+                    position: running(footer);
+                    width:278px;
+                    height:90px;
+                    margin-top:720px;
+                    margin-left:270px;  
+                    
+                }
+                div.derecha {
+                    padding:1px;
+                    position: running(derecha);
+                    width:23px;
+                    height:164px;
+                    margin-top:650px;   
+                    margin-left: 10px;  
+                    
+                }
+            </style> 
+        </head>
+        <body LANG="es-CO">
+            <div class="header"><img src="{!$Resource.RF2_GIELogoCompensar}" width="693px" height="106px" /></div>
+            <div class="footer"><img src="{!$Resource.RF2_GIECertificaciones}" width="277px" height="89px" /></div>
+            <div class="derecha"><img src="{!$Resource.RF2_GIESuperSubsidio}" width="20" height="162px" /></div> 
+            <apex:outputText value="{!Account.Name}" style="display: none"/>
+            <apex:outputText value="{!Account.COM_TipoIdentificacion__c}" style="display: none"/>
+            <apex:outputText value="{!Account.COM_Numero_de_identificacion__c}" style="display: none"/>
+            <apex:outputText value="{!Account.COM_Genero__c}" style="display: none"/>
+            <apex:outputText value="{!Account.COM_FechaAportePazSalvo__c}" style="display: none"/>
+            <apex:outputText value="{!Account.COM_FechaAfiliacion__c}" style="display: none"/>
+            <apex:outputText value="{!Account.COM_FechaRetiro__c}" style="display: none"/>
+            <div style="padding: 0 15px 0 15px">
+                <apex:outputText value="{!strBody}" escape="false" style="text-align:center!important;" />
+            </div>
+        </body>
+    </html>
+        
+</apex:page>

@@ -1,0 +1,366 @@
+<apex:page showHeader="false" applyBodyTag="false" controller="RF2_ChatDataFinder_cls">
+<html lang="es">
+<apex:includeScript value="{!URLFOR($Resource.RF2_CrearCasosWEBLibs, 'jquery-2.2.4.min.js')}"/>
+<apex:includeScript value="/soap/ajax/35.0/connection.js"/>
+<apex:includeScript value="/soap/ajax/35.0/apex.js"/>
+
+  <head>
+    <title>preChat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta charset="utf-8" />
+    <apex:stylesheet value="{!$Resource.ChatCSS}"/>
+    <script type='text/javascript'> 
+    /*var url1 = "/soap/ajax/35.0/connection.js";
+    var url2 = "/soap/ajax/35.0/apex.js";
+    $.holdReady(true); 
+    function releaseHold() { $.holdReady(false); pepito();} 
+    $.getScript(url1); 
+    $.getScript(url2, releaseHold); */
+        (function() { 
+            function handlePageLoad() { 
+                var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)"); 
+                document.getElementById('prechatForm').setAttribute('action',
+                decodeURIComponent(endpointMatcher.exec(document.location.search)[1].replace("javascript:", "")));
+            }
+
+            if (window.addEventListener) { 
+                window.addEventListener('load', handlePageLoad, false); 
+            } else { 
+                window.attachEvent('onload', handlePageLoad, false); 
+            }
+        })();
+        /*$(function () {
+            $("#cAnonimo").click(function () {
+                if ($(this).is(":checked")) {
+                    $("#DivData").hide();
+                } else {
+                    $("#DivData").show();
+                }
+            });
+        });*/
+        
+        function onChageConsulta(){
+            var vConsulta = $("#consulta option:selected").text();
+            $('#consultaHidden').val(vConsulta);
+        }
+        
+         //ajuste para fijar pantalla
+       var fixedWidth;
+       var fixedOuterWidth
+       
+        function getZ() {
+           fixedOuterWidth=window.outerWidth;
+           fixedOuterHeight=window.outerHeight;
+       }
+       
+       function resize() {
+           window.resizeTo(fixedOuterWidth,fixedOuterHeight);
+       }
+        //fin ajuste fijar pantalla
+        
+    </script>
+  </head>
+  <body onLoad="getZ()" onResize="resize()">
+    <div id="panel1">
+      <div id="panel2">
+        <img id="icono1" src="{!$Resource.headerChat}" alt="Chat en Linea" height="25" width="25" />
+        <label id="label1">CHAT EN LINEA</label> 
+      </div>
+      <div id="cabecera1">
+        <label id="label2">Bienvenido a <b> Compensar</b></label>
+        <div id="linea"></div>  
+      </div>
+      <form method='post' id='prechatForm'>
+        <div id="formulario">
+          <label id="label3">Digite los datos solicitados</label> 
+          <div id="DivMsjTerminos" style="display: none;">
+            <label id="labelMsj" style="color:red!important;"><b>Acepte los terminos.</b></label> 
+          </div>
+          <!-- <div id="check">
+            <table style=" margin-top: 5px;">
+              <tbody>
+                <tr>
+                  <td>
+                    <input  id="cAnonimo" type="checkbox" name="cAnonimo" />
+                    <label tabindex="0" for="cAnonimo"><span></span></label>
+                  </td>
+                  <td> 
+                    <div id="divMensaje">
+                      <p id="men">
+                        Anonimo
+                      </p> 
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+          <div>
+            <label>Consulta </label><label id="labelMsjConsulta" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+          </div>
+          <div>    
+            <select tabindex="1" style="color: #808080" id="consulta" name='liveagent.prechat.buttons' onChange="onChageConsulta()">
+              <option value="placeholder">Seleccione...</option>
+              <apex:outputText value="{!strOpciones}" escape="false" />
+
+              <!--<option value="{!$label.RF2_IdBotonCirugiaEstetica}">Cirugía Estética</option>
+              <option value="{!$label.RF2_IdBotonSolicitudCredito}">Solicitud de Crédito</option>
+              <option value="{!$label.RF2_IdBotonDeportes}">Deportes</option>
+              <option value="{!$label.RF2_IdBotonEducacion}">Educación</option>
+              <option value="{!$label.RF2_IdBotonEventos}">Eventos</option>
+              <option value="{!$label.RF2_IdBotonOdontologiaEspecializada}">Odontología Especializada</option>
+              <option value="{!$label.RF2_IdBotonRecreacionyCultura}">Recreación y Cultura</option>
+              <option value="{!$label.RF2_IdBotonTransaccionesenlinea}">Transacciones en línea</option>
+              <option value="{!$label.RF2_IdBotonTurismo}">Turismo</option>
+              <option value="{!$label.RF2_IdBotonVivienda}">Vivienda</option>
+              <option value="{!$label.RF2_IdBotonAfiliacionCajaCompensacion}">Afiliación Caja Compensación</option>
+              <option value="{!$label.RF2_IdBotonSubsidioMonetario}">Subsidio Monetario</option>-->       
+            </select>  
+          </div>
+       <div id="DivData">
+          <div>
+            <label id="labelNombre">Nombres</label>
+            <label id="labelNombreNIT" style="display: none;">Nombre</label>
+            <label id="labelMsjNombre" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+            <br/>
+            <input tabindex="2" type="text" maxlength="40" id="firstName" value="" name="liveagent.prechat:Nombres" onkeyup="justTextName(this);"/>
+          </div>
+          <div id="blockApellidos">
+            <label>Apellidos</label><label id="labelMsjApellido" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+            <br/>
+            <input tabindex="3" type="text" maxlength="40" id="lastName" value="" name="liveagent.prechat:Apellidos" onkeyup="justTextName(this);"/>
+          </div>
+          <div>    
+            <label>Tipo Identificación</label><label id="labelMsjTipId" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+            <br/>
+            <select tabindex="4" style="color: #808080" id="tipoIdentificacion" name="liveagent.prechat:Tipo de Identificación" onchange="cambiartipoID(this);">
+              <option value="N/A" selected="selected">Seleccione...</option>  
+              <option value="1">Cédula de Ciudadanía</option>
+              <option value="4">Cédula de Extranjería</option>
+              <option value="2">NIT</option>
+              <!--<option value="3">Tarjeta de Indentidad</option>-->
+              <!--<option value="5">Pasaporte</option>-->
+              <!--<option value="6">Fecha de Nacimiento</option>-->
+              <!--<option value="7">Registro Civil</option>-->
+              <!--<option value="8">NUIP</option>-->
+              <!--<option value="9">Menor sin Identificación</option>-->
+            </select>  
+          </div>
+          <div>
+            <label id="lblCedula">Número Identificación</label><label id="labelMsjNumId" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+            <br/>
+            <input tabindex="5" type="text" maxlength="10" id="numeroIdentificacion" value="" name="liveagent.prechat:Número de Identificación" onkeyup="justNumbers(this);" />
+          </div>
+          <div>
+            <label id="lblCorreo">Número de Contacto</label><label id="labelMsjContacto" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+            <br/>
+            <input tabindex="6" type="text" id="numeroContacto" maxlength="10" value="" name="liveagent.prechat:Teléfono de Contacto" onkeyup="justNumbers(this);"/>
+          </div>
+          <div>
+            <label>Correo Electrónico</label><label id="labelMsjCorreo" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+            <label id="labelErrorMsjCorreo" style="color:red!important;display: none;"><b>Correo Electrónico Invalido</b></label> 
+            <br/>
+            <input tabindex="7" type="text" id="correo" maxlength="40" value="" name="liveagent.prechat:Correo Electrónico" />
+          </div>
+          <div>    
+            <label>Autorización de Envío de campañas publicitarias</label>
+            <br/>
+            <select tabindex="8" style="color: #808080" id="autorizacion" name="liveagent.prechat:Autoriza Recibir Campañas" >
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </select>  
+          </div>
+      </div>
+          <div id="check">
+            <label id="lblTyC" style="  position: absolute;   margin-top: 5px">Aceptar los terminos</label>
+            <table style=" margin-top: 5px;">
+              <tbody>
+                <tr>
+                  <td>
+                    <input  id="cTerminos" type="checkbox" name="cTerminos" />
+                    <label tabindex="9" for="cTerminos"><span></span></label>
+                  </td>
+                  <td> 
+                    <div id="divMensaje">
+                      <p id="men">
+                        <apex:outputText value="{!$Label.RF2_EtiqueteTyCPrechat}" escape="false" />
+                      </p> 
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div id="contenedor-boton" tabindex="10">
+                <a id="prechat_submit" onclick="setName();"><strong>Iniciar Chat</strong></a>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="consultaHidden" name="liveagent.prechat:Consulta"  />
+        <input type="hidden" name="liveagent.prechat.save:Consulta" value="RF2_Consulta__c" />
+        <input type="hidden" name="liveagent.prechat.save:Nombres" value="RF2_Nombres__c" />
+        <input type="hidden" name="liveagent.prechat.save:Apellidos" value="RF2_Apellidos__c" />
+        <input type="hidden" name="liveagent.prechat.save:Tipo de Identificación" value="RF2_TipoIdentificacion__c" />
+        <input type="hidden" name="liveagent.prechat.save:Número de Identificación" value="RF2_NumeroIdentificacion__c" />
+        <input type="hidden" name="liveagent.prechat.save:Teléfono de Contacto" value="RF2_NumeroContacto__c" />
+        <input type="hidden" name="liveagent.prechat.save:Correo Electrónico" value="RF2_CorreoElectronico__c" />
+        <input type="hidden" name="liveagent.prechat.save:Autoriza Recibir Campañas" value="RF2_AutorizacionCampanias__c" />
+        <input type="hidden" name="liveagent.prechat:Origen del Caso" value="Chat" /><br />
+        <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name" />
+        <!-- <input type="hidden" name="liveagent.prechat:Es Anonimo" id="esAnonimo" /> -->
+        <input type="hidden" name="liveagent.prechat:Términos y Condiciones" id="esTyC" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="COM_Numeroidentificacion__c,Número de Identificación;COM_TipoIdentificacion__c,Tipo de Identificación" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="COM_Numeroidentificacion__c,true;COM_TipoIdentificacion__c,true;" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="COM_Numeroidentificacion__c,true;COM_TipoIdentificacion__c,true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseRecordType" value="false" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value= "false" />
+      </form>
+    </div>
+    <script type="text/javascript">
+   /*
+     sforce.connection.sessionId = "{!$Api.Session_ID}";
+     sforce.connection.serverUrl = '{!$Site.Prefix}/services/Soap/u/40.0';
+
+      var result = sforce.apex.execute("RF2_ChatDataFinder_cls","obtenerDatosBotones",{}).toString();
+       var qr = sforce.connection.query("Select RF2_IdBotonValue__c, RF2_EtiquetaNombreBoton__c From RF2_ConfiguracionBotonesChat__mdt order by RF2_EtiquetaNombreBoton__c asc" );
+      console.log("qr", qr);
+      var res = result.split(";");
+      for (var i = 0; i < res.length; i++){
+        if(res[i] !== ""){
+          console.log("res[i]", res[i]);
+          var opt = res[i].split("|");
+          console.log("opt", opt);
+         $('#consulta').append('<option value="' + opt[0] + '">' + opt[1] + '</option>');
+        }
+
+      }*/
+    
+   
+      function cambiartipoID(selectField){
+        if(selectField.value === '2'){
+          $("#blockApellidos").hide();
+          $("#labelNombre").hide();
+          $("#labelNombreNIT").show();
+        }else{
+           $("#blockApellidos").show();
+           $("#labelNombre").show();
+           $("#labelNombreNIT").hide();
+        }
+      }
+
+      function ValidateEmail(inputText)  
+      {  
+        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;  
+        if(!inputText.value.match(mailformat))  
+        {  
+           //inputText.value = ''; 
+           return false;
+        }
+        return true;  
+      }  
+
+
+     function justNumbers(element){
+      element.value = element.value.replace(/[^0-9]/g, '');
+     }
+      function justText(element){
+        element.value = element.value.replace(/[^a-zA-Z]/g, '');
+      }
+
+      function justTextName(element){
+         element.value = element.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚ\s]/g, '');
+      }
+
+    function setName() {
+      
+        var blnError = false;
+        
+        if ($("#cTerminos").is(":checked")) {
+             $("#DivMsjTerminos").hide();
+             $("#esTyC").val('Si');
+        } else {
+            $("#DivMsjTerminos").show();
+            $("#esTyC").val('No');
+            blnError = true;
+        }
+        
+        if($("#consulta").val() == 'placeholder'){
+            $("#labelMsjConsulta").show();
+            blnError = true;
+        } else{
+            $("#labelMsjConsulta").hide();
+        }
+        
+        /*if ($("#cAnonimo").is(":checked")) {
+            $("#esAnonimo").val('Si');
+            $("#tipoIdentificacion").val('N/A');
+        } else{*/
+            
+            if($("#firstName").val() == ''){
+                $("#labelMsjNombre").show();
+                blnError = true;
+            } else{
+                $("#labelMsjNombre").hide();
+            }
+            
+            if($("#lastName").val() == '' && $("#tipoIdentificacion").val() != '2'){
+                $("#labelMsjApellido").show();
+                blnError = true;
+            } else{
+                $("#labelMsjApellido").hide();
+            }
+            
+            if($("#tipoIdentificacion").val() == 'N/A'){
+                $("#labelMsjTipId").show();
+                blnError = true;
+            } else{
+                $("#labelMsjTipId").hide();
+            }
+            
+            if($("#numeroIdentificacion").val() == ''){
+                $("#labelMsjNumId").show();
+                blnError = true;
+            } else{
+                $("#labelMsjNumId").hide();
+            }
+            
+            if($("#numeroContacto").val() == ''){
+                $("#labelMsjContacto").show();
+                blnError = true;
+            } else{
+                $("#labelMsjContacto").hide();
+            }
+            
+            if($("#correo").val() == ''){
+                $("#labelMsjCorreo").show();
+                blnError = true;
+            } else{
+                $("#labelMsjCorreo").hide();
+            }
+
+            if($("#correo").val() != ''){
+                if(!ValidateEmail(document.getElementById('correo'))){
+                    $("#labelErrorMsjCorreo").show();
+                    blnError = true;
+                }else{
+                    $("#labelErrorMsjCorreo").hide();
+                }
+            } else{
+                $("#labelErrorMsjCorreo").hide();
+            }
+            /*$("#esAnonimo").val('No');
+        }*/
+
+        if(blnError){
+            return false;
+        }
+
+        document.getElementById("prechat_field_name").value =  
+        document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+        document.getElementById('prechatForm').submit();
+    }
+    </script>
+  </body>
+</html>
+</apex:page>

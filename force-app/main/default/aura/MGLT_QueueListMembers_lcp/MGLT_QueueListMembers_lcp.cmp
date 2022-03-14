@@ -1,0 +1,65 @@
+<!--
+ - Created by cristianmosquera on 3/02/20.
+ -->
+
+<aura:component description="MGLT_QueueListMembers_lcp" access="global"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride"
+controller="MGLT_QueueListMembers_ctr">
+    <lightning:utilityBarAPI aura:id="QueueListMembersUtilityBar" />
+
+    <aura:attribute name="queueResponseDTO" type="MGLT_QueueListMembers_ctr.QueueResponseDTO"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!--<aura:if isTrue="{!not(empty(v.queueResponseDTO))}">-->
+        <lightning:card title="Agentes por colas" iconName="standard:account" class="slds-text-heading_small slds-card_boundary">
+            <!--  Ajustar tittle: Label
+                -->
+            <lightning:accordion allowMultipleSectionsOpen="true">
+                <aura:iteration items="{!v.queueResponseDTO.lstQueues}" var="itemQueue">
+                    <lightning:accordionSection class="slds-truncate" name="{!itemQueue.queue.Name }" label="{!itemQueue.queue.Name }">
+                        <!-- Tabla Información de Productos -->
+                        <div class="slds-page-header">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate">Información de Usuarios</span>
+                                </h1>
+                            </div>
+
+                            <aura:iteration items="{!itemQueue.lstUsers}" var="item">
+
+                            <div class="slds-page-header__detail-row slds-grid slds-wrap">
+                                <div class="slds-form slds-form_compound">
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-form-element slds-size_1-of-2">
+                                            <lightning:input id="nameUser" label="Nombre" value="{!item.Name}" readonly="true"></lightning:input>
+                                        </div>
+                                        <!--<div class="slds-form-element slds-size_1-of-2">
+                                            <lightning:input id="idUser" label="Id" value="{!item.Id}"></lightning:input>
+                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                                <br/>
+                            </aura:iteration>
+                        </div>
+                        <br/>
+
+
+                    </lightning:accordionSection>
+                </aura:iteration>
+            </lightning:accordion>
+
+            <aura:if isTrue= "{!empty(v.queueResponseDTO.lstQueues)}">
+                <!--             <div class="slds-page-header">
+                -->                <ui:message title="Advertencia" severity="warning" closable="true">
+                         No existen Datos para mostrar
+                <!--  Ajustar tittle: Label
+                -->
+            </ui:message>
+                <!--             </div>
+                -->        </aura:if>
+        </lightning:card>
+   <!-- </aura:if>-->
+
+
+</aura:component>

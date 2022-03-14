@@ -1,0 +1,66 @@
+<apex:page controller="COM_PAF_HistoricoVinculaciones_ctr">
+	<apex:pageBlock title="Histórico de Vinculaciones/Beneficiarios empleado" rendered="blnEmpleado">
+            <table class="list">
+                <thead class="rich-table-thead">
+                    <tr class="headerRow">
+                        <th class="headerRow" scope="col" colspan="1"><div>Número documento</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Nombre</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Estado civil</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fecha nacimiento</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Edad</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Programa</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Categ.</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Vinculado desde</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fin de vinculación</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fecha de retiro</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Indicador de subsidio</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Clase de parentesco</div></th>
+                    </tr>
+                </thead>
+                    <tr class="dataRow odd">
+                        <td class="dataCell" colspan="9"><span>{!strResultados}</span></td>
+                    </tr>
+            </table>
+    </apex:pageBlock>
+    <apex:pageBlock title="Histórico de Vinculaciones/Empresas" rendered="blnEmpresa">
+            <table class="list">
+                <thead class="rich-table-thead">
+                    <tr class="headerRow">
+                        <th class="headerRow" scope="col" colspan="1"><div>Tipo Vinculación</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Vinculado desde</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fecha Ing. Empresa</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fin Vinculación</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fecha retiro</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Estado</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Categ.</div></th>
+                    </tr>
+                </thead>
+                    <tr class="dataRow odd">
+                        <td class="dataCell" colspan="9"><span>{!strResultados}</span></td>
+                    </tr>
+            </table>
+    </apex:pageBlock>
+    <apex:pageBlock title="Histórico de Vinculaciones/Beneficiario" rendered="blnBeneficiario">
+            <table class="list">
+                <thead class="rich-table-thead">
+                    <tr class="headerRow">
+                        <th class="headerRow" scope="col" colspan="1"><div>Tipo Vinculación</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Vinculado desde</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fecha Ing. Empresa</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fin Vinculación</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Fecha retiro</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Estado</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Salario</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Horas lab.</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Categ.</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Trabajador</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Empleador</div></th>
+                        <th class="headerRow" scope="col" colspan="1"><div>Actualizar</div></th>
+                    </tr>
+                </thead>
+                    <tr class="dataRow odd">
+                        <td class="dataCell" colspan="9"><span>{!strResultados}</span></td>
+                    </tr>
+            </table>
+    </apex:pageBlock>
+  </apex:page>

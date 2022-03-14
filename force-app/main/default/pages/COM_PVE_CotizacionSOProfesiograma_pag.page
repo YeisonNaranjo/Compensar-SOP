@@ -1,0 +1,220 @@
+<!--
+ - Created by AVX_CMosquera on 31/07/2017.
+ - Updated AVX_Dlopez 26/08/2017
+ -->
+
+<apex:page id="COM_PVE_CotizacionSOProfesiograma_pag"  renderAs="pdf" standardStylesheets="false" 
+           controller="COM_PVE_CotizacionSOProfesiograma_ctr" applyHtmlTag="false" showHeader="false">
+
+    <HTML>
+    <HEAD>
+        <TITLE>{!fechaActual}</TITLE>
+        
+        <style type="text/css" media="print">
+            @media print{
+                table {page-break-inside:auto; }
+                tr    { page-break-inside:avoid; page-break-after:auto }
+                thead { display:table-header-group }
+            }
+            @page {
+                size:8.5in 11in;
+                margin-top: 102px;
+                margin-bottom: 168px;
+                @PageBreak{ page-break:always; page-break-inside:avoid; }
+                @top-center { content: element(header); }
+                @bottom-center { content: element(footer); }
+                @left-middle { content: element(izquierda); }
+            }
+            div.header {
+                padding:1px;
+                position: running(header);
+                width:100%;
+                height:102px;
+                background-image: url("{!$Resource.headerCotizacionSalud}");
+            }
+            div.footer {
+                padding:1px;
+                position: running(footer);
+                width:100%;
+                height:168px;
+                background-image: url("{!$Resource.footerCotizacionSalud}");
+            }
+            div.izquierda {
+                padding:1px;
+                position: running(izquierda);
+                width:23px;
+                height:164px;
+                margin-left:30px;
+                margin-top:500px;
+                background-image: url("{!$Resource.izquierdaCotizacionSalud}");
+            }
+            div.contenido {
+                position:absolute;
+            }
+        </style> 
+
+
+
+    </HEAD>
+    <body class="watermark" LANG="en-US" TEXT="#000000" LINK="#0000ff" DIR="LTR">
+<div class="header"></div>
+<div class="footer"></div>
+<div class="izquierda"></div> 
+   
+   <P LANG="es-ES" ALIGN="LEFT"> 
+    <SPAN style="font-family: sans-serif; font-size: 10pt;">{!fechaActual}</SPAN></P>
+    <BR/>
+    <p LANG="es-ES" ALIGN="LEFT"> 
+    <SPAN style="font-family: sans-serif; font-size: 10pt;">{!saludoCliente}</SPAN><BR/>
+    <SPAN style="font-family: sans-serif; font-size: 10pt; font-weight:bold;">{!nombreCliente}</SPAN><BR/>
+    <SPAN style="font-family: sans-serif; font-size: 10pt;">{!ciudad}</SPAN><BR/> </p>
+    
+    
+        
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!saludo}</SPAN></P>
+        
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoUno}</SPAN></P>
+        
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt; font-weight:bold;">{!parrafoDos}</SPAN></P>
+        
+        
+   <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoTres}</SPAN></P>
+        
+   <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt; font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!tituloUno}</SPAN></P>
+
+      
+    <UL>
+        <apex:repeat value="{!serviciosGeneralesPrograma}" var="servicio">
+        <LI><SPAN style="font-family: sans-serif; font-size: 10pt; margin-bottom: 0pt; margin-top: 0pt; "><apex:outputText value="{!servicio}" escape="false"/> </SPAN></LI>
+        </apex:repeat>
+        </UL>
+ 
+ 
+        <BR/> 
+                       
+    
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt; font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!tituloDos}</SPAN></P>
+       
+   <TABLE WIDTH="690" CELLPADDING="5" CELLSPACING="0" align="center">
+            <TR>
+                <TD WIDTH="180" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000;; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; color:#FFFFFF;">{!tituloTablaUnoColumnaTres}</SPAN></center>
+                </TD>
+                <TD WIDTH="200" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; color:#FFFFFF;">{!tituloTablaUnoColumnaCuatro}</SPAN></center>
+                </TD>
+                 <TD WIDTH="100" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; color:#FFFFFF;">Población</SPAN></center>
+                </TD>
+                <TD WIDTH="90" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; color:#FFFFFF;">SubTotal</SPAN></center>
+                </TD>
+                <TD WIDTH="90" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; color:#FFFFFF;">Descuento</SPAN></center>
+                </TD>
+                <TD WIDTH="90" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; color:#FFFFFF;">Total</SPAN></center>
+                </TD>
+              </TR>
+            <apex:repeat value="{! itemsPropuestaEconomica}" var="servicio">
+            <TR>
+                
+                <TD WIDTH="180" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000;; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">{!servicio.Producto}</SPAN></center>
+                </TD>
+                <TD WIDTH="200" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">{!servicio.Descripcion}</SPAN></center>
+                </TD>
+                <TD WIDTH="100" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">{!servicio.Poblacion}</SPAN></center>
+                </TD>
+                <TD WIDTH="200" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">
+                    <apex:outputText value="{0,number,$###,###,###}"> 
+                         <apex:param value="{!servicio.Subvalor}"/> 
+                    </apex:outputText>
+                    </SPAN></center>
+                </TD>
+                <TD WIDTH="200" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">
+                    <apex:outputText value="{0,number,###}%"> 
+                         <apex:param value="{!IF(servicio.Descuento==null,0,servicio.Descuento)}"/>  
+                    </apex:outputText>
+                    </SPAN></center>
+                </TD>
+                 <TD WIDTH="90" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">
+                    <apex:outputText value="{0,number,$###,###,###}"> 
+                         <apex:param value="{!servicio.Valor}"/> 
+                    </apex:outputText>
+                     </SPAN></center>
+                </TD>
+             </TR>
+             </apex:repeat>
+             <TR>
+                <TD colspan="5" HEIGHT="15" STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                  <center><SPAN style="font-family: sans-serif; font-size: 10pt; text-align:right ">Total</SPAN></center>
+                </TD>
+                <TD WIDTH="90" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                  <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">
+                  <apex:outputText value="{0,number,$###,###,###}"> 
+                         <apex:param value="{!valorTotal}"/> 
+                    </apex:outputText>
+                  </SPAN></center>
+                </TD>
+             </TR>
+        </TABLE> 
+       
+     <p LANG="es-ES" ALIGN="center"> 
+     <SPAN style="font-family: sans-serif; font-size: 10pt; font-weight:bold;">{!tarifasVigentes}</SPAN>
+     </p>
+     
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt; font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!tituloTres}</SPAN></P>
+
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoCuatro}</SPAN></P>
+        
+<UL>
+        <apex:repeat value="{!especificacionesServicio}" var="servicio2">
+        <LI><SPAN style="font-family: sans-serif; font-size: 10pt; margin-bottom: 0pt; margin-top: 0pt; "><apex:outputText value="{!servicio2}" escape="false"/> </SPAN></LI>
+        </apex:repeat>
+        </UL>
+         
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoCinco}</SPAN></P>
+        
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoSeis}</SPAN></P>
+     
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafosiete}</SPAN></P>
+        
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoOcho}</SPAN></P>
+        
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoNueve}</SPAN></P>
+        
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!parrafoDiez}&nbsp;&nbsp;{!telefonoAsesor}&nbsp;&nbsp;{!parrafoOnce}&nbsp;&nbsp;{!emailAsesor}</SPAN></P>
+                 
+     <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!despedida}</SPAN></P>   
+     
+     <P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 10pt; font-weight:bold;">{!nombreAsesor}</SPAN><br/>
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!cargoAsesor}</SPAN><br/>
+        <SPAN style="font-family: sans-serif; font-size: 10pt;">{!procesoAsesor}</SPAN><br/>       
+        
+        </P>     
+        
+    </BODY>
+    </HTML>
+</apex:page>

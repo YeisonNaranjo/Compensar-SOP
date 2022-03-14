@@ -1,0 +1,211 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Juan David Uribe Ruiz (JDUR)
+Proyecto:          Compensar
+Descripción:       Pagina que se muestra una vez se finaliza la atencion por Chat
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------  ---------------------------------------------
+    1.0      10/11/2017     Juan David Uribe Ruiz   Creación Clase.
+	2.0      07/10/2019     Paula Bohórquez Alfonso Se elimina barra con título prechat, botón de 'cerrar' 
+													al finalizar, por la integración con Servicio integrado.
+
+************************************************************************************************/ -->
+<apex:page title="::: Encuesta Post-Chat :::" id="RF2_PostChat_pag"  docType="html-5.0" applyBodyTag="False" showHeader="false" sidebar="false" 
+Controller="RF2_PostChat_ctr" >
+    <html lang="es">
+    <head>
+        <title>::: Encuesta Post-Chat :::</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta charset="utf-8" />
+        <apex:stylesheet value="{!$Resource.ChatCSS}"/>
+        <apex:includeScript value="{!$Resource.RF2_jQuery}"/>
+        <script>
+            function maxLengthCheck(object) {
+                if (object.value.length > object.max.length){
+                    object.value = object.value.slice(0, object.max.length);
+                }
+                
+                if (object.value > 10){
+                    object.value = 10;
+                }
+                
+                if (object.value == ''){
+                    object.value = 1;
+                }
+            }
+            
+            function isNumeric (evt) {
+                var theEvent = evt || window.event;
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode (key);
+                var regex = /[0-9]|\./;
+                if ( !regex.test(key) ) {
+                    theEvent.returnValue = false;
+                    if(theEvent.preventDefault) theEvent.preventDefault();
+                }
+            }
+            
+            function fnFinalizar() {
+                //showLoader(true);
+                var preguntaExperiencia = $("#preguntaExperiencia").val();
+                var resolvimosInquietudes1 = $("#resolvimosInquietudes1").val();
+                var resolvimosInquietudes2 = $("#resolvimosInquietudes2").val();
+                var recomendaria = $("#recomendaria").val();
+                var razonCalificacion = $("#razonCalificacion").val();
+                var strCaseId = $("#strCaseId").val();
+                var strChatKey = $("#strChatKey").val();
+                var errores = '';
+                var blnError = false;
+                
+                if($("#preguntaExperiencia").val() == 'Seleccione'){
+                    $("#labelMsjPreg1").show();
+                    blnError = true;
+                } else{
+                    $("#labelMsjPreg1").hide();
+                }
+                
+                if($("input[type='radio'][name='resolvimosInquietudes']:checked").length == 0){
+                    $("#labelMsjPreg2").show();
+                    blnError = true;
+                } else{
+                    $("#labelMsjPreg2").hide();
+                }
+                
+                if($("#recomendaria").val() == ''){
+                    $("#labelMsjPreg3").show();
+                    blnError = true;
+                } else{
+                    $("#labelMsjPreg3").hide();
+                }
+                
+                if(blnError){
+                    return false;
+                }
+                
+                var resolvimosInquietudes = "";
+                var selected = $("input[type='radio'][name='resolvimosInquietudes']:checked");
+                if (selected.length > 0) {
+                    resolvimosInquietudes = selected.val();
+                } else{
+                    resolvimosInquietudes = "No";
+                }
+                
+                //alert(' preguntaExperiencia: ' + preguntaExperiencia + '\n resolvimosInquietudes1:' + resolvimosInquietudes1 + '\n resolvimosInquietudes2:' + resolvimosInquietudes2 + '\n recomendaria:' + recomendaria + '\n razonCalificacion:' + razonCalificacion);
+
+                Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.RF2_PostChat_ctr.finalizar}',
+                        preguntaExperiencia,
+                        resolvimosInquietudes,
+                        recomendaria,
+                        razonCalificacion,
+                        strCaseId,
+                        strChatKey,
+                        function(result, event) {
+                        }, 
+                        {escape: true}
+                    );
+                $("#prechat_submit").hide();
+                $("#formulario").hide();
+                //$("#cerrar").show();
+                $("#mensajeDespedida").show();
+            }
+        	        
+        </script>
+    </head>
+    <body>
+        <div id="panel1">
+            <!--div id="panel2">
+                <img id="icono1" src="{!$Resource.headerChat}" alt="Chat en Linea" height="25" width="25" />
+                                                     <!--<div class="xCerrar" onClick="window.top.close();">X</div>-->
+                <!--label id="label1">CHAT EN LINEA</label> 
+            </div-->
+            <form method='post' id='postchatForm' style="padding:13px">
+                <input type="text" name="strCaseId" id="strCaseId" value="{!strCaseId}" style="display:none;"/>
+                <input type="text" name="strChatKey" id="strChatKey" value="{!strChatKey}" style="display:none;"/>
+                <div id="formulario" style="margin-left:0px!important">
+                    <div>  
+                        <label style="font-size: 11px!important;padding-right:50px">1. ¿Su Experiencia a través de nuestro soporte Chat fue satisfactoria el dia de hoy?<br/>Donde 1 es muy insatisfecho y 5 muy satisfecho</label>  
+                        <label id="labelMsjPreg1" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                        <br/>
+                        <div align="center" style="padding: 5px;">
+                            <select tabindex="1" style="color: #808080; font-size:11px" id="preguntaExperiencia">
+                                <option value="Seleccione" selected="selected">Seleccione</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>          
+                            </select>  
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 11px!important">2. ¿Resolvimos en esta oportunidad todas sus inquietudes?</label>
+                        <label id="labelMsjPreg2" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                        <br/>
+                        <div align="center" style="padding: 5px;">
+                            <input type="radio" id="resolvimosInquietudes1" name="resolvimosInquietudes" value="Si"/>
+                            <label for="resolvimosInquietudes1">Si</label>
+                            <input type="radio" id="resolvimosInquietudes2" name="resolvimosInquietudes" value="No"/>
+                            <label for="resolvimosInquietudes2">No</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 11px!important">3. ¿Recomendaría a sus amigos y familiares el servicio de soporte a través de nuestro canal Chat? Donde 0 es poco probable y 10 muy probable.</label>
+                        <label id="labelMsjPreg3" style="color:red!important;display: none;"><b> Obligatorio</b></label> 
+                        <br/>
+                        <div align="center" style="padding: 5px;">
+                            <input type="number" name="recomendaria" id="recomendaria" value="" min="1" max="10" maxlength="2" oninput="maxLengthCheck(this)" onkeypress="return isNumeric(event)" style="font-size:11px" />
+                        </div>
+                    </div> 
+                    <div>
+                        <label style="font-size: 11px!important">4. Por favor comparta la razón de su calificación, su opinión es importante para nosotros.</label>
+                        <br/>
+                        <div align="center" style="padding: 5px;">
+                            <textarea id="razonCalificacion" style="width:280px; height: 80px margin-left:500px;resize: none;font-size:11px" rows="4"></textarea>
+                        </div>
+                    </div>   
+                    <div>
+                        <div id="contenedor-boton" tabindex="10">
+                            <a id="prechat_submit" onclick="fnFinalizar();">Finalizar</a>
+                        </div>
+                    </div>
+                    <br/>
+                    <div>
+                        <label style="font-size: 11px!important">Apreciado usuario: Los datos registrados serán tratados de acuerdo a la política de protección de datos personales ley 1581 de 2012, para ampliar la información consulte nuestra: <a href="https://corporativo.compensar.com/politicas-privacidad-condiciones-uso" target="_blank">Política de privacidad y condiciones de uso.</a></label>
+                    </div>
+                </div>
+                <div id='abandoned' style='display: none;'>
+                    <label style="font-size: 11px!important;padding-right:50px">{!$label.RF2_PostChat_NoAsesores}</label>
+                    <div id="contenedor-boton" tabindex="10">
+                        <a id="cerrar" onClick="window.top.close();">Cerrar</a>
+                    </div>
+                </div>
+                <div id='mensajeDespedida' style='display: none;'>
+                    <label style="font-size: 11px!important;padding-right:50px">{!$label.RF2_MensajeDespedidaPostChat}</label>
+                    <!--<div id="contenedor-boton" tabindex="10">
+                        <a id="cerrar" onClick="window.top.close();">Cerrar</a>
+                    </div>-->
+                </div>
+            </form> 
+        </div>
+        
+        <!-- Code to decide if we show the abandoned block or the full data -->
+        <script type='text/javascript'>
+            var requestTime = '{!$CurrentPage.parameters.requestTime}';
+            var startTime = '{!$CurrentPage.parameters.startTime}';
+            // when startTime doesn't have a value, it means the chat never started
+            if (!startTime) {
+                document.getElementById('formulario').style.display = 'block';
+                //document.getElementById('formulario').style.display = 'none';
+                document.getElementById('mensajeDespedida').style.display = 'block';
+                //document.getElementById('mensajeDespedida').style.display = 'none';
+                document.getElementById('abandoned').style.display = 'none';
+                //document.getElementById('abandoned').style.display = 'block';
+            }
+        </script>
+    </body>
+    </html>
+</apex:page>

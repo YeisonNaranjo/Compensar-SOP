@@ -1,0 +1,47 @@
+<!--
+  @description       : VF utilizada para invocar el componente LWC con el que se realizara el registro de casos desde el portal
+  @author            : Johan Cardona
+  @group             : 
+  @last modified on  : 12-24-2020
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   12-02-2020   johan.cardona@globant.com   		  Initial Version
+-->
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeLightning />
+    <!--<apex:includeScript value="https://uatcelula-compensar-prod.cs194.force.com/casosweb/lightning/lightning.out.js" />-->
+    <div id="CrearCasoPortal" />
+      <script>
+              $Lightning.use("c:CEL2_RegistroCasoPortal_app", function() {
+                  $Lightning.createComponent("c:Ce2_CrearCasoPortal_lwc",
+                    { 
+                    },
+                    "CrearCasoPortal",
+                    function(cmp) {
+                      console.log('LWC Componenet added in VF page');
+                    });
+              }/*,'https://compensar--uatcelula.lightning.force.com/'
+              , '9DZcdkn05HvfggKSM8egNdlrU'*/);
+      
+      </script>
+
+<!--<div id="lightningLocator"></div>
+<script src="https://uatcelula-compensar-prod.cs194.force.com/casosweb/lightning/lightning.out.js"></script>
+<script>
+    $Lightning.use("c:CEL2_RegistroCasoPortal_app",    // name of the Lightning app
+        function() {                  // Callback once framework and app loaded
+            $Lightning.createComponent(
+                "c:Ce2_CrearCasoPortal_lwc", // top-level component of your app
+                { },                  // attributes to set on the component when created
+                "lightningLocator",   // the DOM location to insert the component
+                function(cmp) {
+                    // callback when component is created and active on the page
+                    console.log("LApp was created")
+                }
+            );
+        },
+                   'https://uatcelula-compensar-prod.cs194.force.com/casosweb'
+    );
+</script>-->
+</apex:page>

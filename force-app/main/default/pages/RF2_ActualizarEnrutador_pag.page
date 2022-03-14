@@ -1,0 +1,88 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Rubén Suárez Forero (RUSF)
+Proyecto:          Compensar
+Descripción:       Pagina para actualizar el objeto enrutadores
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ---------------------------          ---------------------------------------------
+    1.0      2017-12-07      Rubén Suárez Forero (RUSF)           Creación página.
+************************************************************************************************/ -->
+<apex:page controller="RF2_ActualizarEnrutador_ctr" standardStylesheets="false" docType="html-5.0" applyBodyTag="False" showHeader="false" sidebar="false" >
+    <head>
+        <title>Actualizar Registros Objeto Enrutador</title>
+        <apex:slds />
+        <style>            
+        </style>        
+    </head>
+    <body class="slds-scope" style="padding:5px">
+        <div class="slds-spinner_container" style="display: none" id="spinner">
+            <div role="status" class="slds-spinner slds-spinner_medium">
+                <span class="slds-assistive-text">Cargando</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+        <div class="slds-page-header">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-lead">
+                        <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#opportunity" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Actualizar Registros Objeto Enrutador">Actualizar Registros Objeto Enrutador</h1>
+                    <p class="slds-text-body_small slds-line-height_reset">Enrutador</p>
+                </div>
+            </div>
+        </div>
+        <apex:form >
+            <apex:pageBlock >
+                <br/>
+                <div class="slds-form slds-form_stacked">
+                    <div class="slds-form-element">
+                        <div class="slds-align_absolute-center">
+                            <apex:commandButton styleClass="slds-button slds-button_stateful slds-button_neutral slds-not-selected" action="{!actualizarEnrutador}" value="Actualizar registros" onclick="document.getElementById('spinner').removeAttribute('style');"/>
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>
+        </apex:form>
+        <apex:pageBlock rendered="{!blnActualizacion}">
+            <apex:pageBlock rendered="{!blnError}">
+                <br/>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <span class="slds-icon_container slds-icon-utility-ban slds-m-right_x-small" title="error">
+                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#ban" />
+                        </svg>
+                    </span>
+                    <div class="slds-notify__content">
+                        <h2><apex:outputText escape="false" value="{!mensaje}"/></h2>
+                    </div>
+                </div>
+            </apex:pageBlock>
+            <apex:pageBlock rendered="{!NOT(blnError)}">
+                <br/>
+                <div class="slds-notify_container slds-is-relative">
+                    <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                        <span class="slds-assistive-text">ok</span>
+                        <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top" title="ok">
+                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#success" />
+                            </svg>
+                        </span>
+                        <div class="slds-notify__content">
+                            <h2><apex:outputText escape="false" value="{!mensaje}"/></h2>
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>   
+        </apex:pageBlock>  
+    </body>
+</apex:page>

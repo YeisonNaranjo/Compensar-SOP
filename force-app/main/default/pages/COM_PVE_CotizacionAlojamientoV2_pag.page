@@ -1,0 +1,33 @@
+<apex:page showHeader="false" sidebar="false" standardController="Quote" extensions="COM_PVE_CotizacionAlojamientoV2_ctr">
+    <div style="padding: 50px 30px 0px 50px !important;font-family: Arial;font-size: 12px;">
+        <apex:outputText value="{!templateHtml}" escape="false" />
+        <br></br>
+        <div style="border-radius: 25px; border: 2px solid #FFF4CF; padding: 10px; width: 250px; height: 120px;">
+
+            <ul style="list-style:none;">
+                <li><b><apex:outputText value="{!nombreAsesor}" escape="false"/></b></li>
+                <li>
+                    <apex:outputText value="Asesor Comercial" escape="false" />
+                </li>
+                <li>
+                    <apex:outputText value="Evento congresos y convenciones" escape="false" />
+                </li>
+                <li>
+                    <apex:outputText value="Centro Convenciones Lagomar El peñon - Girardot" escape="false" />
+                </li>
+                <li>
+                    <apex:outputText value="Hotel y centro de convenciones Lagosol" escape="false" />
+                </li>
+                <li>
+                    <apex:outputText value="{!celAsesor}" escape="false" />
+                </li>
+                <li>
+                    <apex:outputText value="{!emailAsesor}" escape="false" />
+                </li>
+                <li>
+                    <apex:outputText value="www.compensar.com" escape="false" />
+                </li>
+            </ul>
+        </div>
+    </div>
+</apex:page>

@@ -1,0 +1,95 @@
+<apex:page controller="RL2_CopiarSetupAuditTrail_cls" renderAs="PDF" readOnly="true" applyHtmlTag="false" applyBodyTag="false" showHeader="false">
+    <html>
+        <head>
+            <style>
+                @page {
+                    size: landscape;
+                    margin: 20mm;
+                    @top-center {
+                        content: element(header);
+                    }
+                    @bottom-center {
+                        content: element(footer);
+                    }
+                }
+                
+                body {
+                    font-family: Arial Unicode MS;
+                    font-size: 12px;
+                }
+                
+                table { 
+                	page-break-inside : avoid;
+                }
+
+                div.header {
+                    padding:10px;
+                    position: running(header);
+                }
+                div.footer {
+                    display: block;
+                    padding: 5px;
+                    position: running(footer);
+                }
+                .pagenumber:before {
+                    content: counter(page);
+                }
+                .pagecount:before {
+                    content: counter(pages);
+                }
+
+                .trail{
+                    /*page-break-after: always;*/
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <div>Reporte de cambios realizados a nivel de configuración</div>
+            </div>
+            <div class="footer">
+                <div>Página <span class="pagenumber"/> de <span class="pagecount"/></div>
+            </div>
+            <div class="trail">
+                <apex:variable var="rowNum" value="{!0}"/>
+                <apex:form >
+                    <apex:pageBlock >
+                        <apex:pageBlockTable value="{!obtenerRegistrosAuditoria}" var="set" cellpadding="4" border="1">
+                            <apex:column headervalue="Id. de seguimiento de auditoría de configuración" width="15%">
+                                <div style="width:100%;overflow:hidden">
+                                    <apex:outputField value="{!set.Id}"></apex:outputField>
+                                </div>
+                            </apex:column>
+                            <apex:column headervalue="Fecha de creación" width="10%">
+                                <div style="width:100%;overflow:hidden">
+                                    <apex:outputField value="{!set.CreatedDate}"></apex:outputField>
+                                </div>
+                            </apex:column>
+                            <apex:column headervalue="Nombre completo" width="10%">
+                                <div style="width:100%;overflow:hidden">
+                                    <apex:outputField value="{!set.CreatedBy.Name}"></apex:outputField>
+                                </div>
+                            </apex:column>
+                            <apex:column headervalue="Sección" width="15%">
+                                <div style="width:100%;overflow:hidden">
+                                    <apex:outputField value="{!set.Section}"></apex:outputField>
+                                </div>
+                            </apex:column>
+                            <apex:column headervalue="Visualización" width="30%">
+                                <div style="width:100%;overflow:hidden">
+                                    <apex:outputField value="{!set.Display}"></apex:outputField>
+                                </div>
+                            </apex:column>
+                            <apex:column headervalue="Usuario delegado" width="20%">
+                                <div style="width:100%;overflow:hidden">
+                                    <apex:outputField value="{!set.DelegateUser}"></apex:outputField>
+                                </div>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:form>
+            </div>
+            <!--div style="page-break-before: always" />-->
+        </body>
+    </html>
+</apex:page>

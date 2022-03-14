@@ -1,0 +1,195 @@
+<apex:page controller="COM_OportunidadesMercadeo_ctr" title="Mercadeo" showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyBodyTag="False" applyHtmlTag="False">
+    <head>
+        <title>Mercadeo</title>
+        <apex:slds />
+    </head>
+
+    <body class="slds-scope">
+        <apex:pageBlock rendered="{!blnMensaje}">
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" role="alert">
+                <apex:pageMessages />              
+                <button class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" title="Close">
+                    <svg class="slds-button__icon" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                </button>
+            </div>
+        </apex:pageBlock>
+        <apex:form >            
+            <apex:pageBlock >
+                <div class="slds-page-header slds-page-header_object-home" style="">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-has-flexi-truncate">
+                            <div class="slds-media slds-no-space slds-grow">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-standard-opportunity">
+                                        <svg class="slds-icon" aria-hidden="true">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                                        </svg>
+                                    </span>
+                                    </div>
+                                    <div class="slds-media__body">
+                                    <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Filtrar Clientes Mercadeo">Filtrar Clientes Mercadeo</h1>
+                                    <p class="slds-text-body_small slds-line-height_reset">Campañas</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-no-flex slds-grid slds-align-top slds-p-bottom_xx-small">
+                            <div class="slds-button-group" role="group">
+                                <apex:commandButton value="Regresar a la Campaña" styleClass="slds-button slds-button_neutral" onclick="window.location.replace('{!returl}');return false;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-box slds-m-around_small">
+                    <div class="slds-form slds-form_stacked">
+                        <div class="slds-form-element">
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                              <thead>
+                                <tr class="slds-text-title_caps">
+                                  <th scope="col" width="33%">
+                                    <div class="slds-truncate slds-align_absolute-center" title="Opportunity Name"><h2>Campo</h2></div>
+                                  </th>
+                                  <th scope="col" width="33%">
+                                    <div class="slds-truncate slds-align_absolute-center" title="Account Name"><h2>Operador</h2></div>
+                                  </th>
+                                  <th scope="col" width="33%">
+                                    <div class="slds-truncate slds-align_absolute-center" title="Close Date"><h2>Valor</h2></div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody id="filtrosTable">
+                              <apex:repeat value="{!lstFiltrosAcc}" var="filtro">
+                                    <tr id="filtrosRow" >
+                                      <td scope="row">
+                                        <div class="slds-truncate">
+                                            <div class="slds-select_container" id="select-campo">
+                                                <apex:selectList value="{!filtro.idCampoSeleccionado}" styleClass="slds-select select-operador" size="1">
+                                                <apex:selectOption itemValue=" " itemLabel=""/>
+                                                
+                                                    <apex:selectOptions value="{!filtro.campos}" />
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div class="slds-truncate">
+                                            <div class="slds-select_container" id="select-operador">
+                                                <apex:selectList value="{!filtro.operador}" styleClass="slds-select select-operador" size="1">
+                                                    <apex:selectOption itemValue=" " itemLabel=""/>
+                                                    <apex:selectOption itemValue="=" itemLabel="Igual"/>
+                                                    <apex:selectOption itemValue="!=" itemLabel="Diferente"/>
+                                                    <apex:selectOption itemValue="<" itemLabel="Menor"/>
+                                                    <apex:selectOption itemValue=">" itemLabel="Mayor"/>
+                                                    <apex:selectOption itemValue="LIKE" itemLabel="Contiene"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div class="slds-truncate">
+                                            <div class="slds-form-element__control">
+                                                <apex:inputText styleClass="slds-input input-valor" value="{!filtro.valor}"/>
+
+                                            </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                </apex:repeat>
+                              </tbody>
+                            </table>
+                        </div>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-button-group slds-align_absolute-center" role="group">
+                                    <apex:commandButton value="+ Añadir Filtro" styleClass="slds-button slds-button_neutral" action="{!adicionarFiltro}"  />
+                                    <apex:commandButton value="Buscar Contactos" action="{!filtrarClientes}" styleClass="slds-button slds-button_neutral"/> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>
+        </apex:form>
+        <apex:form >
+            <apex:pageBlock rendered="{!blnResultados}" id="clientes"> 
+             <article class="slds-card slds-m-around_small">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body slds-align_absolute-center">
+                            <h2>
+                                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+                                    <span class="slds-text-heading_small">Resultados ({!cantidadRegistros})</span>
+                                </a>
+                            </h2>
+                            </div>
+                        </header>
+                    </div>
+                </article> 
+                <div class="slds-box slds-m-around_small" >
+                    <div class="slds-form slds-form_stacked">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="input-unique-id">Tipo de Oportunidad:</label> 
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!tipoRegistro}" styleClass="slds-select" size="1" required="true">
+                                    <apex:selectOption itemValue=" " itemLabel=""/>
+                                    <apex:selectOptions value="{!TipoRegistroOpp}" />
+                                </apex:selectList>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="input-unique-id">Nombre Oportunidad:</label>
+                            <div class="slds-form-element__control">
+                                <apex:inputText styleClass="slds-input input-valor" value="{!nombreOportunidad}" required="true"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-button-group slds-align_absolute-center" role="group">
+                                    <apex:commandButton value="+ Añadir Contactos" action="{!crearOportunidades}" styleClass="slds-button slds-button_brand slds-align_absolute-center"/> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <apex:dataTable value="{!accClientes}" var="cliente" styleClass="slds-table slds-table--bordered slds-table--striped  slds-table_cell-buffer">
+                                <apex:column style="slds-cell-wrap">
+                                    <apex:facet name="header"> 
+                                        <apex:inputCheckbox value="{!forAll}" style="slds-checkbox"> 
+                                            <apex:actionSupport event="onchange" action="{!toggleSeleccionar}" rerender="clientes"/> 
+                                        </apex:inputCheckbox> 
+                                    </apex:facet>
+                                    <apex:inputCheckbox value="{!seleccion[cliente.Id]}"/>
+                                </apex:column>
+                                <apex:column value="{!cliente.AccountId}" style="slds-cell-wrap"> 
+                                    <apex:facet name="header"><strong>CLIENTE</strong></apex:facet>
+                                </apex:column>
+                                <apex:column value="{!cliente.ContactId}" style="slds-cell-wrap"> 
+                                    <apex:facet name="header"><strong>CONTACTO</strong></apex:facet>
+                                </apex:column>                        
+                                <apex:column value="{!cliente.Roles}" style="slds-cell-wrap"> 
+                                    <apex:facet name="header"><strong>FUNCIÓN</strong></apex:facet>
+                                </apex:column>
+
+                            </apex:dataTable>
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>
+            <apex:pageBlock rendered="{!blnSinResultados}">
+                <div class="slds-box slds-m-around_small" >
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body slds-align_absolute-center">
+                            <h2>
+                                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+                                    <span class="slds-text-heading_small">No hay resultados.</span>
+                                </a>
+                            </h2>
+                            </div>
+                        </header>
+                    </div>
+                </div>
+            </apex:pageBlock>
+        </apex:form> 
+    </body>
+</apex:page>

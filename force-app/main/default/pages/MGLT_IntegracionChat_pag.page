@@ -1,0 +1,280 @@
+<apex:page >
+    <apex:outputPanel id="ventanaChat">
+        <style type='text/css'>
+            .embeddedServiceHelpButton .helpButton .uiButton {
+                background-color: #ff6600;
+                font-family: "Arial", sans-serif;
+            }
+            .embeddedServiceHelpButton .helpButton .uiButton:focus {
+                outline: 1px solid #ff6600;
+            }
+            .helpButtonDisabled:hover:after {
+                white-space: pre;
+                content: "Nuestro horario de atención es:\A Lunes a viernes: 7:00 am - 8:00 pm,\A Sábados 8:00 am - 5:00 pm,\A Domingos y Festivos 10:00 am - 6:00 pm.";
+                position: absolute;
+                right: 60px;
+                bottom: 50px;
+                width: 200px;
+                background-color: gray !important;
+                color: white;
+                display: inline-block;
+            }
+        </style>
+                
+        <script type='text/javascript' src='https://service.force.com/embeddedservice/5.0/esw.min.js'></script>
+        
+        <script type='text/javascript' defer="defer">
+            var initESW = function(gslbBaseURL) {
+           
+                embedded_svc.settings.displayHelpButton = true; //O falso
+                embedded_svc.settings.language = ''; //Por ejemplo, introduzca 'en' o 'en-US'
+        
+                embedded_svc.settings.defaultMinimizedText = 'Iniciar'; //(Toma como valor predeterminado Sesión de chat con un experto)
+                embedded_svc.settings.disabledMinimizedText = 'No disponible'; //(Toma como valor predeterminado Agente sin conexión)
+                //embedded_svc.settings.disabledMinimizedText = 'Nuestro horario de atenci\u00F3n es: Lunes a viernes: 7:00 am \u002D 8:00 pm, S\u00E1bados 8:00 am \u002D 5:00 pm, Domingos y Festivos 10:00 am \u002D 6:00 pm.';
+                embedded_svc.settings.autoOpenPostChat = true;
+                embedded_svc.settings.loadingText = 'Cargando'; //(Toma como valor predeterminado Cargando)
+                //embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Establece el dominio para su desarrollo de modo que los visitantes puedan navegar por subdominios durante una sesión de chat)
+        
+                // Configuración para Chat
+                //embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
+                    // Dynamically changes the button ID based on what the visitor enters in the pre-chat form.
+                    // Returns a valid button ID.
+                //};
+                //embedded_svc.settings.widgetWidth = "400px";
+                //Establece la cumplimentación automática de los campos del formulario previo al chat
+                //embedded_svc.settings.fallbackRouting = []; //Una matriz de identificadores de botones, de usuario o userId_buttonId
+                //embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Toma como valor predeterminado la opción Contacto)
+               
+                embedded_svc.settings.extraPrechatFormDetails = [
+                    {"label":"Nombre", "transcriptFields": ["RF2_Nombres__c"]},
+                    {"label":"Apellidos", "transcriptFields": ["RF2_Apellidos__c"]},
+                    {"label":"Tipo Identificación", "transcriptFields": ["MGLT_Tipo_Identificacion__c"]},                    
+                    {"label":"Número de identificación", "transcriptFields": ["RF2_NumeroIdentificacion__c"]},                    
+                    {"label":"Correo electrónico", "transcriptFields": ["RF2_CorreoElectronico__c"]},
+                    {"label":"Teléfono", "transcriptFields": ["RF2_Telefono__c"]},
+                    {"label":"Autorizo envío de campañas publicitarias", "transcriptFields": ["RF2_AutorizacionCampanias__c"]},
+                    //{"label":"Consulta", "transcriptFields": ["RF2_Consulta__c"]},
+                    {"label": "Solucionado en primer contacto","value": "true","displayToAgent": true},
+                    {"label": "Origen del caso","value": "Chat","displayToAgent": true},
+                    {"label": "Estado","value": "Abierto","displayToAgent": true},
+                    {"label": "EsGIE","value": "false","displayToAgent": false},
+                    {"label": "EsPCA","value": "true","displayToAgent": true},
+                    {"label": "EsPCE","value": "false","displayToAgent": false},
+                ]; 
+            
+                    
+                embedded_svc.settings.extraPrechatInfo = [
+                    {
+                       
+                        "entityName":"Contact","showOnCreate":true,"entityFieldMaps":
+                        [
+                             {
+                                "doCreate":false,
+                                "doFind":false,
+                                "fieldName":"LastName",
+                                "isExactMatch":true,
+                                "label":"Apellidos"
+                            },
+                                                        {
+                                "doCreate":false,
+                                "doFind":false,
+                                "fieldName":"FirstName",
+                                "isExactMatch":true,
+                                "label":"Nombre"
+                            },
+                            {
+                                "doCreate":false,
+                                "doFind":false,
+                                "fieldName":"Name",
+                                "isExactMatch":true,
+                                "label":"Nombre completo"
+                            },
+                            {
+                                "doCreate":false,
+                                "doFind":false,
+                                "fieldName":"Email",
+                                "isExactMatch":true,
+                                "label":"Correo electrónico"
+                            },
+                               {
+                                "doCreate":false,
+                                "doFind":true,
+                                "fieldName":"COM_TipoIdentificacion__c",
+                                "isExactMatch":true,
+                                "label":"Tipo Identificación"
+                            },
+                                                        {
+                                "doCreate":false,
+                                "doFind":true,
+                                "fieldName":"COM_Numeroidentificacion__c",
+                                "isExactMatch":true,
+                                "label":"Número de identificación"
+                            }
+                        ]
+                    },
+                    
+                    {
+                        
+                        "entityName":"Case","showOnCreate":false,"entityFieldMaps":
+                        [
+                            {"isExactMatch":false,
+                             "fieldName":"MGLT_Consulta__c",
+                             "doCreate":true,
+                             "doFind":false,
+                             "label":"Consulta"
+                            },
+                            {"isExactMatch":false,
+                             "fieldName":"RF2_SolucionadoPrimerContacto__c",
+                             "doCreate":true,
+                             "doFind":false,
+                             "label":"Solucionado en primer contacto"
+                            },                            ,
+                            {"isExactMatch":false,
+                             "fieldName":"Origin",
+                             "doCreate":true,
+                             "doFind":false,
+                             "label":"Origen del caso"
+                            },                            ,
+                            {"isExactMatch":false,
+                             "fieldName":"Status",
+                             "doCreate":true,
+                             "doFind":false,
+                             "label":"Estado"
+                            },
+                            {"isExactMatch":false,
+                             "fieldName":"RF2_EsGIE__c",
+                             "doCreate":true,
+                             "doFind":false,
+                             "label":"EsGIE"
+                            },                            
+                            {"isExactMatch":false,
+                             "fieldName":"RF2_EsPCA__c",
+                             "doCreate":true,
+                             "doFind":false,
+                             "label":"EsPCA"
+                            },
+                            {"isExactMatch":false,
+                             "fieldName":"RF2_EsPCE__c",
+                             "doCreate":true,
+                             "doFind":false,
+                             "label":"EsPCE"
+                            }
+                        ]
+                    }
+                ];         
+                
+                
+                 // Configuración para Chat
+                 
+                 var url = "https://deportes.compensar.com/?_ga=2.104747200.1136933643.1584563921-1286126839.1533245248";
+                 var url2 = "https://corporativo.compensar.com/eventos";
+                embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
+                        var valSeleccionado = prechatFormData[0].value; 
+                        switch (valSeleccionado) {
+                            case 'Vivienda': 
+                                return "5732G000000fxU7QAI";
+                                
+                            case 'Vacunación Empresarial':      
+                                return "5732G000000fxU2QAI";
+                            
+                            case 'Transacciones en línea':      
+                                return "5732G000000fxTxQAI";
+                            
+                            case 'Subsidio Monetario':      
+                                return "5732G000000fxTsQAI";
+                            
+                            case 'Solicita tu Crédito Nuevo':       
+                                return "5732G000000fxTnQAI";
+                            
+                            case 'Recreación y cultura':
+                                var c = confirm('Señor usuario entendiendo la situación actual de salud pública le comunicamos que para información de cualquiera de nuestros servicios de recreación, educación y deportes puede dirigirse a la página '+ url+'');        
+                                if(c==true){
+                                    window.location=url;
+                                }
+                                return "5732G000000fxTiQAI";
+                           
+                            case 'Odontología Especializada':      
+                                return "5732G000000fxTdQAI";
+                               
+                           
+                            case 'Eventos':    
+                                var c = confirm('Señor usuario entendiendo la situación actual de salud pública le comunicamos que para información de cualquiera de nuestros servicios de eventos puede dirigirse a la pagina '+ url+'');        
+                                if(c==true){
+                                    window.location=url2;
+                                }
+                                
+                                return "5732G000000fxTYQAY";
+                           
+                            case 'Educación':      
+                                var c = confirm('Señor usuario entendiendo la situación actual de salud pública le comunicamos que para información de cualquiera de nuestros servicios de recreación, educación y deportes puede dirigirse a la página '+ url+'');        
+                                if(c==true){
+                                    window.location=url;
+                                }return "5732G000000fxTTQAY";
+                           
+                            case 'Deportes':        
+                                    var c = confirm('Señor usuario entendiendo la situación actual de salud pública le comunicamos que para información de cualquiera de nuestros servicios de recreación, educación y deportes puede dirigirse a la página '+ url+'');        
+                                    if(c==true){
+                                        window.location=url;
+                                    }return "5732G000000fxTOQAY";
+                           
+
+                            case 'Crédito vigente y pignoración de subsidio':       
+                                return "5732G000000fxTJQAY";
+                            
+                            case 'Cirugía Estética':        
+                                return "5732G000000fxTEQAY";
+                            
+                            case 'Afiliación Caja Compensación':        
+                                return "5732G000000fxSzQAI";
+                            
+                            case 'Privilegios Compensar':        
+                                return "5732G000000fxUCQAY";
+                                
+                            case 'Seguros':        
+                                return "5732G000000fxUHQAY";
+                                
+                            case 'Empleo y Emprendimiento':        
+                                return "5732G000000fxUMQAY";
+                                
+                            default:          
+                                return "5732G000000fxT4QAI";
+                            
+                        }
+                    
+                    
+                };
+                
+                embedded_svc.settings.enabledFeatures = ['LiveAgent'];
+        embedded_svc.settings.entryFeature = 'LiveAgent';
+
+        embedded_svc.init(
+            'https://compensar.my.salesforce.com',
+            'https://compensar-prod.secure.force.com/pruebachatmg',
+            gslbBaseURL,
+            '00D6A000001UfII',
+            'Integracion_Chat',
+            {
+                baseLiveAgentContentURL: 'https://c.la2-c2-ph2.salesforceliveagent.com/content',
+                deploymentId: '5726A000000HI4w',
+                buttonId: '5732G000000fxT9',
+                baseLiveAgentURL: 'https://d.la2-c2-ph2.salesforceliveagent.com/chat',
+                eswLiveAgentDevName: 'EmbeddedServiceLiveAgent_Parent04I2G000000KyjpUAC_16f26b75572',
+                isOfflineSupportEnabled: false
+            }
+        );
+    };
+
+    if (!window.embedded_svc) {
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://compensar.my.salesforce.com/embeddedservice/5.0/esw.min.js');
+        s.onload = function() {
+            initESW(null);
+        };
+        document.body.appendChild(s);
+    } else {
+        initESW('https://service.force.com');
+    }
+</script>
+    </apex:outputPanel>
+</apex:page>

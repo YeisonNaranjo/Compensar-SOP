@@ -1,0 +1,230 @@
+<!--
+ - Created by AVX_CMosquera on 31/07/2017.
+ - Updated AVX_Dlopez 31/08/2017
+ -->
+
+<apex:page id="COM_PVE_Cotizacion_Inmunizacion_pag"  renderAs="pdf" standardStylesheets="false" 
+           controller="COM_PVE_Cotizacion_Inmunizacion_ctr" applyHtmlTag="false" showHeader="false">
+
+    <HTML>
+    <HEAD>
+        <TITLE>{!fechaActual}</TITLE>
+        
+        <style type="text/css" media="print">
+            <apex:outputPanel layout="none" rendered="true">
+                .watermark {
+                    background-repeat: repeat;
+                    background-image: url("{!$Resource.PruebaInmunizacion}");
+                }
+            </apex:outputPanel>
+        </style>
+
+
+        <STYLE TYPE="text/css">
+            @page { size: 8.5in 11in; margin-right: 0.4in; margin-top: 0.32in; margin-bottom: 0.39in;
+               
+                
+         }
+    
+    </STYLE>
+    
+
+    </HEAD>
+    <body class="watermark" LANG="en-US" TEXT="#000000" LINK="#0000ff" DIR="LTR">
+    <BR/>
+    <BR/> 
+    <BR/>
+           
+   <P LANG="es-ES" ALIGN="LEFT"> 
+    <SPAN style="font-family: sans-serif; font-size: 11pt;">{!fechaActual}</SPAN></P>
+    <BR/>
+    <p LANG="es-ES" ALIGN="LEFT"> 
+    <SPAN style="font-family: sans-serif; font-size: 11pt;">{!saludoCliente}</SPAN><BR/>
+    <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold;">{!nombreCliente}</SPAN><BR/>
+    <SPAN style="font-family: sans-serif; font-size: 11pt;">{!ciudad}</SPAN><BR/> </p>
+            
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!saludo}</SPAN></P>
+ 
+        
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoUno}</SPAN></P>
+        
+        
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold;">{!parrafoDos}</SPAN></P>   
+ 
+        
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoTres}</SPAN></P>
+ 
+ 
+ <P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold;">{!tituloUno}</SPAN>
+        </P>
+ <ul>
+        <apex:repeat value="{!especificacionesServicio}" var="servicio1">
+        <LI><SPAN style="font-family: sans-serif; font-size: 11pt; margin-bottom: 0pt; margin-top: 0pt; "><apex:outputText value="{!servicio1}" escape="false"/> </SPAN></LI>
+        </apex:repeat>
+    </ul>
+    
+<P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold;">{!tituloDos}</SPAN>
+        </P>        
+ 
+ <TABLE WIDTH="690" CELLPADDING="5" CELLSPACING="0" align="center">
+            <TR>
+                <TD WIDTH="110" HEIGHT="15" BGCOLOR="#FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; color:#FFFFFF;">{!tituloTablaUnoColumnaUno}</SPAN></center>
+                </TD>
+                <TD WIDTH="110" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; color:#FFFFFF;">{!tituloTablaUnoColumnaDos}</SPAN></center>
+                </TD>
+                <TD WIDTH="180" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; color:#FFFFFF;">{!tituloTablaUnoColumnaTres}</SPAN></center>
+                </TD>
+                <TD WIDTH="200" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; color:#FFFFFF;">{!tituloTablaUnoColumnaCuatro}</SPAN></center>
+                </TD>
+                <TD WIDTH="90" HEIGHT="15" BGCOLOR="FF9933" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; color:#FFFFFF;">{!tituloTablaUnoColumnaCinco}</SPAN></center>
+                </TD>
+              </TR>
+            <apex:repeat value="{! itemsPropuestaEconomica}" var="servicio">
+            <TR>
+                <TD WIDTH="110" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">{!servicio.Categoria}</SPAN></center>
+                </TD>
+                <TD WIDTH="110" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">{!servicio.Subcategoria}</SPAN></center>
+                </TD>
+                <TD WIDTH="180" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">{!servicio.Producto}</SPAN></center>
+                </TD>
+                <TD WIDTH="200" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">{!servicio.Descripcion}</SPAN></center>
+                </TD>
+                <TD WIDTH="90" HEIGHT="15"  STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 10pt; ">
+                    <apex:outputText value="{0,number,$###,###,###}"> 
+                         <apex:param value="{!servicio.Valor}"/> 
+                    </apex:outputText>
+                     </SPAN></center>
+                </TD>
+             </TR>
+             </apex:repeat>
+        </TABLE> 
+
+<P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold;">{!tituloTres}&nbsp;{!year}&nbsp;{!tituloTresA}</SPAN><br/>
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoCuatro}</SPAN></P>
+ 
+ <div style="page-break-after:always;"/>
+     <BR/>
+        <BR/> 
+        <BR/>
+        <BR/>
+        <BR/>            
+
+<P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold;">{!tituloCuatro}</SPAN>
+ </P>
+ <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoCinco}</SPAN></P>
+        
+ <P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold; text-decoration:underline;">{!tituloCuatroA}</SPAN>
+ </P> 
+ 
+ <ul>
+        <apex:repeat value="{!metodologiaPrograma}" var="servicio1">
+        <LI><SPAN style="font-family: sans-serif; font-size: 11pt; margin-bottom: 0pt; margin-top: 0pt; "><apex:outputText value="{!servicio1}" escape="false"/> </SPAN></LI>
+        </apex:repeat>
+    </ul>
+ 
+ <P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold; text-decoration:underline;">{!tituloCuatroB}</SPAN>
+ </P>      
+        
+ <P LANG="es-ES" ALIGN="JUSTIFY"> 
+     <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoSeis}</SPAN></P>
+           
+ <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoSiete}</SPAN></P>
+        
+<P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold; text-decoration:underline;">{!tituloCuatroC}</SPAN>
+ </P>  
+
+     
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoOcho}</SPAN></P>
+        
+        
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoNueve}</SPAN></P>
+
+<div style="page-break-after:always;"/>
+     <BR/>
+        <BR/> 
+        <BR/>
+        <BR/>
+        <BR/>  
+        
+ <TABLE WIDTH="650" CELLPADDING="5" CELLSPACING="0" align="center">
+            <TR>
+                <TD WIDTH="150" HEIGHT="15" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; ">{!tituloTablaDosColumnaUnoFilaUno}</SPAN></center>
+                </TD>
+                <TD WIDTH="500" HEIGHT="15" STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; ">{!valorTablaDosColumnaDosFilaUno}</SPAN></center>
+                </TD>
+              </TR>
+            <TR>
+                <TD WIDTH="150" HEIGHT="15" STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; ">{!tituloTablaDosColumnaUnoFilaDos}</SPAN></center>
+                </TD>
+                <TD WIDTH="500" HEIGHT="15" STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; ">{!valorTablaDosColumnaDosFilaDos}</SPAN></center>
+                </TD>
+              </TR>
+            <TR>
+                <TD WIDTH="150" HEIGHT="15" STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; ">{!tituloTablaDosColumnaUnoFilaTres}</SPAN></center>
+                </TD>
+                <TD WIDTH="500" HEIGHT="15" STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000;; padding-top: 0in; padding-bottom: 0in; padding-left: 0.05in; padding-right: 0in">
+                    <center><SPAN style="font-family: sans-serif; font-size: 11pt; ">{!valorTablaDosColumnaDosFilaTres}</SPAN></center>
+                </TD>
+              </TR>
+        </TABLE>    
+       
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoDiez}</SPAN></P>
+        
+       
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoOnce}</SPAN></P>
+        
+       
+    <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoDoce}</SPAN></P>
+ 
+ <P LANG="es-ES" ALIGN="JUSTIFY"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!parrafoTrece}&nbsp;&nbsp;{!nombreAsesor}&nbsp;&nbsp;{!parrafoCatorce}&nbsp;&nbsp;{!telefonoAsesor}&nbsp;&nbsp;{!parrafoQuince}&nbsp;&nbsp;{!emailAsesor}</SPAN></P>
+        <BR/> 
+<P LANG="es-ES" ALIGN="JUSTIFY"> 
+  
+ 
+     
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!despedida}</SPAN></P>   
+     
+     <P LANG="es-ES" ALIGN="left"> 
+        <SPAN style="font-family: sans-serif; font-size: 11pt; font-weight:bold;">{!nombreAsesor}</SPAN><br/>
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!cargoAsesor}</SPAN><br/>
+        <SPAN style="font-family: sans-serif; font-size: 11pt;">{!procesoAsesor}</SPAN><br/>       
+        
+        </P>    
+               
+    </BODY>
+    </HTML>
+</apex:page>

@@ -1,0 +1,86 @@
+<template>
+
+
+  <lightning-card 
+  icon-name="standard:link"
+  title="Vinculaciones - Salud">
+  <div class="slds-border_bottom"></div>
+    <lightning-layout>
+    <div class="slds-p-around_small">
+
+        
+        <template for:each={resultV} for:item="itemV">
+            <div class="card" key={itemV.id}>
+            
+              <div class="card-text">
+                <b>Programa Vinculación: </b>  {itemV.ProgramaVinculacion} <br/>
+                <b>Estado: </b> {itemV.Estado} <br/>
+                <b>Fecha de inicio vinculación:</b> {itemV.FechaInicio}-{itemV.mesIni}-{itemV.diaIni} <br/>
+                <b>Estrato: </b> {itemV.Estrato} <br/>
+                <b>Autorización envío de Mail: </b> {itemV.AUTENVEMAIL}  <br/>
+                <b>Autorización envío de SMS:</b> {itemV.AUTENVSMS} <br/>                                                                 
+                   <br/>
+                   
+              </div>
+          
+            </div>
+          </template>
+          
+          <template for:each={resultE} for:item="itemE">
+            <div class="card" key={itemE.id}>
+                <div class="card-text">
+                  <span class="slds-badge"> {itemE.ErrorShow} </span><br/>
+                        
+                <br/>
+              </div>
+          
+            </div>
+          </template>
+    </div>
+</lightning-layout>
+</lightning-card>
+
+<br/>
+
+  <lightning-card 
+  icon-name="custom:custom103"
+  title="Grupo Familiar - Salud">
+  <div class="slds-border_bottom"></div>
+              <lightning-layout>
+              <div class="slds-p-around_small">
+                
+                      <template for:each={result} for:item="item">
+                          <div class="card" key={item.id}>
+                              <div class="card-text">
+                              <b>Tipo Identificacion: </b> {item.TipoIdentificacion} <br/>
+                              <b>Numero Identificacion: </b> {item.NumeroIdentificacion} <br/>
+                              <b>Nombre: </b> {item.Nombre} <br/>
+                              <b>Fecha Nacimiento: </b> {item.FechaNacimiento}-{item.mesNacimiento}-{item.diaNacimiento} <br/>
+                              <b>Genero: </b> {item.Genero} <br/>
+                              <b>Parentesco: </b> {item.Parentesco}<br/>
+                              <b>Dirección: </b> {item.Direccion} <br/>
+                              <b>Correo: </b>  {item.Correo} <br/>                           
+                              <b>Plan: </b> {item.PlanVarios} <br/>
+                                                               
+                              <br/>
+                            </div>
+                        
+                          </div>
+                        </template>
+                        
+                        <template for:each={resultE} for:item="itemE">
+                          <div class="card" key={itemE.id}>
+                              <div class="card-text">
+                                <span class="slds-badge"> {itemE.ErrorShow} </span><br/>
+                                      
+                              <br/>
+                            </div>
+                        
+                          </div>
+                        </template>
+   
+              </div>
+          </lightning-layout>
+      </lightning-card>
+
+  </template>

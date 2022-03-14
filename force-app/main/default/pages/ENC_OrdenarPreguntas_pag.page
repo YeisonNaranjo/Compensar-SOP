@@ -1,0 +1,79 @@
+<apex:page standardController="AVX_ENC_PlantillaEncuesta__c" extensions="ENC_OrdenarPreguntas_ctr">
+	<script type="text/javascript">
+		function arriba() {
+			obj=document.getElementById('sel');
+			indice=obj.selectedIndex;
+			if (indice>0) cambiar(obj,indice,indice-1);
+		}
+		function abajo() {
+			obj=document.getElementById('sel');
+			indice=obj.selectedIndex;
+			if (indice!=-1 && indice<obj.length-1)
+				cambiar(obj,indice,indice+1);
+		}
+		function cambiar(obj,num1,num2) {
+			proVal=obj.options[num1].value;
+			proTex=obj.options[num1].text;
+			obj.options[num1].value=obj.options[num2].value;	
+			obj.options[num1].text=obj.options[num2].text;	
+			obj.options[num2].value=proVal;
+			obj.options[num2].text=proTex;
+		  obj.selectedIndex=num2;
+		}
+		
+		function resultados()
+		{
+			obj=document.getElementById('sel');
+			//alert( obj );
+			var resOrdenados = '';
+			for( i = 0; i < obj.length; i++ )
+			{
+				if( resOrdenados == '' )
+					resOrdenados = obj.options[i].value;
+				else
+					resOrdenados += ';' + obj.options[i].value;
+			}
+			//alert( resOrdenados );
+			
+			ordenar( resOrdenados );
+		}
+	</script>
+	<style type="text/css">
+		tr
+		{
+		vertical-align:center;
+		}
+		</style>
+	<apex:sectionHeader title="Ordenar Preguntas" subtitle="{!AVX_ENC_PlantillaEncuesta__c.Name}"/>
+	<apex:form >
+		<apex:actionFunction name="ordenar" action="{!ordenar}" rerender="out" status="myStatus">
+			<apex:param assignTo="{!idsOrdenados}" name="idsOrdenados" value=""/>
+		</apex:actionFunction>
+		<apex:pageBlock title="Preguntas">
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="Guardar" onclick="resultados(); return false;"/>
+				<apex:commandButton value="Cancelar" action="{!cancel}"/>
+			</apex:pageBlockButtons>
+			<table >
+				<tr>
+					<td>
+						<select id="sel" size="{!numPregs}">
+							<apex:repeat value="{!lstPreguntas}" var="p" id="theRepeat">
+								<option value="{!p.Id}">{!p.Name}</option>
+							</apex:repeat>
+						</select>
+					</td>
+					<td >
+						<!-- <img src="/img/ple/directionals/top.gif" id="rlPropFields_iconTop" style="cursor: pointer; margin-top: 2px; margin-right: 2px; margin-bottom: 2px; margin-left: 2px; display: none; "/> -->
+						<div id="ext-gen372">Arriba</div>
+						<img src="/img/ple/directionals/up.gif" id="rlPropFields_iconUp" style="cursor:pointer;margin:2px;" onclick="arriba()"/>
+						<br id="ext-gen373"/>
+						<img src="/img/ple/directionals/down.gif" id="rlPropFields_iconDown" style="cursor:pointer;margin:2px;" onclick="abajo()"/>
+						<div id="ext-gen374">Abajo</div>
+						<!-- <img src="/img/ple/directionals/bottom.gif" id="rlPropFields_iconBottom" style="cursor: pointer; margin-top: 2px; margin-right: 2px; margin-bottom: 2px; margin-left: 2px; display: none; "/> -->
+					</td>
+				</tr>
+			</table>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

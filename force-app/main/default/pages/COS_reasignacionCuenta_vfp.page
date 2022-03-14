@@ -1,0 +1,44 @@
+<!--<apex:page standardController="Account" extensions="COS_reasignacionSalud_ctr" recordSetVar="accs" action="{!redirectToLC}" lightningStylesheets="true">-->
+<apex:page standardController="Account" extensions="COS_reasignacionSalud_ctr" recordSetVar="accs" lightningStylesheets="true" showHeader="false" docType="html-5.0" applyBodyTag="false">
+    <script>
+    	function doRedirect(){
+        	window.history.back();
+        }
+    </script>
+    <apex:form >
+        <apex:pageMessages id="showmsg"></apex:pageMessages>
+        <apex:pageBlock title="Agregar servicio" id="reasignarCuenta">
+            <apex:outputPanel id="reasignarExitoso" rendered="{!blnExitoso}">
+                <p style="text-align:center;color:green;">Cuentas reasignados exitosamente!!!</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarFallido" rendered="{!blnFallido}">
+                <p style="text-align:center;color:red;">Ocurrio un error en la reasignación de cuentas, itente de nuevo por favor</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarSelectOption" rendered="{!blnSelectOption}">
+                <p style="text-align:center;color:blue;">Debe seleccionar una opción de reasignación</p>
+            </apex:outputPanel>
+            <apex:outputPanel id="reasignarUsersNull" rendered="{!blnUsersNull}">
+                <p style="text-align:center;color:red;">No existen asesores asignados para distribuir las cuentas seleccionadas</p>
+            </apex:outputPanel>
+        	<apex:pageBlockSection columns="2">
+                <apex:selectList label="Cambiar propietario" size="1" value="{!selectedAsesor}" > 
+                    <apex:selectOptions value="{!selectedaccnamefields}"/> 
+                </apex:selectList>
+                <apex:inputCheckbox label="Reasignación masiva" selected="false" value="{!asesorDistribucion}"/>
+            </apex:pageBlockSection>
+            <br/><br/>
+            
+            <apex:pageBlockTable value="{!lstAcc}" var="ac" title="Cuentas a reasignar">
+                <apex:column headervalue="Nombre" value="{!ac.name}"/>
+                <apex:column headervalue="Tipo documento" value="{!ac.COM_TipoIdentificacion__c}"/>
+                <apex:column headervalue="No. documento" value="{!ac.COM_Numero_de_identificacion__c}"/>
+                <!-- <apex:column headervalue="Pripietario" value="{!ac.Owner.Name}"/>		-->
+            </apex:pageBlockTable>
+            <br/><br/>
+            <apex:pageBlockButtons location="bottom">
+<!--                <apex:commandButton value="Cancelar" onclick="doRedirect()"/>-->
+                <apex:commandButton value="Enviar" onclick="if(!confirm('Desea reasignar las cuentas ?')){return false};" action="{!reasignar}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

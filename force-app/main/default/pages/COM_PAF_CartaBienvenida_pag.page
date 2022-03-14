@@ -1,0 +1,113 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             Cristian David Mejia (CM)
+Proyecto:          Compensar
+Descripción:       Pagina encargada de la creación de los PDF de bienvenida
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ----------------------  ---------------------------------------------
+    1.1     08/08/17             Cristian David Mejia (CM)             Modificación de la Clase.
+************************************************************************************************/ -->
+<apex:page showHeader="false" sidebar="false" renderAs="pdf" standardController="Opportunity" extensions="COM_PAF_CartaBienvenida_ctr" action="{!getBody}">
+
+
+    <apex:outputText value="{!Opportunity.AccountId}" style="display: none"/>
+    <apex:outputPanel rendered="{!NOT(blnPanel)}">
+        <div style="padding: 40px 30px 0px 50px !important;font-family: Arial;font-size: 15px;">
+            <apex:outputText value="{!strBody}" escape="false"/>
+        </div>
+        
+       <div style="background-image: url({!$Resource.footercompensar2});width: 100%; height:220px; bottom:0;  display:{! If(strCodigoDoc=='FOR-PAF- 009' ,'none',false) }">
+        <apex:image url="{!$Resource.COM_PAF_FirmaDirector_img}" width="150" height="45" style="padding: 0px 30px 0px 50px !important;"/>
+       
+        
+        <div style="padding: 0px 30px 0px 50px !important;font-family: Arial;font-size: 13px;">
+            <p>{!$Label.COM_PAF_Director_lbl}<br/>
+            Director</p><!--en este el cambio para pensionados 3335-->
+            <p>Elaboró: {!strElaboradoPor}<br/>
+            {!strCodigoDoc}</p>
+        </div>
+        </div>
+        
+       <div style="display:{! If(strCodigoDoc=='FOR-PAF- 009' ,false,'none') }">
+      
+        <apex:image url="{!$Resource.COM_PAF_FirmaDirector_img}" width="150" height="50" style="padding: 0px 30px 0px 50px !important;"/>
+       
+        
+        <div style="padding: 0px 30px 0px 50px !important;font-family: Arial;font-size: 15px;">
+            <p>{!$Label.COM_PAF_Director_lbl}<br/>
+            Director</p>
+            <p>Elaboró: {!strElaboradoPor}<br/>
+            {!strCodigoDoc}</p>
+        </div>
+            <div>
+               <apex:image url="{!$Resource.footercompensar}" style="padding-top:400px; bottom: 0;width: 100%; height:250px; color: white;text-align: center;"/>  
+            </div>
+            
+        </div>
+
+         <!--<div style="padding: 0px 0px 0px 0px; float:left">-->
+         
+        
+         <!--</div>-->
+<!--Avenida 68 No 49 A - 47<br/>
+Central telef&oacute;nica 3 07 70 01<br/>
+Bogot&aacute; D.C. Colombia<br/>
+www.compensar.com-->
+         
+
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!blnPanel}">
+        <div style="text-align: left;padding: 20px 20px 0px 20px !important;font-family: Arial;font-size: 12px;">
+            <apex:outputText value="{!strBody}" style="text-align: left;" escape="false"/>
+        </div>
+        
+        <div style="background-image: url({!$Resource.footercompensar});width: 100%; height:250px; bottom:0;  display:{! If(strCodigoDoc=='FOR-PAF- 009' ,'none',false) }">
+        <apex:image url="{!$Resource.COM_PAF_FirmaDirector_img}" width="200" height="50" style="padding: 0px 20px 0px 20px !important;"/>
+    
+        
+        <div style="padding: 0px 20px 0px 20px !important;font-family: Arial;font-size: 12px;">
+            <p>{!$Label.COM_PAF_Director_lbl}<br/>
+            Director</p>
+            <br/>
+            <p>Elaboró: {!strElaboradoPor}<br/>
+            {!strCodigoDoc}</p>
+
+             <div align="center" style="padding: 0px 20px 0px 20px !important;font-family: Arial;font-size: 12px;">
+            </div>
+<!--Avenida 68 No 49 A - 47<br/>
+Central telef&oacute;nica 3 07 70 01<br/>
+Bogot&aacute; D.C. Colombia<br/>
+www.compensar.com<br/>-->
+         </div>
+        </div>
+        
+        <div style="display:{! If(strCodigoDoc=='FOR-PAF- 009' ,false,'none') }">
+             <apex:image url="{!$Resource.COM_PAF_FirmaDirector_img}" width="200" height="50" style="padding: 0px 20px 0px 20px !important;"/>
+    
+        
+        <div style="padding: 0px 20px 0px 20px !important;font-family: Arial;font-size: 12px;">
+            <p>{!$Label.COM_PAF_Director_lbl}<br/>
+            Director</p>
+            <br/>
+            <p>Elaboró: {!strElaboradoPor}<br/>
+            {!strCodigoDoc}</p>
+
+             <div align="center" style="padding: 0px 20px 0px 20px !important;font-family: Arial;font-size: 12px;">
+            </div>
+<!--Avenida 68 No 49 A - 47<br/>
+Central telef&oacute;nica 3 07 70 01<br/>
+Bogot&aacute; D.C. Colombia<br/>
+www.compensar.com<br/>-->
+         </div>
+            
+            <div>
+               <apex:image url="{!$Resource.footercompensar}" style="padding-top:400px; bottom: 0;width: 100%; height:250px; color: white;text-align: center;"/>  
+            </div>
+            
+        </div>
+
+    </apex:outputPanel>
+</apex:page>

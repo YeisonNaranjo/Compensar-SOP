@@ -1,0 +1,616 @@
+<!--
+@description       : 
+@author            : ChangeMeIn@UserSettingsUnder.SFDoc
+@group             : 
+@last modified on  : 12-21-2020
+@last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+Modifications Log 
+Ver   Date         Author                               Modification
+1.0   12-21-2020   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<template>
+  <div class="spinner">
+    <template if:true={firstLoading}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+        </lightning-spinner>
+    </template>
+  </div>
+
+  <template if:true={isPreRegistro}>
+    <div class="container">
+      <div class="slds-grid slds-grid_align-center slds-wrap">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12">
+          <div class="slds-grid slds-wrap">
+              <div class="slds-grid slds-col slds-size_4-of-12 slds-grid_vertical menulaterarl">
+                  <template for:each={programasList} for:item="programa">
+                      <div key={programa} class="slds-col slds-size_12-of-12 title-menu hero space-vertical" onclick={selectProgram} data-button-id={programa} >
+                          {programa}
+                      </div>
+                  </template>
+                  </br>
+              </div>
+              <!-- Show tipo de Solicitud -->
+              <template if:true={showDep}>
+                  <div class="slds-col slds-size_9-of-12">
+                      <!-- Sección tipo Solicitud Accordion allow-multiple-sections-open-->
+                      <lightning-accordion allow-multiple-sections-open
+                          onsectiontoggle={handleSectionToggle}
+                          active-section-name={solicitudList.id} class="liSpace ">
+                          <template for:each={solicitudList} for:item="solicitud" for:index="index">
+                              <div id={solicitud.id} key={solicitud.index} class="slds-card slds-box li">
+                                  <lightning-accordion-section key={solicitud.id} name={solicitud.id} label={solicitud.name} class="accordiongrey" >
+                                      <template for:each={solicitud.relacionado} for:item="relacionado" for:index="index1">
+                                              <!-- prueba accordion relacionado con -->
+                                          <div key={relacionado.relacionadoCon.Id} class="">
+                                                  <lightning-accordion allow-multiple-sections-open
+                                                  onsectiontoggle={handleToggleRelated}
+                                                  active-section-name={relacionado.relacionadoCon} class="" key={relacionado.relacionadoCon.Id}>
+                                                      <lightning-accordion-section key={relacionado.relacionadoCon.Id} name={relacionado.relacionadoCon.Id} label={relacionado.relacionadoCon.CE2_textoOpcion__c} class="accordionpink" >
+                                                          
+                                                      <div class="slds-grid slds-gutters slds-wrap">
+                                                          <template for:each={relacionado.medioAtenLst} for:item="medios" for:index="index2">
+                                                              <div key={medios.Id} class="slds-col slds-size_12-of-12 slds-m-bottom_medium"> 
+                                                                  <div class="slds-box medios">
+                                                                      <lightning-icon icon-name={medios.CE2_Icono__c} alternative-text="Utility image" title="Image" class="mediosIcono" style="fill: white !important;"></lightning-icon>
+                                                                      <p><lightning-formatted-url value={medios.CE2_textoOpcion__c} label={medios.CE2_apiName__c} target="_blank" class="mediosLink" onclick={selectUrl} style="color: white;"></lightning-formatted-url></p>
+                                                                  </div>
+                                                              </div>
+                                                              </template>
+                                                          </div>
+                                                      <div class="stretchButton accordionpink">
+                                                              <b key={relacionado.relacionadoCon.Id}>Requisitos para la Solicitud:</b>
+                                                              <template for:each={relacionado.requisitosLst} for:item="requisito" for:index="index2">
+                                                                  <br key={requisito.Id}/>
+                                                                  <span key={requisito.Id}>{requisito.CE2_NombreRequisito__c}</span>
+                                                                      <p key={requisito.Id}><lightning-formatted-url value={requisito.CE2_textoOpcion__c}  label={requisito.CE2_EtiquetaDescargas__c} target="_blank" class="mediosLink"></lightning-formatted-url></p>
+                                                              </template>
+                                                          </div>
+                                                  </lightning-accordion-section>
+
+                                              </lightning-accordion> 
+                                          </div>
+                                          <!-- FIN prueba accordion relacionado con -->
+                                      </template>
+                                  </lightning-accordion-section>
+                              </div>
+                          </template>
+                      </lightning-accordion> 
+                  </div>
+              </template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+<template if:true={isModalOpen}>
+<!-- Modal/Popup Box LWC starts here -->
+<section role="dialog"
+          tabindex="-1"
+          aria-labelledby="modal-heading-01"
+          aria-modal="true"
+          aria-describedby="modal-content-id-1"
+          class="slds-modal slds-fade-in-open">
+  <div class="slds-modal__container">
+    <!-- Modal/Popup Box LWC header here -->
+    <header class="slds-modal__header">
+      <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+              title="Close"
+              onclick={closeModal}>
+        <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small"></lightning-icon>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+      <h2 id="modal-heading-01"
+          class="slds-text-heading_medium slds-hyphenate">ADVERTENCIA</h2>
+    </header>
+    <!-- Modal/Popup Box LWC body starts here -->
+    <div class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-1">
+      <p><b>No es posible registrar su novedad sin completar los campos requeridos.
+        </b></p>
+      <p><b>Valide las secciones del formulario donde le indique que faltan campos por completar o corregir.
+        </b></p>
+    </div>
+    <!-- Modal/Popup Box LWC footer starts here -->
+    <footer class="slds-modal__footer">
+      <button class="slds-button slds-button_brand"
+              onclick={closeModal}
+              title="OK">OK</button>
+      <!-- <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button> -->
+    </footer>
+  </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+<!-- Inicio 2.0 -->
+<template if:true={isModalOpenFile}>
+<!-- Modal/Popup Box LWC starts here -->
+<section role="dialog"
+          tabindex="-1"
+          aria-labelledby="modal-heading-01"
+          aria-modal="true"
+          aria-describedby="modal-content-id-1"
+          class="slds-modal slds-fade-in-open">
+  <div class="slds-modal__container">
+    <!-- Modal/Popup Box LWC header here -->
+    <header class="slds-modal__header">
+      <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+              title="Close"
+              onclick={closeModalFile}>
+        <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small"></lightning-icon>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+      <h2 id="modal-heading-04"
+          class="slds-text-heading_medium slds-hyphenate">ADVERTENCIA</h2>
+    </header>
+    <!-- Modal/Popup Box LWC body starts here -->
+    <div class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-4">
+      <p><b>No es posible adjuntar el archivo seleccionado ya que supera el limite de 3MB admitido.
+        </b></p>
+      <p><b>Valide el peso de todos los archivos adjuntos al caso y verifique que en conjunto no superen el limite en mención.
+        </b></p>
+    </div>
+    <!-- Modal/Popup Box LWC footer starts here -->
+    <footer class="slds-modal__footer">
+      <button class="slds-button slds-button_brand"
+              onclick={closeModalFile}
+              title="OK">OK</button>
+      <!-- <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button> -->
+    </footer>
+  </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+<!-- Fin 2.0 -->
+<template if:true={isModalGuardarOpen}>
+<!-- Modal/Popup Box LWC starts here -->
+<section role="dialog"
+          tabindex="-1"
+          aria-labelledby="modal-heading-01"
+          aria-modal="true"
+          aria-describedby="modal-content-id-1"
+          class="slds-modal slds-fade-in-open">
+  <div class="slds-modal__container">
+    <!-- Modal/Popup Box LWC header here -->
+    <header class="slds-modal__header">
+      <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+              title="Close"
+              onclick={closeModal}>
+        <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small"></lightning-icon>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+      <h2 id="modal-heading-02"
+          class="slds-text-heading_medium slds-hyphenate">CREACIÓN EXITOSA</h2>
+    </header>
+    <!-- Modal/Popup Box LWC body starts here -->
+    <div class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-2">
+      <p><b>Buenas noticias.
+        </b></p>
+      <p><b>Se ha creado el caso nro: {numCaso}.
+        </b></p>
+    </div>
+    <!-- Modal/Popup Box LWC footer starts here -->
+    <footer class="slds-modal__footer">
+      <button class="slds-button slds-button_brand"
+              onclick={closeModalGuardar}
+              title="OK">OK</button>
+      <!-- <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button> -->
+    </footer>
+  </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+<template if:true={isModalLimpiarOpen}>
+<!-- Modal/Popup Box LWC starts here -->
+<section role="dialog"
+          tabindex="-1"
+          aria-labelledby="modal-heading-01"
+          aria-modal="true"
+          aria-describedby="modal-content-id-1"
+          class="slds-modal slds-fade-in-open">
+  <div class="slds-modal__container">
+    <!-- Modal/Popup Box LWC header here -->
+    <header class="slds-modal__header">
+      <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+              title="Close"
+              onclick={closeModal}>
+        <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small"></lightning-icon>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+      <h2 id="modal-heading-03"
+          class="slds-text-heading_medium slds-hyphenate">ADVERTENCIA</h2>
+    </header>
+    <!-- Modal/Popup Box LWC body starts here -->
+    <div class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-3">
+      <p><b>Esta a punto de limpiar el formulario, Desea continuar?.
+        </b></p>
+      <p><b>Debe tener en cuenta que se reiniciara el formulario y la información ingresada se perdera.
+        </b></p>
+    </div>
+    <!-- Modal/Popup Box LWC footer starts here -->
+    <footer class="slds-modal__footer">
+      <button class="slds-button slds-button_brand"
+              onclick={okModalLimpiar}
+              title="OK">OK</button>
+      <button class="slds-button slds-button_brand"
+              onclick={cancelModalLimpiar}
+              title="Canelar">Cancelar</button>
+    </footer>
+  </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
+
+
+
+
+
+</template>
+
+<template if:true={isRegistro}>
+<template if:false={showLoadingSpinner}>
+  <div class="colorregistro slds-box">
+    <h2 class="negrita slds-align_absolute-center slds-text-heading_large">
+      Datos Cliente
+    </h2>
+  </div>
+  <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+    <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small">
+        <legend class="slds-form-element__legend slds-form-element__label">*Tipo de Identificación</legend>
+        <lightning-combobox data-formfield="ciudadContacto"
+                            data-id="tipoIdent"
+                            message-when-value-missing="Debe seleccionar un tipo de identificación"
+                            required="true"
+                            label="Filtrar sucursales por ciudad"
+                            value={value}
+                            placeholder="Seleccione una opción"
+                            options={optionsTipoDoc}
+                            onchange={handleChangeTipoIdentif}
+                            variant="label-hidden"
+                            class="slds-size_3-of-4">
+        </lightning-combobox>
+      </lightning-layout-item>
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">*Número de Identificación</legend>
+        <lightning-input data-formfield="numIdentif"
+                          label="Número de Identifiación"
+                          message-when-value-missing="Debe ingresar su número de identificación"
+                          message-when-pattern-mismatch="Los números de identificación solo pueden contener números"
+                          message-when-type-mismatch="Los números de identificación solo pueden contener números"
+                          required="true"
+                          data-id="numIdent"
+                          class="slds-size_3-of-4"
+                          oncommit={handleChangeNumIdentif}
+                          variant="label-hidden"
+                          type="number"
+                          onfocusout={validarNumeroNit}
+                          max-length="12"></lightning-input>
+      </lightning-layout-item>
+    </lightning-layout>
+  </div>
+  <div class="colorregistro slds-box">
+    <h2 class="negrita slds-align_absolute-center slds-text-heading_large">
+      Datos de Contacto
+    </h2>
+  </div>
+  <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+    <lightning-layout class="slds-align_absolute-center  slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">*Nombre de Contacto</legend>
+        <lightning-input data-formfield="nomContacto"
+                          label="Nombre de Contacto"
+                          data-id="nomCont"
+                          message-when-value-missing="Debe ingresar su nombre de contacto"
+                          message-when-pattern-mismatch="Los nombres solo pueden contener letras"
+                          required="true"
+                          class="slds-size_3-of-4"
+                          oncommit={handleChangeNomCont}
+                          variant="label-hidden"
+                          max-length="100"
+                          pattern="([a-zA-Z- ])*"></lightning-input>
+      </lightning-layout-item>
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">*Correo de Contacto</legend>
+        <lightning-input data-formfield="emailContacto"
+                          label="Correo de Contacto"
+                          data-id="emailCont"
+                          message-when-value-missing="Debe ingresar su email"
+                          message-when-pattern-mismatch="Debe ingresar un formato de email válido"
+                          oncommit={handleChangeEmail}
+                          required="true"
+                          pattern="(^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-](?:[a-zA-Z0-9-]*[a-zA-Z0-9-])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9]*[a-zA-Z0-9])?$)"
+                          class="slds-size_3-of-4"
+                          variant="label-hidden"
+                          type="email"></lightning-input>
+      </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout class="slds-align_absolute-center  slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">*Dirección de Contacto</legend>
+        <lightning-input data-formfield="dirContacto"
+                          data-id="dirCont"
+                          label="Dirección de Contacto"
+                          message-when-value-missing="Debe ingresar su dirección"
+                          required="true"
+                          oncommit={handleChangeDir}
+                          class="slds-size_3-of-4"
+                          variant="label-hidden"
+                          max-length="100"></lightning-input>
+      </lightning-layout-item>
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">Ciudad</legend>
+        <lightning-combobox data-formfield="ciudadContacto"
+                            data-id="ciudadCont"
+                            label="Filtrar sucursales por ciudad"
+                            value={value}
+                            placeholder="Seleccione una ciudad"
+                            options={optionsCiudades}
+                            onchange={handleChangeCiudad}
+                            variant="label-hidden"
+                            class="slds-listbox slds-size_3-of-4">
+        </lightning-combobox>
+      </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">Teléfono fijo</legend>
+        <lightning-input data-formfield="fijoContacto"
+                          label="Teléfono fijo"
+                          data-id="telCont"
+                          message-when-pattern-mismatch="Ingrese solo números"
+                          class="slds-size_3-of-4"
+                          variant="label-hidden"
+                          oncommit={handleChangeTel}
+                          formatter="decimal"
+                          max-length="10"
+                          pattern="^(0|[1-9][0-9]*)$"></lightning-input>
+      </lightning-layout-item>
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">Teléfono móvil</legend>
+        <lightning-input data-formfield="movilContacto"
+                          label="Teléfono móvil"
+                          data-id="telCont"
+                          message-when-pattern-mismatch="Ingrese solo números"
+                          class="slds-size_3-of-4"
+                          variant="label-hidden"
+                          oncommit={handleChangeCel}
+                          formatter="decimal"
+                          max-length="10"
+                          pattern="^(0|[1-9][0-9]*)$"></lightning-input>
+      </lightning-layout-item>
+    </lightning-layout>
+  </div>
+  <div class="colorregistro slds-box">
+    <h2 class="negrita slds-align_absolute-center slds-text-heading_large">
+      Datos Solicitud
+    </h2>
+  </div>
+
+  <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+    <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">*Medios de Respuesta</legend>
+        <lightning-combobox data-formfield="ciudadContacto"
+                            data-id="mediosRta"
+                            message-when-value-missing="Debe seleccionar una opción"
+                            required="true"
+                            label="Filtrar sucursales por ciudad"
+                            value={value}
+                            placeholder="Seleccione una opción"
+                            options={optionsMediosAten}
+                            onchange={handleChangeMediosAten}
+                            variant="label-hidden"
+                            class="slds-size_3-of-7">
+        </lightning-combobox>
+      </lightning-layout-item>
+    </lightning-layout>
+    
+    <template if:true={isEnlaceDescarga}>
+      <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+        <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+            <lightning-formatted-url value={vEnlaceDescarga}
+                                    tooltip="Descargue Aquí"
+                                    label="Descargar Documento de Requisito"
+                                    target="_blank"></lightning-formatted-url>
+          </lightning-layout-item>
+      </lightning-layout>
+    </template>
+    <lightning-layout class="slds-align_absolute-center  slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">Documentos Obligatorios Soporte</legend>
+        <lightning-textarea name="documObligat"
+                            label="Documentos Obligatorios Soporte"
+                            variant="label-hidden"
+                            read-only
+                            value={documentossoporte}></lightning-textarea>
+      </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              class="slds-form-element__control">
+        <legend class="slds-form-element__legend slds-form-element__label">*Descripción de su solicitud</legend>
+        <lightning-textarea name="descripSol"
+                            label="Descripción de su solicitud"
+                            data-id="descSol"
+                            message-when-value-missing="Debe ingresar una descripción de su solicitud"
+                            required="true"
+                            onblur={handleChangeDescrip}
+                            variant="label-hidden"
+                            max-length="131000"></lightning-textarea>
+      </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              alignment-bump="left"
+                              class="slds-form-element__control">
+        <div>
+          <legend class="slds-form-element__legend slds-form-element__label">Autoriza envío de respuesta por correo
+            electrónico</legend>
+        </div>
+        <div>
+          <lightning-input label="Acepto."
+                            class="slds-p-left_xx-small"
+                            type="checkbox"
+                            onchange={handleAutoriza}
+                            required="true">
+          </lightning-input>
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout class="slds-align_absolute-center slds-grid slds-gutters">
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small"
+                              alignment-bump="left"
+                              class="slds-form-element__control">
+        <div>
+          <legend class="slds-form-element__legend slds-form-element__label">Acepto la política de protección de
+            datos
+            personales</legend>
+        </div>
+        <div>
+          <lightning-input label="Acepto."
+                            class="slds-p-left_xx-small"
+                            type="checkbox"
+                            onchange={handleHabeas}
+                            required="true">
+          </lightning-input>
+          <p>
+            <lightning-formatted-url value="https://corporativo.compensar.com/proteccion-de-datos"
+                                      tooltip="ver política"
+                                      label="Ver politica de tratamiento de datos"
+                                      target="_blank"></lightning-formatted-url>
+          </p>
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout if:true={activo}>
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small">
+        <div class="colorregistro slds-box">
+          <h2 class="negrita slds-align_absolute-center slds-text-heading_large">
+            Archivos Adjuntos
+          </h2>
+          <legend class="slds-form-element__legend slds-form-element__label">Seleccione sus archivos (Tamaño máximo 3MB)</legend>
+          <div style="margin-left:4%">
+            <div>
+              <lightning-input label=""
+                                name="file uploader"
+                                onchange={handleMultipleFileChanges}
+                                type="file"
+                                multiple></lightning-input>
+            </div>
+          </div><br />
+          <lightning-card title="Archivos Cargados"
+                          icon-name="standard:account">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+              <thead>
+                <tr class="">
+                  <th class="slds-size_3-of-10"
+                      scope="col">
+                    <div class="slds-truncate"
+                          title="Name">Archivo</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={filesUploaded}
+                          for:item="marca"
+                          for:index="indexVar">
+                  <tr key={marca.Title}
+                      class="slds-hint-parent">
+                    <td class="slds-size_3-of-10"
+                        data-label="Prospecting">
+                      <div>
+                        <lightning-input type="text"
+                                          key={marca.Title}
+                                          data-id={marca.Title}
+                                          name="input1"
+                                          read-only
+                                          label=Participacion
+                                          value={marca.Title}
+                                          variant="label-hidden"></lightning-input>
+                      </div>
+                    </td>
+                    <td class="slds-size_1-of-10"
+                        data-label="Prospecting">
+                      <a name={indexVar}
+                          data-id={marca.Title}
+                          onclick={removeRow}>
+                        <lightning-icon icon-name="utility:delete"
+                                        alternative-text="delete"
+                                        size="small"></lightning-icon>
+                      </a>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </lightning-card>
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-layout>
+      <lightning-layout-item flexibility="auto"
+                              padding="around-small">
+        <div class="slds-align_absolute-center">
+          <div class="slds-size_5-of-10">
+            &nbsp;&nbsp;<button onclick={handleEnviar}
+                    class="customButton"
+                    type="submit">Enviar</button>&nbsp;&nbsp;
+          </div>
+          <div class="slds-size_5-of-10">
+            &nbsp;&nbsp;<button onclick={handleLimpiar}
+                    class="customButton">Limpiar</button>&nbsp;&nbsp;
+          </div>
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+
+  </div>
+</template>
+<template if:true={showLoadingSpinner}>
+  <lightning-spinner alternative-text="Loading"></lightning-spinner>
+</template>
+</template>
+
+
+
+</template>

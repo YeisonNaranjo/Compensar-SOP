@@ -1,0 +1,19 @@
+<apex:page showHeader="false" sidebar="false" controller="COM_VisualizadorCotizacion_ctr">
+    <apex:form >
+        <apex:pageMessages />
+        <apex:iframe src="../resource/{!srtUrlPagina}" width="730px" height="450px" scrolling="true"/>
+		<apex:actionStatus id="actStatusId" >
+            <apex:facet name="start" >
+               <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.75; z-index: 1000; background-color: black;"> &nbsp; 
+               </div>
+               <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 12% 45%;">
+            		<img src="{!$Resource.COM_Loading}" />
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <center>
+        	<apex:commandButton style="margin: 12px;" value="Guardar y Enviar" action="{!fnGuardarEnviar}" oncomplete="window.top.location='/{!strIdCustomObject}';" status="actStatusId"/>
+        </center>
+    </apex:form>
+</apex:page>

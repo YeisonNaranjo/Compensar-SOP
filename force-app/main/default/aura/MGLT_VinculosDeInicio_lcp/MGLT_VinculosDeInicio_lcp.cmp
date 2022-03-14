@@ -1,0 +1,28 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+    
+    <lightning:card variant="Narrow" title="Compensar" iconName="standard:link" >
+        <div class="slds-grid_vertical">
+            <div class="slds-col slds-m-around_medium" style="width:100%;">
+                <div class="slds-m-vertical_small">
+                    <lightning:button aura:id="1" variant="base" label="Mis Clientes" title="Mis Clientes" onclick="{! c.handleClick }" />
+                </div>
+                <div class="slds-m-vertical_small">
+                    <lightning:button aura:id="2" variant="base" label="Calculadora Superávit" title="Calculadora Superávit"
+                        onclick="{! c.handleClick }" />
+                </div>
+                <div class="slds-m-vertical_small">
+                    <lightning:button aura:id="3" variant="base" label="Consultar Cliente" title="Consultar Cliente"
+                        onclick="{! c.handleClick }" />
+                </div>
+                <div class="slds-m-vertical_small">
+                    <lightning:button aura:id="4" variant="base" label="Consultar Documentos OnBase" title="Consultar Documentos OnBase"
+                        onclick="{! c.handleClick }" />
+                </div>
+                <div class="slds-m-vertical_small">
+                    <lightning:button aura:id="5" variant="base" label="Elementos no resueltos" title="Elementos no resueltos"
+                        onclick="{! c.handleClick }" />
+                </div>
+            </div>
+        </div>
+    </lightning:card>
+</aura:component>

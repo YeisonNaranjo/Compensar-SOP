@@ -1,0 +1,81 @@
+<aura:component controller="CEL1_LookupCustom_ctr" implements="force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.buscarCampos}"/>
+    <aura:handler name="oSelectedAccountEvent" event="c:selectedAccountEvent" action="{!c.handleComponentEvent}"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="ListCamposLupa" type="String[]"/>
+    <aura:attribute name="valorFiltro" type="String"/>
+    <aura:attribute name="valorLupa" type="String"/>
+    <aura:attribute name="valorMenu" type="String"/>
+    <aura:attribute name="valorObjeto" type="Sobject" default="{}"/>
+
+    <aura:registerEvent name="cerrarModal" type="c:CerrarTipificacion_evt"/>
+    <aura:handler name="valorMenu" event="c:MGLT_EventoMenu_evt" action="{!c.ocultarMenu}"/>
+    <aura:handler name="oSelectedAccountEvent" event="c:selectedAccountEvent" action="{!c.handleCmpEvent}"/>
+
+    <aura:html tag="style">.toastMessage.forceActionsText{ white-space : pre-line !important; }</aura:html>
+    <lightning:recordEditForm   aura:id="recordEditForm"
+                                objectApiName="Case"
+                                recordId="{!v.recordId}">
+        <lightning:accordion aura:id="lstE" activeSectionName="Tipificación Gestión Caso">
+            <lightning:accordionSection name="Tipificación Gestión Caso" label="Tipificación Gestión Caso">
+                <aura:iteration items="{!v.ListCamposLupa}" var="lstE">
+                    <aura:if isTrue="{!lstE.strTipo == 'Lupa'}">
+                        <span onkeypress="{!c.keyCheck}">
+                        <c:customLookup Label="{!lstE.strNombre}" aura:id="idFiltro"
+                            ObjetoSeleccionado ="{!lstE.strObjeto}"
+                            ListCamposLupa="{!v.ListCamposLupa}"
+                            blnDisabled="{!lstE.blnDisabled}"
+                            filtroComplementario="{!lstE.strComplementoFiltro}"
+                            selectedNegocio="{!lstE.objSoBject}"
+                            campoCaso="{!lstE.strCampoCaso}"
+                            objetoPadre="{!lstE.strObjetoPadre}"
+                            filtro="{!lstE.strCampoFiltro}"
+                            campoVariableMenu="{!v.valorMenu}"/>
+                        </span>
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!lstE.strTipo == 'Lista de selección'}">
+                                <div style="padding:20px;">
+                                    <lightning:inputField fieldName="{!lstE.strCampoCaso}" value="{!lstE.strValorLupa}"/>
+                                </div>
+                                <aura:set attribute="else">
+                                    <aura:if isTrue="{!lstE.strTipo == 'Texto'}">
+                                        <div style="padding:20px;">
+                                            <lightning:input type="Text" label="{!lstE.strNombre}" name="{!lstE.strNombre}" value="{!lstE.strValorLupa}"/>
+                                        </div>
+                                        <aura:set attribute="else">
+                                            <aura:if isTrue="{!lstE.strTipo == 'Fecha'}">
+                                                <div style="padding:20px;">
+                                                    <lightning:input type="Date" label="{!lstE.strNombre}" name="{!lstE.strNombre}" value="{!lstE.strValorLupa}"/>
+                                                </div>
+                                                <aura:set attribute="else">
+                                                    <aura:if isTrue="{!lstE.strTipo == 'Area de texto'}">
+                                                        <div style="padding:20px;">
+                                                            <lightning:textarea type="TextArea" label="{!lstE.strNombre}" name="{!lstE.strNombre}" value="{!lstE.strValorLupa}"/>
+                                                        </div>
+                                                        <aura:set attribute="else">
+                                                            <aura:if isTrue="{!lstE.strTipo == 'Decimal'}">
+                                                                <div style="padding:20px;">
+                                                                    <lightning:input type="Decimal" label="{!lstE.strNombre}" name="{!lstE.strNombre}" value="{!lstE.strValorLupa}"/>
+                                                                </div>
+                                                            </aura:if>
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </aura:set>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:set>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </aura:iteration>
+            </lightning:accordionSection>
+            <div style="float:right">
+                <!-- <lightning:buttonGroup > -->
+                    <lightning:button label="Cancelar" iconPosition="right" variant="neutral" onclick="{!c.cerrarVentana}"/>
+                    <lightning:button label="Guardar" iconPosition="right" variant="brand" onclick="{!c.guardarCampos}"/>
+                <!-- </lightning:buttonGroup> -->
+            </div>
+        </lightning:accordion>
+    </lightning:recordEditForm>
+</aura:component>

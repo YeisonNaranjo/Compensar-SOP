@@ -1,0 +1,70 @@
+<template>
+    <lightning-layout class="align-default slds-grid slds-gutters">
+        <div class="slds-box full-width">
+            <template if:true={showbox}>
+                <div class="colorregistro slds-box">
+                    <h2 class="titulo slds-align_absolute-center slds-text-heading_large">
+                        Archivos Adjuntos
+                    </h2>
+                </div>
+            </template>
+            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_1-of-4">
+                <template if:true={showtamanio}>
+                    <div class="slds-text-body_regular bold bottom-space">Seleccione sus archivos - (Tamaño máximo total 3MB)</div>
+                </template>
+                <template if:true={vrequired}>
+                    <abbr title="required" class="slds-required">* Este campo es requerido</abbr>
+                </template>
+                <template if:true={showmessage}>
+                    <div class="slds-text-body_regular">{message}</div>
+                </template>
+                <lightning-input 
+                    data-id="inputFile"
+                    name="file uploader" 
+                    accept={acceptedFormats} 
+                    onchange={handleMultipleFileChanges}
+                    required={vrequired}
+                    type="file" 
+                    variant="label-hidden" 
+                    multiple={vmultiple}> 
+                </lightning-input>
+            </lightning-layout-item>
+            <template if:true={errorMessage}>
+                <p>{errorMessage}</p>
+            </template>
+            <div if:true={activo}>
+                <lightning-card title="Archivos Cargados" icon-name="standard:file">
+                    <table class="slds-table slds-table_cell-buffer slds-table_header-hidden">
+                        <thead>
+                            <tr>
+                                <th class="slds-size_3-of-10" scope="col"> <div class="slds-truncate" title="Name">Archivo</div> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={filesUploaded} for:item="marca" for:index="indexVar">
+                                <tr key={marca.Title} class="slds-hint-parent">
+                                    <td class="slds-size_3-of-10 font-custom" data-label="Prospecting">
+                                        <div>
+                                            <lightning-input 
+                                                type="text" 
+                                                key={marca.Title} 
+                                                data-id={marca.Title} 
+                                                name="input1" 
+                                                read-only 
+                                                value={marca.Title} 
+                                                variant="label-hidden"> 
+                                            </lightning-input>
+                                        </div>
+                                    </td>
+                                    <td class="slds-size_1-of-10" data-label="Prospecting">
+                                        <a name={indexVar} data-id={marca.Title} onclick={removeRow}> <lightning-icon icon-name="action:delete" alternative-text="delete" size="small"></lightning-icon> </a>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </lightning-card>
+            </div>
+        </div>
+    </lightning-layout>
+</template>

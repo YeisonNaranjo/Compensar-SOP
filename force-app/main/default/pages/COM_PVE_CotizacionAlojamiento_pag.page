@@ -1,0 +1,295 @@
+<!--
+ - Created by AVX_CMosquera on 26/07/2017.
+* -------------------------------------
+*           No.     Date            Author                  Description
+*           -----   ----------      --------------------    ---------------
+* @version  1.0     18/07/2019      Yeison Naranjo (YSN)    Cambio firma valor fijo.
+ 
+-->
+<apex:page id="COM_PVE_CotizacionAlojamiento_pag" showHeader="false" sidebar="false" renderas="pdf" controller="COM_PVE_CotizacionAlojamiento_ctr">
+    <html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title></title>
+        <meta name="author" content="COMPENSAR"/>
+        <style type="text/css">
+            body,div,table,thead,tbody,tfoot,tr,th,td,p { font-family:"Arial";}
+            a.comment-indicator:hover + comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em;  }
+            a.comment-indicator { background:red; display:inline-block; border:1px solid black; width:0.5em; height:0.5em;  }
+            comment { display:none; }
+        </style>
+    </head>
+
+    <body>
+        <apex:image url="{!$Resource.headerlagomar}" width="100%" height="100%" rendered="{!lagomar}"/>
+        <apex:image url="{!$Resource.headerlagosol}" width="100%" height="100%" rendered="{!lagosol}"/>
+        <apex:image url="{!$Resource.headerlagomar}" width="100%" height="100%" rendered="{!pasadiaLagomar}"/>
+        <apex:image url="{!$Resource.headerlagosol}" width="100%" height="100%" rendered="{!pasadiaLagosol}"/>
+        <apex:pagemessages id="errorMessage" />
+        <table cellspacing="0" border="0">
+            <tr>
+                <td valign="bottom" style="font-size:0.7em!important">
+                    Bogotá D.C., {!fechaActual} 
+                    <br/>
+                    <br/>
+                    <br/>
+                    Señores
+                    <br/>
+                    {!nombreCliente}
+                    <br/>
+                    Atn., Señor (a) {!nombreRepresentateLegal}        
+                    <br/>
+                    {!cargoContactoPrincipal}
+                    <br/>
+                    La Ciudad
+                    <br/>
+                    <br/>
+                    <br/>
+                    Apreciado(a) señor(a):
+                    <apex:outputText value="{!textCarta}" escape="false"/>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;border-collapse:collapse">
+            <tr>
+                <td style="font-size:0.7em!important;width:20%;overflow:hidden"><strong>COTIZACIÓN</strong></td>
+                <td style="font-size:0.7em!important;width:29%;overflow:hidden" bgcolor="#EEE" align="center"><strong>{!numeroCotizacion}</strong></td>
+                <td style="font-size:0.7em!important;width:2%;overflow:hidden"></td>
+                <td style="font-size:0.7em!important;width:20%;overflow:hidden"><strong>FECHA:</strong></td>
+                <td style="font-size:0.7em!important;width:29%;overflow:hidden" bgcolor="#EEE" align="center">{!fechaActual}</td>
+            </tr>
+            <tr><td colspan="5" style="height:3px"></td></tr>
+            <tr>
+                <td style="font-size:0.7em!important"><strong>CONTACTO</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!hContacto}</td>
+                <td style="font-size:0.7em!important"></td>
+                <td style="font-size:0.7em!important"><strong>EMPRESA:</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!hEmpresa}</td>
+            </tr>
+            <tr><td colspan="5" style="height:3px"></td></tr>
+            <tr>
+                <td style="font-size:0.7em!important"><strong>TELÉFONO</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!hTelefono}</td>
+                <td style="font-size:0.7em!important"></td>
+                <td style="font-size:0.7em!important"><strong>NIT:</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!nit}</td>
+            </tr>
+            <tr><td colspan="5" style="height:3px"></td></tr>
+            <tr>
+                <td style="font-size:0.7em!important"><strong>CELULAR</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!hCelular}</td>
+                <td style="font-size:0.7em!important"></td>
+                <td style="font-size:0.7em!important"><strong>E-mail:</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!hEmail}</td>
+            </tr>
+            <tr><td colspan="5" style="height:3px"></td></tr>
+            <tr>
+                <td style="font-size:0.7em!important"><strong>DIRECCIÓN</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!hDireccion}</td>
+                <td style="font-size:0.7em!important"></td>
+                <td style="font-size:0.7em!important"></td>
+                <td style="font-size:0.7em!important"></td>
+            </tr>
+            <tr><td colspan="5" style="height:3px"></td></tr>
+            <tr>
+                <td style="font-size:0.7em!important"><strong>{!labelFechaEntrada}</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="#EEE" align="center">{!LEFT(fechaEntradaEvento, LEN(fechaEntradaEvento)-9)}</td>
+                <td style="font-size:0.7em!important"></td>
+                <td style="font-size:0.7em!important"><strong>{!IF(fechaEntradaYSalida,"FECHA DE SALIDA DEL EVENTO", "")}</strong></td>
+                <td style="font-size:0.7em!important" bgcolor="{!IF(fechaEntradaYSalida, '#EEE','')}" align="center">{!IF(fechaEntradaYSalida, LEFT(fechaSalidaEvento, LEN(fechaSalidaEvento)-9), "")}</td>
+            </tr>
+        </table>
+        <br/>
+        <table style="width:100%;border-collapse:collapse">
+            <tr bgcolor="#EEE">
+            <!--Inicio Caso 00258536 24-09-18-->
+            <!--Se ajusta el width total a 100% sumando 4% a Concepto y Descripción ya que se habia eliminado Descuento-->
+                <td style="width:30%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Concepto</b></td>
+                <td style="width:30%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Descripción</b></td>
+                <td style="width:8%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>No. Pax</b></td>
+                <td style="width:8%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Valor por persona</b></td>
+                <td style="width:8%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>No. Noches</b></td>
+                <td style="width:8%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Valor</b></td>
+                <!--
+                 <td style="width:8%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Descuento</b></td> -->
+                 
+                <td style="width:8%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Valor Total</b></td>
+            </tr>
+            <!--Fin Caso 00258536 24-09-18-->
+            <apex:repeat value="{!conceptosCotizacions}" var="concepto">
+                <tr>     
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!concepto.nombreConcepto}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!concepto.descripcion}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!IF(concepto.numeroPax == 'null', 0, LEFT(concepto.numeroPax, LEN(concepto.numeroPax)-3))}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!concepto.valorPorPersona}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!IF(concepto.numeroNoches == 'null', 0, concepto.numeroNoches)}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!concepto.subtotal}</td>
+                   <!-- <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!IF(concepto.descuento == 'null%', '0', LEFT(concepto.descuento, LEN(concepto.descuento)-4))}%</td>-->
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#FFFFFF">{!concepto.valorTotal}</td>
+                </tr>
+            </apex:repeat>
+            <!--Inicio Caso 00258536 24-09-18-->
+            <!--Se ajusta el colspan total a 7 y el de labelSubtotalConceptos a 6-->
+            <tr><td colspan="7" style="height:3px"></td></tr>
+            <tr style="{!IF(pasadiaLagosol,"display: none;", "")} {!IF(pasadiaLagomar,"display: none;", "")}">
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" colspan="6" align="center" valign="middle" bgcolor="#EEE"><b>{!labelSubtotalConceptos}</b></td>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" colspan="1" align="center" valign="middle" bgcolor="#EEE" sdval="0" sdnum="1033;0;[$$-240A] #,##0">{!subtotalConcepts}</td> 
+            </tr>
+            <tr><td colspan="7" style="height:3px"></td></tr>
+        </table>
+        <table style="{!IF(serviciosAdicionales.empty,"display: none;", "")}width:100%;border-collapse:collapse">
+            <tr style="{!IF(serviciosAdicionales.empty,"display: none;", "")}">
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" colspan="8" align="center" valign="middle" bgcolor="#EEE"><b>{!headerLabelServiciosAdicionales}</b></td>
+            </tr>
+            <tr bgcolor="#EEE">
+            <!--Se ajusta el width total a 100% sumando 10% al de Concepto ya que se habia eliminado Descuento-->
+                <td style="width:40%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Concepto</b></td>
+                <td style="width:10%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Cantidad</b></td>
+                <td style="width:10%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Valor unitario</b></td>
+                <td style="width:10%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Duración</b></td>
+                <td style="width:10%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Unidad de Medida</b></td>
+                <td style="width:10%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Valor</b></td>
+<!--                <td style="width:10%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Descuento</b></td> -->
+                <td style="width:10%;font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>Valor Total</b></td>
+            </tr>
+            <!--Fin Caso 00258536 24-09-18-->
+            <apex:repeat rendered="{!serviciosAdicionales.size > 0}" value="{!serviciosAdicionales}" var="servicio">
+                <tr>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign="middle">{!servicio.nombreConcepto}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" sdnum="1033;0;_ * #,##0_ ;_ * -#,##0_ ;_ * &quot;-&quot;??_ ;_ @_ ">{!IF(servicio.cantidad == 'null', 0, servicio.cantidad)}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle">{!servicio.valorPorPersona}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" sdnum="1033;0;[$$-240A] #,##0">{!servicio.duracion}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="top" sdnum="1033;0;[$$-240A] #,##0">{!servicio.unidadMedida}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" sdnum="1033;0;[$$-240A] #">{!servicio.subtotal}</td>
+<!--                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" sdnum="1033;0;[$$-240A] #">{!IF(servicio.descuento == '', '', IF(servicio.descuento == 'null%','0%', LEFT(servicio.descuento, LEN(servicio.descuento)-4)+'%'))}</td> -->
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" sdnum="1033;0;[$$-240A] #">{!servicio.valorTotal}</td>
+                </tr>
+            </apex:repeat>
+            <!--Inicio Caso 00258536 24-09-18-->
+            <!--Se ajusta el colspan total a 7 y el SUBTOTAL ADICIONALES a 6-->
+            <tr><td colspan="7" style="height:3px"></td></tr>
+            <tr style="{!IF(serviciosAdicionales.empty,"display: none;", "")} {!IF(OR(pasadiaLagosol,pasadiaLagomar),"display: none;", "")} ">
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" colspan="6" align="center" valign="middle" bgcolor="#EEE"><b>SUBTOTAL ADICIONALES</b></td>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE" sdval="0" sdnum="1033;0;[$$-240A] #,##0">{!IF(pasadiaLagomar, totalPreliquidacion, subtotalAdicionales)}</td>
+            </tr>
+           <!--Fin Caso 00258536 24-09-18-->
+            <apex:repeat value="{!serviciosOpcionales}" var="opcional">
+                <tr>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                        colspan="3" align="center" valign="middle">{!opcional.nombreConcepto}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                        align="center" valign="middle" sdval="1" sdnum="1033;">{!opcional.numeroPax}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                        align="center" valign="middle" bgcolor="#FFFFFF" sdnum="1033;0;[$$-240A] #,##0">{!opcional.valorPorPersona}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                        align="center" valign="middle" bgcolor="#FFFFFF" sdval="1" sdnum="1033;0;0">{!opcional.numeroNoches}</td>
+                    <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                        align="center" valign="middle" sdval="0" sdnum="1033;0;&quot;$&quot;#,##0">{!opcional.valorTotal}</td>
+                </tr>
+            </apex:repeat>
+
+            <tr style="{!IF(pasadiaLagosol,"", "display: none;")}">
+                <td colspan="8"><br/></td>
+            </tr>
+
+        </table>
+        <!--Inicio Caso 00258536 24-09-18-->
+        <!--Se incluyen en la misma fila los tres tipos de Menú ajustando el width de table a 100%-->
+        <table style="width:100%;border-collapse:collapse;{!IF(pasadiaLagosol, "", "display: none;")}">
+            <!--tr>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" colspan="2" align="center" valign="middle" bgcolor="#EEE" ><b>OPCIONES DE MENÚ ESPECIALES</b></td>
+            </tr>
+
+            <tr>
+                <apex:repeat value="{!menuEspeciales}" var="menu">
+                    <apex:outputText value="{!menu}" escape="false"/>
+                </apex:repeat>
+            </tr-->
+            <tr>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                    colspan="1" rowspan="2" align="center" valign="middle" bgcolor="#EEE"><b>MENÚ DÍA</b></td>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                    colspan="1" rowspan="2"  align="center" valign="middle" bgcolor="#EEE"><b>PARRILLADA</b></td>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                    colspan="2" align="center" valign="middle" bgcolor="#EEE"><b>OFERTA DE DESAYUNO</b></td>
+            </tr>
+            <tr>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                    colspan="1" align="center" valign="middle" bgcolor="#EEE"><b>DESAYUNO N° 1</b></td>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000"
+                    colspan="1" align="center" valign="middle" bgcolor="#EEE"><b>DESAYUNO N° 2</b></td>
+            </tr>
+            <tr>
+                <apex:repeat value="{!menuEspeciales}" var="menu">
+                    <apex:outputText value="{!menu}" escape="false"/>
+                </apex:repeat>
+                <apex:repeat value="{!ofertasDesayuno}" var="oferta">
+                        <apex:outputText value="{!oferta}" escape="false"/>
+                </apex:repeat>
+            </tr>
+        <!--Fin Caso 00258536 24-09-18-->
+            <tr style="height:3px">
+                <td width="25%"></td>
+                <td width="25%"></td>
+                <td width="25%"></td>
+                <td width="25%"></td>
+            </tr> 
+            <tr>
+                <td style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" colspan="4" align="center" valign="middle" bgcolor="#EEE">
+                    <b>*ARMA TU PROPIO PAQUETE SEGÚN PRESUPUESTO</b><br/>
+                    <b>Todos los paquetes incluyen almuerzo y son flexibles en sus complementos: un sol refrigerio o dos, con desyuno o sin él.</b>
+                </td>
+            </tr>
+            
+        </table>
+        <table style="width:100%;border-collapse:collapse;">
+            <tr><td colspan="2" style="height:3px"></td></tr>
+            <tr>
+                <td width="80%" style="font-size:0.7em!important;border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>TOTAL PRELIQUIDACION</b></td>
+                <td width="20%" style="font-size:0.7em!important; border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign="middle" bgcolor="#EEE"><b>{!totalServicios}</b></td>
+            </tr>
+        </table>
+        <p style="font-size:0.7em!important"><b>CONDICIONES COMERCIALES</b></p>
+        <apex:repeat value="{!condicionesComerciales}" var="condicion">
+            <p style="margin:0;padding:0;font-size:0.7em!important; text-align:justify"><apex:outputText value="{!condicion}" escape="false"/></p>
+        </apex:repeat>
+
+        <p style="font-size:0.7em!important"><b>CANCELACIONES:</b></p>
+        <apex:repeat value="{!cancelaciones}" var="cancelacion">
+            <p style="margin:0;padding:0;font-size:0.7em!important; text-align:justify"><apex:outputText value="{!cancelacion}" escape="false"/></p>
+        </apex:repeat>
+
+        <p style="font-size:0.7em!important"><b>APLAZAMIENTOS:</b></p>
+        <apex:repeat value="{!aplazamientos}" var="aplazamiento">
+            <p style="margin:0;padding:0;font-size:0.7em!important; text-align:justify"><apex:outputText value="{!aplazamiento}" escape="false"/></p>
+        </apex:repeat>
+
+        <p style="font-size:0.7em!important">
+            <br/>
+            <br/>
+            <br/>
+            <!-- Inicio 1.0 -->
+            <!--
+            <b><apex:outputText value="{!nombreAsesor}" escape="false"/></b><br/>
+            <apex:outputText value="{!cargoAsesor}" escape="false" /><br/>
+            <apex:outputText value="{!dependenciaAsesor}" escape="false" /><br/>
+            <apex:outputText value="{!lugarCotizado}" escape="false" /><br/>
+            <apex:outputText value="{!otroNombreLugarCotizado}" escape="false"/><br/>
+            <apex:outputText value="{!celularAsesor}" escape="false" /><br/>
+            <apex:outputText value="{!emailAsesor}" escape="false" /><br/>
+            <apex:outputText value="{!urlCompensar}" escape="false" /><br/>
+			-->
+            <b><apex:outputText value="{!labelnombreAsesor}" escape="false"/></b><br/>
+            <apex:outputText value="{!labelSegParte}" escape="false" /><br/>
+            <apex:outputText value="{!urlCompensar}" escape="false" /><br/>
+            <!-- Fin 1.0 -->
+        </p>
+        <p style="{!IF(pasadiaLagosol,"display: none;", "")} {!IF(lagosol,"display: none;", "")}">{!contratoLagosol}</p>
+        <p style="{!IF(pasadiaLagomar,"display: none;", "")} {!IF(lagomar,"display: none;", "")}">{!contratoLagomar}</p>
+         <apex:image url="{!$Resource.footerlagomar}" width="100%" height="100%" rendered="{!lagomar}"/>
+        <apex:image url="{!$Resource.footerlagosol}" width="100%" height="100%" rendered="{!lagosol}"/>
+        <apex:image url="{!$Resource.footerlagomar}" width="100%" height="100%" rendered="{!pasadiaLagomar}"/>
+        <apex:image url="{!$Resource.footerlagosol}" width="100%" height="100%" rendered="{!pasadiaLagosol}"/>
+    </body>
+    </html>
+</apex:page>

@@ -1,0 +1,307 @@
+<apex:page applyHtmlTag="false" showHeader="false" sidebar="false" renderAs="PDF" standardController="COM_Actas__c" extensions="COM_EncuentroConDirectivos_ctr">
+<html>
+    <head>
+        <style>
+            @media print{
+                table {page-break-inside:auto; }
+                tr    { page-break-inside:avoid; page-break-after:auto }
+            }
+            @page {
+                size:8.5in 11in;margin: 10mm;margin-top: 80px;
+                @PageBreak{ page-break:always; page-break-inside:avoid; }
+                @top-center { content: element(header); }
+            }
+            div.header      {padding:1px;position:running(header);width:100%;height:102px}
+            *               {font-family:Arial;font-size:12px;text-align:center}
+            table,td        {border:1px solid black}
+            table           {border-spacing:0;border-collapse:collapse}
+            td              {cellspacing:0;overflow: hidden}
+            td table        {width:100%!important; max-width:100%!important;border-spacing:0;border-collapse:collapse;overflow:hidden}
+            td table td     {cellspacing:0;overflow:hidden}
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th height="55">
+                            <apex:image url="{!$Resource.Logo}" height="75" />
+                        </th>
+                        <th style="text-align:right">
+                            <strong>{!$Label.COM_EncuentroDirectivos}</strong>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        
+        <table>
+            <tbody>
+                <tr width="100%">
+                    <td  colspan="6" width="100%" style="text-align: center;margin:0px; background-color: #fec396;font-weight: 700">
+                        {!$Label.COM_EntidadInvitada}
+                    </td>
+                </tr>
+
+                <tr >
+                    <td colspan="3" width="60%" style="text-align: center;margin:0px;font-weight: bold;">
+                        <strong><apex:outputText value="{!$Label.COM_Empresa}" /></strong></td>
+                    <td  colspan="3" width="40%" style="text-align: center;margin:0px;font-weight: bold;">
+                        <strong><apex:outputText value="{!$Label.COM_Grupo}" /></strong></td>
+                </tr>
+                <tr >
+                    <td colspan="3" >
+                        <apex:outputText style="text-align: center;margin:0px;" value="{!objActa.COM_Cuenta__r.Name}" /> </td>
+                    <td  colspan="3">
+                        <apex:outputText style="text-align: center;margin:0px;" value="{!objActa.COM_Cuenta__r.COM_Segmento__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td style="text-align: center;margin:0px;" colspan="3"><strong>{!$Label.COM_ObjetoSocial}</strong></td>
+                    <td style="text-align: center;margin:0px;" colspan="3"><strong>{!$Label.COM_PersonaContacto}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="3">
+                        <apex:outputText value="{!objActa.COM_ObjetoSocial__c}" /> </td>
+                    <td colspan="3">
+                        <apex:outputText value="{!objActa.COM_ObjetoSocial__c}" />
+                    </td>
+                </tr>
+                <tr  style="text-align: center;margin:0px;background-color: #fec396 ;">
+                    <td colspan="6" ><strong>{!$Label.COM_DatosReunion}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="3"><strong>{!$Label.COM_TipoReunion}</strong></td>
+                    <td colspan="3"><strong>{!$Label.COM_FechaRealizacion}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="3" rowspan="2"><strong>{!$Label.COM_EncuentroConDirectivos}</strong></td>
+                    <td><apex:outputText value="{!ano}" /></td>
+                    <td><apex:outputText value="{!mes}" /></td>
+                    <td><apex:outputText value="{!dia}" /></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                 
+                    <td><strong>{!$Label.COM_AAAA}</strong></td>
+                    <td><strong>{!$Label.COM_MM}</strong></td>
+                    <td><strong>{!$Label.COM_DD}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" >
+                        <strong><apex:outputText value="{!$Label.COM_DirectivosInvitados}" /></strong>
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;" >
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_Listadirectivoscargos__c}" />
+                    </td>
+                </tr >
+                <tr style="text-align: center;margin:0px;" >
+                    <td colspan="6">
+                        <strong><apex:outputText value="{!$Label.COM_TemasATratar}" /></strong>
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_TemasaTratar__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" >
+                        <strong><apex:outputText value="{!$Label.COM_SituacionesRelevantes}" /></strong>
+                    </td>
+                </tr >
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_SituacionesRelevantes__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #fec396 ;">
+                    <td colspan="6" height="10px"></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td width="17%"><strong>{!$Label.COM_AfiliadosCaja}</strong></td>
+                    <td width="16%"><apex:outputText value="{!objActa.COM_AfiliadosCaja__c}" /></td>
+                    <td width="17%"><strong>{!$Label.COM_AfiliadosPOS}</strong></td>
+                    <td width="16%"><apex:outputText value="{!objActa.COM_AfiliadosPOS__c}" /></td>
+                    <td width="17%"><strong>{!$Label.COM_AfiliadosPC}</strong></td>
+                    <td width="16%"><apex:outputText value="{!objActa.COM_AfiliadosPC__c}" /></td>
+                </tr>
+
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;">
+                    <td  colspan="6"><strong>ESTADO DE APORTES CAJA</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td><strong>{!$Label.COM_Aporte4Porc}</strong></td>
+                    <td><apex:outputText value="{!objActa.COM_Aporte4__c}" /></td>
+                    <td><strong>{!$Label.COM_Subsidio}</strong></td>
+                    <td><apex:outputText value="{!objActa.COM_Subsidio__c}" /></td>
+                    <td><strong>{!$Label.COM_Superavit}</strong></td>
+                    <td><apex:outputText value="{!objActa.COM_Superavit__c}" /></td>
+
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;">
+                    <td colspan="6" ><strong>{!$Label.COM_ServiciosEmpresariales}</strong></td>
+                </tr>
+                <tr  style="text-align: center;margin:0px;">
+                    <td colspan="2"><strong>{!$Label.COM_SPBA_O}</strong></td>
+                    <td colspan="2"><strong>{!$Label.COM_SPBA_oValor}</strong></td>
+                    <td colspan="2"><strong>{!$Label.COM_Ejecutado}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td  colspan="2" width="20%">
+                        <apex:outputText value="{!objActa.COM_SPBAnio__c}" />
+                    </td>
+                    <td colspan="2" width="40%">
+                        <apex:outputText value="{!objActa.COM_SPBANIOVALOR__c}" />
+                    </td>
+                    <td colspan="2" width="40%">
+                        <apex:outputText value="{!objActa.COM_SPBPresupuestado__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;" >
+                    <td  colspan="2"><strong>{!$Label.COM_FacturacionAno}</strong></td>
+                    <td  colspan="2"><strong>{!$Label.COM_FacturacionPresupuestado}</strong></td>
+                    <td  colspan="2"><strong>{!$Label.COM_FacturacionEjecutado}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;" >
+                    <td  colspan="2">
+                        <apex:outputText value="{!objActa.COM_Facturacionanio__c}" />
+                    </td>
+                    <td  colspan="2">
+                        <apex:outputText value="{!objActa.COM_PresupuestadoFacturacion__c}" />
+                    </td>
+                    <td colspan="2" >
+                        <apex:outputText value="{!objActa.COM_EjecutadoFacturacion__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #fec396 ;">
+                    <td colspan="6"><strong>{!$Label.COM_TrabajadoresSeguridadSocial}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;" colspan="2" >
+                    <td colspan="6"><strong>{!$Label.COM_PerfilTrabajadores}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;" >
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_Perfiltrabajadores__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6"><strong>{!$Label.COM_SeguridadSocial}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;" >
+                    <td colspan="2"><strong>{!$Label.COM_Salud}</strong></td>
+                    <td colspan="2"><strong>{!$Label.COM_Pensiones}</strong></td>
+                    <td colspan="2"><strong>{!$Label.COM_ARP}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="2">
+                        <apex:outputText value="{!objActa.COM_Salud__c}" />
+                    </td>
+                    <td colspan="2">
+                        <apex:outputText value="{!objActa.COM_Pensiones__c}" />
+                    </td>
+                    <td colspan="2">
+                        <apex:outputText value="{!objActa.COM_ARL1__r.Name}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #fec396 ;">
+                    <td colspan="6"><strong>{!$Label.COM_IntervencionGSE}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;">
+                    <td colspan="6"><strong>{!$Label.COM_RelacionConDirectivos}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_Relaciondirectivos__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;">
+                    <td colspan="6"><strong><apex:outputText value="{!$Label.COM_ContactoConTrabajadores}" /></strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_ContactoTrabajadores__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;">
+                    <td colspan="6"><strong><apex:outputText value="{!$Label.COM_ConveniosFiliacionesContratos}" /></strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_ConveniosFiliacionesContratos__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;">
+                    <td colspan="6"><strong>{!$Label.COM_CanalesComunicacion}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;">
+                    <td colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_CanalesComunicacion__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #fec396 ;" >
+                    <td  colspan="6"><strong>{!$Label.COM_PlanesFidelizacionBienestar}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;" >
+                    <td  colspan="6"><strong>{!$Label.COM_ObjetivosLogros}</strong></td>
+                </tr>
+                <tr style="text-align: center;margin:0px;" >
+                    <td  colspan="6" style="min-height: 70px">
+                        <apex:outputText value="{!objActa.COM_ObjetivosLogros__c}" />
+                    </td>
+                </tr>
+                <tr style="text-align: center;margin:0px;background-color: #E8E7E7;">
+                    <td  colspan="6"><strong>{!$Label.COM_InformeCuantitativo}</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <apex:pageblock >
+                            <apex:pageblocktable value="{!lstOppotunidades}" var="opp">
+                                <apex:column headerValue="Nombre ">
+                                    <apex:outputText value="{!opp.Name}" />
+                                </apex:column>
+                                 <apex:column headerValue="No. Participantes">
+                                     <apex:outputText value="{!opp.COM_Numeroasistentes__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Etapa">
+                                    <apex:outputText value="{!opp.StageName}" />
+                                </apex:column>
+                                <apex:column headerValue="Fecha Inicio">
+                                    <apex:outputText value="{0, date, dd/mm/yyyy}">
+                                        <apex:param value="{!opp.COM_Fechahorainicio__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column headerValue="Fecha Fin">
+                                    <apex:outputText value="{0, date, dd/mm/yyyy}">
+                                        <apex:param value="{!opp.COM_Fechahorafinalizacion__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column headerValue="Tipo">
+                                    <apex:outputText value="{!opp.RecordType.Name}" />
+                                </apex:column>
+                                <apex:column headerValue="Valor">
+                                    <apex:outputText value="$ {0, number, ###,###,###}">
+                                        <apex:param value="{!opp.amount}" />
+                                    </apex:outputText> 
+                                </apex:column>
+                            </apex:pageblocktable>
+                        </apex:pageblock>    
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <strong>VALOR TOTAL :</strong>
+                    </td>
+                    <td>
+                        <apex:outputText value="$ {0, number, ###,###,###}">
+                            <apex:param value="{!valorTotal}" />
+                        </apex:outputText> 
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
+</apex:page>

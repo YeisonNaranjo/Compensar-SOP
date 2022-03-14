@@ -1,0 +1,36 @@
+<apex:component controller="ENC_OpcionRespuesta_ctr" allowDML="true">
+	<apex:attribute name="editarPreguntas" description="Indica si las preguntas se muestran en modo de edición." type="Boolean" required="true"/>
+	<apex:attribute name="preguntas" description="Cadena con las preguntas." type="String" required="true"/>
+	<apex:attribute name="idPregunta" description="Id de la pregunta matricial a la que pertenecen las preguntas." type="String" required="true"/>
+	
+	<script src="{!$Resource.AVX_ENC_AdminPreguntas}"></script>
+
+	<apex:pageBlock title="Preguntas" mode="detail" >
+		<apex:pageBlockButtons location="top">
+			<apex:outputPanel rendered="{!editarPreguntas}">
+				<div class="slds-button-group" role="group">
+				  <button class="slds-button slds-button--neutral" onclick="agregarPreguntaTemp( {!editarPreguntas}, '{!idPregunta}' ); return false;">Nueva pregunta</button>
+				  <button class="slds-button slds-button--neutral" id="btnGuardarPreguntas" onclick="guardarPreguntas( '{!idPregunta}' ); return false;">Guardar</button>
+				</div>
+			</apex:outputPanel>
+		</apex:pageBlockButtons>
+		<div id="divMensajes" style="height:38px;" ><div id="divMensajesDetallePregunta" /></div>
+		<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+			<thead>
+			<tr class="slds-text-heading--label">
+				<th scope="col">
+					<div class="slds-truncate" title="Acción">Acción</div>
+				</th>
+				<th scope="col">
+					<div class="slds-truncate" title="Opción">Pregunta</div>
+				</th>
+			</tr>
+			</thead>
+			<tbody id="bodyTablaPreguntas"></tbody>
+		</table>
+
+		<script>
+			mostrarTablaListaPreguntas( {!editarPreguntas}, '{!preguntas}', '{!idPregunta}' );
+		</script>
+	</apex:pageBlock>
+</apex:component>

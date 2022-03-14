@@ -1,0 +1,17 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeLightning />    
+    <div id="LightningAppDivId">
+        <!-- Lightning Web Component will be included here. -->
+    </div>    
+    <script>
+    $Lightning.use("c:RL2_CasoWeb_app", function() {
+        $Lightning.createComponent("c:Rl2_CrearCasoWeb_lwc",
+          { 
+          },
+          "LightningAppDivId",
+          function(cmp) {
+             console.log('LWC Componenet added in VF page');
+          });
+    });
+    </script>
+</apex:page>

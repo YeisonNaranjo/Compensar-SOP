@@ -1,0 +1,58 @@
+<aura:component controller="CEL1_LookupCustom_ctr" implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.buscarCampos}"/>
+    <aura:handler name="oSelectedAccountEvent" event="c:selectedAccountEvent" action="{!c.handleComponentEvent}"/>
+    <!-- <aura:handler name="strike_evt" event="c:strike_evt" action="{!c.handleEnventStrike}"/> -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="ListCamposLupaGIE" type="Sobject"/>
+    <aura:attribute name="ListCamposLupaBackup" type="String[]"/>
+    <aura:attribute name="valorFiltro" type="String"/>
+    <aura:attribute name="valorLupa" type="String"/>
+    <aura:attribute name="valorMenu" type="String"/>
+    <aura:attribute name="valorObjeto" type="Sobject" default="{}"/>
+
+    <aura:registerEvent name="cerrarModal" type="c:CerrarTipificacion_evt"/>
+    <aura:handler name="valorMenu" event="c:MGLT_EventoMenu_evt" action="{!c.ocultarMenu}"/>
+    <aura:handler name="oSelectedAccountEvent" event="c:selectedAccountEvent" action="{!c.handleCmpEvent}"/>
+
+    <lightning:accordion aura:id="lstE" activeSectionName="Tipifiación GIE">
+        <lightning:accordionSection name="Tipifiación GIE" label="Tipifiación GIE">
+        <aura:iteration items="{!v.ListCamposLupaGIE}" var="lstE">
+            <aura:if isTrue="{!lstE.strTipo == 'Lupa'}">
+                    <c:customLookup Label="{!lstE.strNombre}" aura:id="idFiltro"
+                    ObjetoSeleccionado ="{!lstE.strObjeto}"
+                    ListCamposLupa="{!v.ListCamposLupaGIE}"
+                    blnDisabled="{!lstE.blnDisabled}"
+                    filtroComplementario="{!lstE.strComplementoFiltro}"
+                    selectedNegocio="{!lstE.objSoBject}"
+                    campoCaso="{!lstE.strCampoCaso}"
+                    objetoPadre="{!lstE.strObjetoPadre}"
+                    filtro="{!lstE.strCampoFiltro}"
+                    campoVariableMenu="{!v.valorMenu}"/>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!lstE.strTipo == 'Lista de selección'}">
+                        <div style="padding:20px;">
+                            <lightning:Select label="{!lstE.strNombre}" name="{!lstE.strNombre}" value="{!lstE.strValorLupa}">
+                                <option value="">--Ninguno--</option>
+                                <aura:iteration items="{!lstE.lstValoresPiscklist}" var="ind">
+                                    <option text="{!ind}" value="{!ind}" />
+                                </aura:iteration>
+                            </lightning:Select>
+                        </div>
+                        <aura:set attribute="else">
+                            <div style="padding:20px;">
+                                <lightning:input type="Text" label="{!lstE.strNombre}" name="{!lstE.strNombre}" value="{!lstE.strValorLupa}"/>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+        </aura:iteration>
+        </lightning:accordionSection>
+        <div style="float:right">
+            <!-- <lightning:buttonGroup > -->
+                <lightning:button label="Cancelar" iconPosition="right" variant="neutral" onclick="{!c.cerrarVentana}"/>
+                <lightning:button label="Guardar" iconPosition="right" variant="brand" onclick="{!c.guardarCampos}"/>
+            <!-- </lightning:buttonGroup> -->
+        </div>
+    </lightning:accordion>
+</aura:component>

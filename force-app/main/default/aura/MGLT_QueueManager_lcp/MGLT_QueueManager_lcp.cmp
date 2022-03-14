@@ -1,0 +1,8 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <lightning:utilityBarAPI aura:id="QueueManagerUtilityBar" />
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+
+    <div class="slds-p-around_x-small">
+        <c:mGLT_QueueManager_lwc aura:id="queueManager" oncancel="{!c.cancel}" />
+    </div>
+</aura:component>

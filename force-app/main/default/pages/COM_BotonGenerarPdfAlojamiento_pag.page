@@ -1,0 +1,36 @@
+<!-- /************************************************************************************************
+Desarrollado por:  Avanxo
+Autor:             William Aldana (WAC)
+Proyecto:          Compensar
+Descripción:       Pagina para generar PDFs de Alojamiento
+
+Cambios (Versiones)
+-------------------------------------------------------------------------------------------------
+    No.     Fecha                  Autor                                 Descripción
+----------  -------------   ---------------------------          ---------------------------------------------
+    1.0      2017-11-30     William Aldana (WAC)     	  		 Creación página.
+************************************************************************************************/ -->
+<apex:page standardController="Quote" extensions="COM_BotonGenerarPdfAlojamiento_ctr">
+<apex:slds />
+<div class="slds-scope">
+	<apex:form id="idForm">
+		<apex:pageBlock title="Generar PDF Alojamiento">
+			<apex:pagemessages id="errorMessage" />
+			<apex:pageBlock rendered="{!noError}">
+			<h1>Seleccione el tipo de Cotizacion</h1>
+
+			<apex:selectList id="tipoDoc" value="{!strTipoDoc}" size="1">
+				<apex:selectOption itemValue="Lagomar" itemLabel="Convencion Lagomar"/>
+				<apex:selectOption itemValue="Lagosol" itemLabel="Convencion Lagosol"/>
+				<apex:selectOption itemValue="PasadiaLagomar" itemLabel="Pasadia Lagomar"/>
+				<apex:selectOption itemValue="PasadiaLagosol" itemLabel="Pasadia Lagosol"/>
+			</apex:selectList>
+
+			<apex:pageBlockButtons location="bottom" styleClass="slds-align_absolute-center">
+				<apex:commandButton styleClass="slds-button slds-button_stateful slds-button_neutral slds-not-selected" action="{!redireccionar}" value="Generar PDF" />
+			</apex:pageBlockButtons>
+			</apex:pageBlock>
+		</apex:pageBlock>
+	</apex:form>
+</div>
+</apex:page>
